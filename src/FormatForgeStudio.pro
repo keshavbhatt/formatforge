@@ -31,6 +31,9 @@ GIT_BRANCH="\\\"$$system(git -C \""$$_PRO_FILE_PWD_"\" rev-parse --abbrev-ref HE
 BUILD_TIMESTAMP="\\\"$$system(date -u +\""%Y-%m-%dT%H:%M:%SUTC\"")\\\""
 DEFINES += GIT_HASH=$$GIT_HASH GIT_BRANCH=$$GIT_BRANCH BUILD_TIMESTAMP=$$BUILD_TIMESTAMP
 
+include(Widgets/waitingspinner/WaitingSpinner.pri)
+include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -44,9 +47,14 @@ SOURCES += \
     MediaConverter/audioconverter.cpp \
     MediaConverter/imageconverter.cpp \
     MediaConverter/videoconverter.cpp \
+    Pages/homepage.cpp \
+    Pages/mediapage.cpp \
+    Pages/outputsettingpage.cpp \
+    Pages/queuepage.cpp \
     conversionmanager.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    spinner.cpp
 
 HEADERS += \
     Format/format.h \
@@ -59,11 +67,21 @@ HEADERS += \
     MediaConverter/imageconverter.h \
     MediaConverter/mediaconverter.h \
     MediaConverter/videoconverter.h \
+    Pages/homepage.h \
+    Pages/mediapage.h \
+    Pages/outputsettingpage.h \
+    Pages/queuepage.h \
     conversionmanager.h \
-    mainwindow.h
+    mainwindow.h \
+    spinner.h
 
 FORMS += \
-    mainwindow.ui
+    Pages/homepage.ui \
+    Pages/mediapage.ui \
+    Pages/outputsettingpage.ui \
+    Pages/queuepage.ui \
+    mainwindow.ui \
+    spinner.ui
 
 TRANSLATIONS += \
     FormatForgeStudio_en_IN.ts
@@ -74,3 +92,6 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    icons.qrc
