@@ -7,17 +7,23 @@ namespace Ui {
 class MediaPage;
 }
 
-class MediaPage : public QWidget
-{
-    Q_OBJECT
+class MediaPage : public QWidget {
+  Q_OBJECT
+
+signals:
+  void nextPage();
 
 public:
-    explicit MediaPage(QWidget *parent = nullptr);
-    ~MediaPage();
+  explicit MediaPage(QWidget *parent = nullptr);
+  ~MediaPage();
 
-    void loadMediaFiles(const QStringList &fileNameList);
+  void loadMediaFiles(const QStringList &fileNameList);
+
+private slots:
+  void goToOutputSettingsPage();
+
 private:
-    Ui::MediaPage *ui;
+  Ui::MediaPage *ui;
 };
 
 #endif // MEDIAPAGE_H

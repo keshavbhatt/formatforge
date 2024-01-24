@@ -1,8 +1,8 @@
 #include "homepage.h"
 #include "ui_homepage.h"
 
-#include <QFileDialog>
 #include <QDir>
+#include <QFileDialog>
 
 HomePage::HomePage(QWidget *parent) : QWidget(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);
@@ -20,7 +20,8 @@ void HomePage::on_addMediaPushButton_clicked() {
       this, tr("Select Media Files"), QDir::homePath(),
       tr("Media Files (*.mp3 *.mp4 *.avi *.mkv);;All Files (*)"));
 
-  if(fileNames.isEmpty() == false){
-      emit mediaFileLoaded(fileNames);
+  if (fileNames.isEmpty() == false) {
+    emit mediaFileLoaded(fileNames);
+    emit nextPage();
   }
 }

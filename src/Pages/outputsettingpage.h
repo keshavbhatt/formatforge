@@ -7,16 +7,18 @@ namespace Ui {
 class OutputSettingPage;
 }
 
-class OutputSettingPage : public QWidget
-{
-    Q_OBJECT
+class OutputSettingPage : public QWidget {
+  Q_OBJECT
 
 public:
-    explicit OutputSettingPage(QWidget *parent = nullptr);
-    ~OutputSettingPage();
+  explicit OutputSettingPage(QWidget *parent = nullptr);
+  ~OutputSettingPage();
+
+signals:
+  void nextPage();
 
 private:
-    Ui::OutputSettingPage *ui;
+  Ui::OutputSettingPage *ui;
 };
 
 #endif // OUTPUTSETTINGPAGE_H

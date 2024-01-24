@@ -7,16 +7,18 @@ namespace Ui {
 class QueuePage;
 }
 
-class QueuePage : public QWidget
-{
-    Q_OBJECT
+class QueuePage : public QWidget {
+  Q_OBJECT
 
 public:
-    explicit QueuePage(QWidget *parent = nullptr);
-    ~QueuePage();
+  explicit QueuePage(QWidget *parent = nullptr);
+  ~QueuePage();
+
+signals:
+  void nextPage();
 
 private:
-    Ui::QueuePage *ui;
+  Ui::QueuePage *ui;
 };
 
 #endif // QUEUEPAGE_H

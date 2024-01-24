@@ -15,7 +15,9 @@ public:
     explicit HomePage(QWidget *parent = nullptr);
     ~HomePage();
 
+
 signals:
+    void nextPage();
     void mediaFileLoaded(const QStringList &fileNames);
 
 private slots:

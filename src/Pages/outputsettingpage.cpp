@@ -2,13 +2,8 @@
 #include "ui_outputsettingpage.h"
 
 OutputSettingPage::OutputSettingPage(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::OutputSettingPage)
-{
-    ui->setupUi(this);
+    : QWidget(parent), ui(new Ui::OutputSettingPage) {
+  ui->setupUi(this);
 }
 
-OutputSettingPage::~OutputSettingPage()
-{
-    delete ui;
-}
+OutputSettingPage::~OutputSettingPage() { delete ui; }

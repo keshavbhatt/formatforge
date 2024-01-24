@@ -83,15 +83,23 @@ void MainWindow::initPages() {
   outputSettingPage = new OutputSettingPage;
   queuePage = new QueuePage;
 
-  // connections
-  connect(homePage, &HomePage::mediaFileLoaded, mediaPage,
-          &MediaPage::loadMediaFiles);
-
-  // add them to stackWidget
+  // add pages to stackedWidget
   stackedWidget->addWidget(homePage);
   stackedWidget->addWidget(mediaPage);
   stackedWidget->addWidget(outputSettingPage);
   stackedWidget->addWidget(queuePage);
+
+  // navigation connections
+  for (int i = 0; i < stackedWidget->count(); ++i) {
+    auto page = stackedWidget->widget(i);
+    connect(page, SIGNAL(nextPage()), stackedWidget, SLOT(slideInNext()));
+  }
+
+  // other connections
+  connect(homePage, &HomePage::mediaFileLoaded, mediaPage,
+          &MediaPage::loadMediaFiles);
+
+
 }
 
 void MainWindow::initToolbar() {
