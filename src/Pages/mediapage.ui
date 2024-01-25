@@ -15,6 +15,18 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Files to be converted</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QListWidget" name="mediaListWidget"/>
    </item>
    <item>
@@ -32,7 +44,14 @@
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
-        <string>Remove Item</string>
+        <string>Remove Selected</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Remove All</string>
        </property>
       </widget>
      </item>

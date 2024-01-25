@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "presetselector.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)

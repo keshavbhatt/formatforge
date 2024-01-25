@@ -52,9 +52,15 @@ SOURCES += \
     Pages/outputsettingpage.cpp \
     Pages/queuepage.cpp \
     conversionmanager.cpp \
+    defaultpresetreader.cpp \
     main.cpp \
     mainwindow.cpp \
-    spinner.cpp
+    mimedatabasemanager.cpp \
+    preset.cpp \
+    presetselector.cpp \
+    presettabwidget.cpp \
+    spinner.cpp \
+    utils.cpp
 
 HEADERS += \
     Format/format.h \
@@ -72,8 +78,14 @@ HEADERS += \
     Pages/outputsettingpage.h \
     Pages/queuepage.h \
     conversionmanager.h \
+    defaultpresetreader.h \
     mainwindow.h \
-    spinner.h
+    mimedatabasemanager.h \
+    preset.h \
+    presetselector.h \
+    presettabwidget.h \
+    spinner.h \
+    utils.h
 
 FORMS += \
     Pages/homepage.ui \
@@ -81,6 +93,8 @@ FORMS += \
     Pages/outputsettingpage.ui \
     Pages/queuepage.ui \
     mainwindow.ui \
+    presetselector.ui \
+    presettabwidget.ui \
     spinner.ui
 
 TRANSLATIONS += \
@@ -94,4 +108,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    icons.qrc
+    icons.qrc \
+    presets.qrc

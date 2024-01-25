@@ -2,6 +2,7 @@
 #define OUTPUTSETTINGPAGE_H
 
 #include <QWidget>
+#include <presetselector.h>
 
 namespace Ui {
 class OutputSettingPage;
@@ -14,11 +15,14 @@ public:
   explicit OutputSettingPage(QWidget *parent = nullptr);
   ~OutputSettingPage();
 
+  void showPresetSelector();
 signals:
   void nextPage();
 
 private:
   Ui::OutputSettingPage *ui;
+
+  PresetSelector *presetSelector = nullptr;
 };
 
 #endif // OUTPUTSETTINGPAGE_H
