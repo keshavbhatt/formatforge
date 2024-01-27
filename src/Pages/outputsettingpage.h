@@ -2,7 +2,7 @@
 #define OUTPUTSETTINGPAGE_H
 
 #include <QWidget>
-#include <presetselector.h>
+#include "Presets/widgets/presetselector.h"
 
 namespace Ui {
 class OutputSettingPage;

@@ -52,13 +52,13 @@ SOURCES += \
     Pages/outputsettingpage.cpp \
     Pages/queuepage.cpp \
     conversionmanager.cpp \
-    defaultpresetreader.cpp \
+    Presets/defaultpresetreader.cpp \
     main.cpp \
     mainwindow.cpp \
     mimedatabasemanager.cpp \
-    preset.cpp \
-    presetselector.cpp \
-    presettabwidget.cpp \
+    Presets/preset.cpp \
+    Presets/widgets/presetselector.cpp \
+    Presets/widgets/presettabwidget.cpp \
     spinner.cpp \
     utils.cpp
 
@@ -78,12 +78,12 @@ HEADERS += \
     Pages/outputsettingpage.h \
     Pages/queuepage.h \
     conversionmanager.h \
-    defaultpresetreader.h \
+    Presets/defaultpresetreader.h \
     mainwindow.h \
     mimedatabasemanager.h \
-    preset.h \
-    presetselector.h \
-    presettabwidget.h \
+    Presets/preset.h \
+    Presets/widgets/presetselector.h \
+    Presets/widgets/presettabwidget.h \
     spinner.h \
     utils.h
 
@@ -93,8 +93,8 @@ FORMS += \
     Pages/outputsettingpage.ui \
     Pages/queuepage.ui \
     mainwindow.ui \
-    presetselector.ui \
-    presettabwidget.ui \
+    Presets/widgets/presetselector.ui \
+    Presets/widgets/presettabwidget.ui \
     spinner.ui
 
 TRANSLATIONS += \
@@ -109,4 +109,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     icons.qrc \
-    presets.qrc
+    Presets/resources/presets.qrc
