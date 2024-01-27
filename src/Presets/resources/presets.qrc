@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>defaultPresets.json</file>
+    </qresource>
+</RCC>
