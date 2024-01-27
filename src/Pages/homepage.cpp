@@ -7,7 +7,7 @@
 HomePage::HomePage(QWidget *parent) : QWidget(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);
 
-  ui->welcomeIconLabel->setPixmap(QPixmap("://Icons/App/icon-128.png"));
+  ui->welcomeIconLabel->setPixmap(QPixmap("://app/icon-128.png"));
   ui->welcomeLabel->setText(
       QString("<H1 style='color:silver;'>Welcome to %1</H1>")
           .arg(QApplication::applicationName()));

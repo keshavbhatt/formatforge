@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  setWindowIcon(QIcon("://Icons/App/icon-64.png"));
+  setWindowIcon(QIcon(":/app/icon-64.png"));
 
   stackedWidget = new SlidingStackedWidget(this);
   ui->centralwidget->layout()->addWidget(stackedWidget);
@@ -45,8 +45,7 @@ void MainWindow::initSpinner() {
 void MainWindow::createActions() {
 
   // create action
-  homeAction =
-      new QAction(QIcon("://Icons/App/icon-64.png"), tr("&Home"), this);
+  homeAction = new QAction(QIcon(":/app/icon-64.png"), tr("&Home"), this);
   mediaAction = new QAction(tr("&Media"), this);
   outputSettingAction = new QAction(tr("&Output Setting"), this);
   convertAction = new QAction(tr("&Convert"), this);
@@ -99,15 +98,20 @@ void MainWindow::initPages() {
   // other connections
   connect(homePage, &HomePage::mediaFileLoaded, mediaPage,
           &MediaPage::loadMediaFiles);
-
-
 }
 
 void MainWindow::initToolbar() {
 
   createActions();
 
-  ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+  ui->toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+  ui->toolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+  ui->toolBar->setIconSize(QSize(28, 28));
+  auto toolbarFont = ui->toolBar->font();
+  toolbarFont.setBold(true);
+  auto toolbarPointSize = toolbarFont.pointSize();
+  toolbarFont.setPointSize(toolbarPointSize + 2);
+  ui->toolBar->setFont(toolbarFont);
   ui->toolBar->setMovable(false);
   ui->toolBar->setFloatable(false);
 }

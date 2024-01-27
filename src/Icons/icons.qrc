@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>App/icon-64.png</file>
-        <file>App/icon-128.png</file>
-        <file>App/icon-256.png</file>
-        <file>App/icon.png</file>
+        <file>app/icon-64.png</file>
+        <file>app/icon-128.png</file>
+        <file>app/icon-256.png</file>
+        <file>app/icon.png</file>
     </qresource>
 </RCC>

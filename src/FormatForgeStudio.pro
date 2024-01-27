@@ -41,7 +41,7 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
+    Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
     Format/imageformat.cpp \
     Media/audiofile.cpp \
@@ -63,7 +63,7 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
-    mainwindow.h \
+    Widgets/mainwindow.h \
     Core/conversionmanager.h \
     Format/format.h \
     Format/imageformat.h \
@@ -88,7 +88,7 @@ HEADERS += \
     Core/utils.h
 
 FORMS += \
-    mainwindow.ui \
+    Widgets/mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \
     Pages/outputsettingpage.ui \
