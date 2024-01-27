@@ -1,8 +1,8 @@
 #include "presetselector.h"
-#include "mimedatabasemanager.h"
+#include "Core/mimedatabasemanager.h"
 #include "presettabwidget.h"
 #include "ui_presetselector.h"
-#include "utils.h"
+#include "Core/utils.h"
 
 PresetSelector::PresetSelector(QWidget *parent)
     : QWidget(parent), ui(new Ui::PresetSelector) {

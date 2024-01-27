@@ -1,5 +1,5 @@
 #include "defaultpresetreader.h"
-#include "mimedatabasemanager.h"
+#include "Core/mimedatabasemanager.h"
 
 #include <QDebug>
 #include <QFile>

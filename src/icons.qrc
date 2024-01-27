@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>Icons/App/icon.png</file>
-        <file>Icons/App/icon-64.png</file>
-        <file>Icons/App/icon-128.png</file>
-        <file>Icons/App/icon-256.png</file>
-    </qresource>
-</RCC>

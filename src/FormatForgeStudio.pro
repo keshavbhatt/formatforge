@@ -31,7 +31,7 @@ GIT_BRANCH="\\\"$$system(git -C \""$$_PRO_FILE_PWD_"\" rev-parse --abbrev-ref HE
 BUILD_TIMESTAMP="\\\"$$system(date -u +\""%Y-%m-%dT%H:%M:%SUTC\"")\\\""
 DEFINES += GIT_HASH=$$GIT_HASH GIT_BRANCH=$$GIT_BRANCH BUILD_TIMESTAMP=$$BUILD_TIMESTAMP
 
-include(Widgets/waitingspinner/WaitingSpinner.pri)
+include(Widgets/WaitingSpinnerWidget/WaitingSpinner.pri)
 include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 
 
@@ -40,6 +40,9 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    main.cpp \
+    mainwindow.cpp \
+    Core/mimedatabasemanager.cpp \
     Format/imageformat.cpp \
     Media/audiofile.cpp \
     Media/imagefile.cpp \
@@ -51,18 +54,17 @@ SOURCES += \
     Pages/mediapage.cpp \
     Pages/outputsettingpage.cpp \
     Pages/queuepage.cpp \
-    conversionmanager.cpp \
+    Core/conversionmanager.cpp \
     Presets/defaultpresetreader.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    mimedatabasemanager.cpp \
     Presets/preset.cpp \
     Presets/widgets/presetselector.cpp \
     Presets/widgets/presettabwidget.cpp \
-    spinner.cpp \
-    utils.cpp
+    Widgets/spinner.cpp \
+    Core/utils.cpp
 
 HEADERS += \
+    mainwindow.h \
+    Core/conversionmanager.h \
     Format/format.h \
     Format/imageformat.h \
     Media/audiofile.h \
@@ -77,28 +79,26 @@ HEADERS += \
     Pages/mediapage.h \
     Pages/outputsettingpage.h \
     Pages/queuepage.h \
-    conversionmanager.h \
     Presets/defaultpresetreader.h \
-    mainwindow.h \
-    mimedatabasemanager.h \
+    Core/mimedatabasemanager.h \
     Presets/preset.h \
     Presets/widgets/presetselector.h \
     Presets/widgets/presettabwidget.h \
-    spinner.h \
-    utils.h
+    Widgets/spinner.h \
+    Core/utils.h
 
 FORMS += \
+    mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \
     Pages/outputsettingpage.ui \
     Pages/queuepage.ui \
-    mainwindow.ui \
     Presets/widgets/presetselector.ui \
     Presets/widgets/presettabwidget.ui \
-    spinner.ui
+    Widgets/spinner.ui
 
 TRANSLATIONS += \
-    FormatForgeStudio_en_IN.ts
+    Locales/FormatForgeStudio_en_IN.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -108,5 +108,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    icons.qrc \
+    Icons/icons.qrc \
     Presets/resources/presets.qrc

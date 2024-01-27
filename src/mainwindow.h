@@ -5,7 +5,7 @@
 
 #include "Pages/homepage.h"
 #include "slidingstackedwidget.h"
-#include "spinner.h"
+#include "Widgets/spinner.h"
 #include <Pages/mediapage.h>
 #include <Pages/outputsettingpage.h>
 #include <Pages/queuepage.h>
