@@ -21,8 +21,10 @@ public:
   void clearSelection();
   bool hasValidSelectedPreset();
 
-signals:
-  void presetSelectionChanged(const Preset &preset);
+  Preset getSelectedPreset() const;
+
+  signals:
+  void presetSelectionChanged();
 
 private:
   Ui::PresetSelector *ui;

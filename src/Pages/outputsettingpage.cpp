@@ -6,6 +6,9 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
     : Page(parent), ui(new Ui::OutputSettingPage) {
   ui->setupUi(this);
   showPresetSelector();
+
+  connect(ui->nextPushButton, &QPushButton::clicked, this,
+          [=]() { emit goToNextPage(); });
 }
 
 void OutputSettingPage::showPresetSelector() {
@@ -17,9 +20,24 @@ void OutputSettingPage::showPresetSelector() {
 
   presetSelector = new PresetSelector(this);
   presetSelector->setLayoutContentsMargins(0);
-  connect(presetSelector, &PresetSelector::presetSelectionChanged, this,
-          [=](const Preset &selectedPreset) { this->updatePage(); });
+  connect(presetSelector, &PresetSelector::presetSelectionChanged, this, [=]() {
+    this->updatePage();
+    emit presetSelectionChanged(presetSelector->getSelectedPreset());
+  });
   ui->presetSelectorLayout->addWidget(presetSelector);
+}
+
+bool OutputSettingPage::hasValidSelectedPreset() {
+  if (presetSelector) {
+    return presetSelector->hasValidSelectedPreset();
+  }
+  return false;
+}
+
+void OutputSettingPage::clearPresetSelection() {
+  if (presetSelector) {
+    return presetSelector->clearSelection();
+  }
 }
 
 void OutputSettingPage::updatePage() {
@@ -54,9 +72,9 @@ void OutputSettingPage::setPreviousPage(Page *prevPage) {
 }
 
 void OutputSettingPage::activate() {
-  if (presetSelector) {
-    presetSelector->clearSelection();
-  }
+  // if (presetSelector) {
+  //   presetSelector->clearSelection();
+  // }
   this->updatePage();
 }
 

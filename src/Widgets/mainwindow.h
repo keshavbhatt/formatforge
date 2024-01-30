@@ -28,6 +28,9 @@ public:
 
   void switchStackWidget(QWidget *widget, bool addToStackVector = false);
 
+private slots:
+  void updateMainToolbarActions(int activeActionIndex = 0);
+
 private:
   Ui::MainWindow *ui;
 
@@ -52,7 +55,6 @@ private:
   void createActions();
   void initPages();
   void initSpinner();
-  void updateMainToolbarActions(int activeActionIndex = 0);
   void preparePages();
 };
 #endif // MAINWINDOW_H

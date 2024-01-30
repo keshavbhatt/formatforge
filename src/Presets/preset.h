@@ -29,7 +29,7 @@ public:
 
   QString getKey() const;
 
-  bool isValid();
+  bool isValid() const;
 
 private:
   void fromJson(const QJsonObject &jsonObject);

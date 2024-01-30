@@ -82,13 +82,19 @@ void PresetSelector::loadPresets() {
                                                  Qt::CaseInsensitive)) {
           presetTabWidget->addExetension(preset.getExtension().toUpper());
         }
-        connect(presetTabWidget, &PresetTabWidget::presetSelectionChanged,
-                [=](const Preset &selectedPreset) {
-                  this->selectedPreset = selectedPreset;
-                  emit presetSelectionChanged(this->selectedPreset);
-                });
       }
     }
+  }
+
+  auto currentTabNames = this->getCurrentTabNames();
+  for (int i = 0; i < currentTabNames.count(); ++i) {
+    PresetTabWidget *presetTabWidget =
+        this->getTabByName(ui->tabWidget, currentTabNames.at(i));
+    connect(presetTabWidget, &PresetTabWidget::presetSelectionChanged, this,
+            [=](const Preset &selectedPreset) {
+              this->selectedPreset = selectedPreset;
+              emit presetSelectionChanged();
+            });
   }
 }
 
@@ -108,10 +114,15 @@ void PresetSelector::clearSelection() {
   this->removeSelectedPreset();
 }
 
-void PresetSelector::removeSelectedPreset() { this->selectedPreset = Preset(); }
+void PresetSelector::removeSelectedPreset() {
+  this->selectedPreset = Preset();
+  emit presetSelectionChanged();
+}
 
 bool PresetSelector::hasValidSelectedPreset() {
   return selectedPreset.isValid();
 }
+
+Preset PresetSelector::getSelectedPreset() const { return selectedPreset; }
 
 PresetSelector::~PresetSelector() { delete ui; }

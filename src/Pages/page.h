@@ -6,7 +6,8 @@
 class Page : public QWidget {
   Q_OBJECT
 public:
-  explicit Page(QWidget *parent = nullptr);
+  explicit Page(QWidget *parent = nullptr) : QWidget{parent} {}
+
   virtual bool isEnabled() = 0;
   virtual void setNextPage(Page *nextPage = nullptr) = 0;
   virtual void setPreviousPage(Page *prevPage = nullptr) = 0;

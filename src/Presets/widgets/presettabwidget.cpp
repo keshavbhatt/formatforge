@@ -29,7 +29,8 @@ void PresetTabWidget::addExetension(const QString &exetensionName) {
 
 void PresetTabWidget::clearSelection() {
   ui->exetensionListWidget->clearSelection();
-  ui->optionsListWidget->clearSelection();
+
+  // force re-selection of preset
   ui->optionsListWidget->clear();
 }
 
@@ -54,17 +55,19 @@ void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
 
 void PresetTabWidget::optionsListWidgeCurrentRowChanged(int row) {
   auto currentItem = ui->optionsListWidget->item(row);
-  // load preset's in the editPresetWidget
-  Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
-      currentItem->data(Qt::UserRole).toString());
+  if(currentItem){
+    // load preset's in the editPresetWidget
+    Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
+        currentItem->data(Qt::UserRole).toString());
 
-  emit presetSelectionChanged(presetByKey);
+    emit presetSelectionChanged(presetByKey);
 
-  qDebug() << "------------------";
-  qDebug() << "Key:" << presetByKey.getKey();
-  qDebug() << "Label:" << presetByKey.getLabel();
-  qDebug() << "Params:" << presetByKey.getParams();
-  qDebug() << "Extension:" << presetByKey.getExtension();
-  qDebug() << "Category:" << presetByKey.getCategory();
-  qDebug() << "------------------";
+    qDebug() << "------------------";
+    qDebug() << "Key:" << presetByKey.getKey();
+    qDebug() << "Label:" << presetByKey.getLabel();
+    qDebug() << "Params:" << presetByKey.getParams();
+    qDebug() << "Extension:" << presetByKey.getExtension();
+    qDebug() << "Category:" << presetByKey.getCategory();
+    qDebug() << "------------------";
+  }
 }

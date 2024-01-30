@@ -1,4 +1,5 @@
 #include "mediapage.h"
+#include "outputsettingpage.h"
 #include "ui_mediapage.h"
 #include <QDebug>
 
@@ -36,6 +37,19 @@ void MediaPage::updatePage() {
   ui->nextPushButton->setEnabled(listNotEmpty);
   ui->removeAllPushButton->setEnabled(listNotEmpty);
   ui->removeSelectedPushButton->setEnabled(listNotEmpty);
+
+  // remove selected preset from output settings page
+  if (!listNotEmpty) {
+    OutputSettingPage *outputSettingPage =
+        qobject_cast<OutputSettingPage *>(getNextPage());
+    if (outputSettingPage) {
+      outputSettingPage->clearPresetSelection();
+    } else {
+      qWarning() << Q_FUNC_INFO
+                 << "Casting failed, is nextPage for MediaPage set "
+                    "correctly?";
+    }
+  }
 }
 
 bool MediaPage::isEnabled() { return ui->mediaListWidget->count() > 0; }

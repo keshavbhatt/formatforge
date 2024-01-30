@@ -30,7 +30,7 @@ void Preset::fromJson(const QJsonObject &jsonObject) {
 
 QString Preset::getKey() const { return key; }
 
-bool Preset::isValid() {
+bool Preset::isValid() const {
   return !label.isEmpty() || !params.isEmpty() || !extension.isEmpty() ||
          !category.isEmpty();
 }

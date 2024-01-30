@@ -28,6 +28,9 @@ private:
 
   void updatePage();
 
+signals:
+  void presetSelectionChanged(const Preset &preset);
+
 public slots:
   void activate();
 
@@ -37,6 +40,8 @@ public:
   Page *getNextPage() const;
   Page *getPreviousPage() const;
   void setPreviousPage(Page *prevPage);
+  bool hasValidSelectedPreset();
+  void clearPresetSelection();
 };
 
 #endif // OUTPUTSETTINGPAGE_H
