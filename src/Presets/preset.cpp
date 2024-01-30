@@ -5,6 +5,8 @@ Preset::Preset(const QJsonObject &jsonObject, const QString &presetKey) {
   setPresetKey(presetKey);
 }
 
+Preset::Preset() {}
+
 Preset::Preset(const QString &label, const QString &params,
                const QString &extension, const QString &category,
                const QString &presetKey)
@@ -28,9 +30,12 @@ void Preset::fromJson(const QJsonObject &jsonObject) {
 
 QString Preset::getKey() const { return key; }
 
-void Preset::setPresetKey(const QString &newPresetKey) {
-  key = newPresetKey;
+bool Preset::isValid() {
+  return !label.isEmpty() || !params.isEmpty() || !extension.isEmpty() ||
+         !category.isEmpty();
 }
+
+void Preset::setPresetKey(const QString &newPresetKey) { key = newPresetKey; }
 
 QJsonObject Preset::toJson() const {
   QJsonObject jsonObject;

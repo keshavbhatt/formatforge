@@ -18,17 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
   // init stackWidget
   stackedWidget->setAnimation(QEasingCurve::Type::OutQuart);
   stackedWidget->setSpeed(200);
-  connect(stackedWidget, &QStackedWidget::currentChanged, this, [=](int arg1) {
-    Q_UNUSED(arg1);
-
-    mediaAction->setEnabled(stackedWidget->currentWidget() != mediaPage);
-    outputSettingAction->setEnabled(stackedWidget->currentWidget() !=
-                                    outputSettingPage);
-    queueAction->setEnabled(stackedWidget->currentWidget() != queuePage);
-    homeAction->setEnabled(stackedWidget->currentWidget() != homePage);
-  });
-
-  homeAction->setEnabled(stackedWidget->currentWidget() != homePage);
+  connect(stackedWidget, &QStackedWidget::currentChanged, this,
+          [=](int index) { updateMainToolbarActions(index); });
 }
 
 void MainWindow::initSpinner() {
@@ -42,38 +33,64 @@ void MainWindow::initSpinner() {
   spinner->setFixedSize(spinner->minimumSizeHint());
 }
 
+void MainWindow::preparePages() {
+  // register main toolbar Action to coresponding widget
+  mainToolbarActionsWidgetPair
+      << qMakePair(homeAction, homePage) << qMakePair(mediaAction, mediaPage)
+      << qMakePair(outputSettingAction, outputSettingPage)
+      << qMakePair(queueAction, queuePage);
+
+  // netPage
+  homePage->setNextPage(mediaPage);
+  mediaPage->setNextPage(outputSettingPage);
+  outputSettingPage->setNextPage(queuePage);
+  queuePage->setNextPage(nullptr);
+
+  // previousPage
+  homePage->setPreviousPage(nullptr);
+  mediaPage->setPreviousPage(homePage);
+  outputSettingPage->setPreviousPage(mediaPage);
+  queuePage->setPreviousPage(outputSettingPage);
+
+  // connect main toolbar action and add action to toolbar
+  for (QPair<QAction *, Page *> p : qAsConst(mainToolbarActionsWidgetPair)) {
+    QAction *a = p.first;
+    a->setCheckable(true);
+    connect(a, &QAction::triggered, this,
+            [=]() { this->switchStackWidget(p.second); });
+    ui->toolBar->addAction(a);
+  }
+
+  this->updateMainToolbarActions();
+}
+
 void MainWindow::createActions() {
 
   // create action
   homeAction = new QAction(QIcon(":/app/icon-64.png"), tr("&Home"), this);
-  mediaAction = new QAction(tr("&Media"), this);
-  outputSettingAction = new QAction(tr("&Output Setting"), this);
-  convertAction = new QAction(tr("&Convert"), this);
-  queueAction = new QAction(tr("&Queue"), this);
+  mediaAction = new QAction(QIcon("://primo/video.png"), tr("&Media"), this);
+  outputSettingAction =
+      new QAction(QIcon("://primo/tools.png"), tr("&Output Setting"), this);
+  convertAction =
+      new QAction(QIcon("://primo/button_play.png"), tr("&Convert"), this);
+  queueAction =
+      new QAction(QIcon("://primo/database_active.png"), tr("&Queue"), this);
 
-  connect(homeAction, &QAction::triggered, this,
-          [=]() { switchStackWidget(homePage); });
-
-  connect(mediaAction, &QAction::triggered, this,
-          [=]() { switchStackWidget(mediaPage); });
-
-  connect(outputSettingAction, &QAction::triggered, this,
-          [=]() { switchStackWidget(outputSettingPage); });
-
-  connect(queueAction, &QAction::triggered, this,
-          [=]() { switchStackWidget(queuePage); });
-
-  // add action to toolbar
-  ui->toolBar->addAction(homeAction);
-  ui->toolBar->addAction(mediaAction);
-  ui->toolBar->addAction(outputSettingAction);
-  ui->toolBar->addAction(queueAction);
+  preparePages();
 
   // spinner widget in toolbar
   initSpinner();
-  ui->toolBar->addWidget(spinner);
 
+  ui->toolBar->addWidget(spinner);
   ui->toolBar->addAction(convertAction);
+}
+
+void MainWindow::updateMainToolbarActions(int activeActionIndex) {
+  for (QPair<QAction *, Page *> p : qAsConst(mainToolbarActionsWidgetPair)) {
+    p.first->setChecked(false);
+    p.first->setEnabled(p.second->isEnabled());
+  }
+  mainToolbarActionsWidgetPair.at(activeActionIndex).first->setChecked(true);
 }
 
 void MainWindow::initPages() {
@@ -91,8 +108,17 @@ void MainWindow::initPages() {
 
   // navigation connections
   for (int i = 0; i < stackedWidget->count(); ++i) {
-    auto page = stackedWidget->widget(i);
-    connect(page, SIGNAL(nextPage()), stackedWidget, SLOT(slideInNext()));
+    auto page = qobject_cast<Page *>(stackedWidget->widget(i));
+    if (page) {
+      connect(page, &Page::goToNextPage, this, [=]() {
+        if (page->getNextPage())
+          this->switchStackWidget(page->getNextPage());
+      });
+      connect(page, &Page::goToPreviousPage, this, [=]() {
+        if (page->getPreviousPage())
+          this->switchStackWidget(page->getPreviousPage());
+      });
+    }
   }
 
   // other connections
@@ -131,6 +157,12 @@ void MainWindow::switchStackWidget(QWidget *widget, bool addToStackVector) {
     }
   }
   stackedWidget->slideInWgt(widget);
+
+  // call activate slot on page
+  auto page = qobject_cast<Page *>(widget);
+  if (page) {
+    page->activate();
+  }
 }
 
 MainWindow::~MainWindow() { delete ui; }

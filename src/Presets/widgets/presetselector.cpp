@@ -1,13 +1,12 @@
 #include "presetselector.h"
 #include "Core/mimedatabasemanager.h"
+#include "Core/utils.h"
 #include "presettabwidget.h"
 #include "ui_presetselector.h"
-#include "Core/utils.h"
 
 PresetSelector::PresetSelector(QWidget *parent)
     : QWidget(parent), ui(new Ui::PresetSelector) {
   ui->setupUi(this);
-
   loadPresets();
 }
 
@@ -83,6 +82,11 @@ void PresetSelector::loadPresets() {
                                                  Qt::CaseInsensitive)) {
           presetTabWidget->addExetension(preset.getExtension().toUpper());
         }
+        connect(presetTabWidget, &PresetTabWidget::presetSelectionChanged,
+                [=](const Preset &selectedPreset) {
+                  this->selectedPreset = selectedPreset;
+                  emit presetSelectionChanged(this->selectedPreset);
+                });
       }
     }
   }
@@ -90,6 +94,24 @@ void PresetSelector::loadPresets() {
 
 void PresetSelector::setLayoutContentsMargins(int margin) {
   ui->verticalLayout->setContentsMargins(margin, margin, margin, margin);
+}
+
+void PresetSelector::clearSelection() {
+  auto currentTabNames = this->getCurrentTabNames();
+  for (int i = 0; i < currentTabNames.count(); ++i) {
+    PresetTabWidget *presetTabWidget =
+        this->getTabByName(ui->tabWidget, currentTabNames.at(i));
+    if (presetTabWidget) {
+      presetTabWidget->clearSelection();
+    }
+  }
+  this->removeSelectedPreset();
+}
+
+void PresetSelector::removeSelectedPreset() { this->selectedPreset = Preset(); }
+
+bool PresetSelector::hasValidSelectedPreset() {
+  return selectedPreset.isValid();
 }
 
 PresetSelector::~PresetSelector() { delete ui; }

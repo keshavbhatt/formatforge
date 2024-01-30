@@ -4,8 +4,8 @@
 #include <QMainWindow>
 
 #include "Pages/homepage.h"
-#include "slidingstackedwidget.h"
 #include "Widgets/spinner.h"
+#include "slidingstackedwidget.h"
 #include <Pages/mediapage.h>
 #include <Pages/outputsettingpage.h>
 #include <Pages/queuepage.h>
@@ -43,13 +43,16 @@ private:
   QueuePage *queuePage;
 
   // actions
-
   QAction *homeAction, *mediaAction, *outputSettingAction, *convertAction,
       *queueAction;
+
+  QList<QPair<QAction *, Page *>> mainToolbarActionsWidgetPair;
 
   void initToolbar();
   void createActions();
   void initPages();
   void initSpinner();
+  void updateMainToolbarActions(int activeActionIndex = 0);
+  void preparePages();
 };
 #endif // MAINWINDOW_H

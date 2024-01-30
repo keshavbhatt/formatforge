@@ -18,11 +18,18 @@ public:
   ~PresetSelector();
 
   void setLayoutContentsMargins(int margin);
+  void clearSelection();
+  bool hasValidSelectedPreset();
+
+signals:
+  void presetSelectionChanged(const Preset &preset);
 
 private:
   Ui::PresetSelector *ui;
   QStringList presetTypes;
+  Preset selectedPreset;
 
+  void removeSelectedPreset();
   void loadPresets();
   void createCategoryTab(const QString &name = "");
   QStringList getCurrentTabNames();

@@ -4,6 +4,8 @@
 #include <QListWidgetItem>
 #include <QWidget>
 
+#include <Presets/preset.h>
+
 namespace Ui {
 class PresetTabWidget;
 }
@@ -18,6 +20,11 @@ public:
   QString getTabName() const;
 
   void addExetension(const QString &exetensionName);
+
+  void clearSelection();
+
+signals:
+  void presetSelectionChanged(const Preset &preset);
 
 private slots:
   void exetensionListWidgetCurrentRowChanged(int row);

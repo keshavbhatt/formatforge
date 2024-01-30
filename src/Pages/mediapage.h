@@ -1,17 +1,16 @@
 #ifndef MEDIAPAGE_H
 #define MEDIAPAGE_H
 
+#include "page.h"
+
 #include <QWidget>
 
 namespace Ui {
 class MediaPage;
 }
 
-class MediaPage : public QWidget {
+class MediaPage : public Page {
   Q_OBJECT
-
-signals:
-  void nextPage();
 
 public:
   explicit MediaPage(QWidget *parent = nullptr);
@@ -19,11 +18,24 @@ public:
 
   void loadMediaFiles(const QStringList &fileNameList);
 
-private slots:
-  void goToOutputSettingsPage();
-
 private:
   Ui::MediaPage *ui;
+
+  Page *m_nextPage = nullptr;
+
+  Page *m_prevPage = nullptr;
+
+  void updatePage();
+
+public slots:
+  void activate();
+
+public:
+  bool isEnabled();
+  void setNextPage(Page *nextPage);
+  Page *getNextPage() const;
+  Page *getPreviousPage() const;
+  void setPreviousPage(Page *prevPage);
 };
 
 #endif // MEDIAPAGE_H

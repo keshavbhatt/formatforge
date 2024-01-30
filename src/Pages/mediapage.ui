@@ -35,21 +35,21 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="AddMorePushButton">
        <property name="text">
         <string>Add more Items</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="removeSelectedPushButton">
        <property name="text">
         <string>Remove Selected</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="removeAllPushButton">
        <property name="text">
         <string>Remove All</string>
        </property>

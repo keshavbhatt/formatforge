@@ -40,6 +40,7 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Pages/page.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
@@ -63,6 +64,7 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
+    Pages/page.h \
     Widgets/mainwindow.h \
     Core/conversionmanager.h \
     Format/format.h \

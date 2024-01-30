@@ -11,6 +11,8 @@ public:
 
   Preset(const QJsonObject &jsonObject, const QString &presetKey);
 
+  Preset();
+
   QString getLabel() const;
 
   QString getParams() const;
@@ -26,6 +28,8 @@ public:
   void setPresetKey(const QString &newPresetKey);
 
   QString getKey() const;
+
+  bool isValid();
 
 private:
   void fromJson(const QJsonObject &jsonObject);

@@ -27,6 +27,12 @@ void PresetTabWidget::addExetension(const QString &exetensionName) {
   }
 }
 
+void PresetTabWidget::clearSelection() {
+  ui->exetensionListWidget->clearSelection();
+  ui->optionsListWidget->clearSelection();
+  ui->optionsListWidget->clear();
+}
+
 void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
   // load related presets in the optionsListWidget
   ui->optionsListWidget->blockSignals(true);
@@ -47,10 +53,12 @@ void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
 }
 
 void PresetTabWidget::optionsListWidgeCurrentRowChanged(int row) {
-  auto current = ui->optionsListWidget->item(row);
+  auto currentItem = ui->optionsListWidget->item(row);
   // load preset's in the editPresetWidget
   Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
-      current->data(Qt::UserRole).toString());
+      currentItem->data(Qt::UserRole).toString());
+
+  emit presetSelectionChanged(presetByKey);
 
   qDebug() << "------------------";
   qDebug() << "Key:" << presetByKey.getKey();
