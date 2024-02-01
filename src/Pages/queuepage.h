@@ -1,6 +1,7 @@
 #ifndef QUEUEPAGE_H
 #define QUEUEPAGE_H
 
+#include "outputsettingpage.h"
 #include "page.h"
 
 #include <QWidget>
@@ -22,11 +23,11 @@ private:
   Page *m_nextPage = nullptr;
   Page *m_prevPage = nullptr;
 
-  // Page interface
+  OutputSettingPage *getOutputSettingPage();
+
 public slots:
   void activate();
 
-  // Page interface
 public:
   bool isEnabled();
   void setNextPage(Page *nextPage);

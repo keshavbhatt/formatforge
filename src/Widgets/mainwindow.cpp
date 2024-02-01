@@ -124,6 +124,7 @@ void MainWindow::initPages() {
   // other connections
   connect(homePage, &HomePage::mediaFileLoaded, mediaPage,
           &MediaPage::loadMediaFiles);
+
   connect(outputSettingPage, &OutputSettingPage::presetSelectionChanged, this,
           [=](const Preset &preset) {
             qDebug() << "Preset selection changed";

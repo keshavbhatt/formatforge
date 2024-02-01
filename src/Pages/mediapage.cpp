@@ -6,6 +6,9 @@
 MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   ui->setupUi(this);
 
+  spinner = new Spinner(this);
+  ui->spinnerLayout->addWidget(spinner);
+
   connect(ui->nextPushButton, &QPushButton::clicked, this,
           [=]() { emit goToNextPage(); });
 
@@ -14,10 +17,33 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
     this->updatePage();
     emit goToPreviousPage();
   });
+
+  connect(&mediaProcessor, &MediaProcessor::mediaProcessingFinished, this,
+          [=]() { this->spinner->stop(); });
+
+  connect(&mediaProcessor, &MediaProcessor::mediaProcessingProgress, this,
+          [=](int currentFileIndex, int totalFiles) {
+            qDebug() << "Processing file " << currentFileIndex << " of "
+                     << totalFiles;
+          });
+
+  connect(&mediaProcessor, &MediaProcessor::mediaProcessed, this,
+          &MediaPage::addMediaItem);
+}
+
+void MediaPage::addMediaItem(const QString &fileName, const QString &result) {
+  qDebug() << "Media Processed" << fileName << result;
+  QListWidgetItem *item = new QListWidgetItem(fileName);
+  ui->mediaListWidget->addItem(item);
 }
 
 void MediaPage::loadMediaFiles(const QStringList &fileNameList) {
-  ui->mediaListWidget->addItems(fileNameList);
+  processMedia(fileNameList);
+}
+
+void MediaPage::processMedia(const QStringList &fileNameList) {
+  spinner->start();
+  mediaProcessor.processMediaFiles(fileNameList);
 }
 
 MediaPage::~MediaPage() { delete ui; }

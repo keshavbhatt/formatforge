@@ -1,5 +1,4 @@
 #include "outputsettingpage.h"
-#include "mediapage.h"
 #include "ui_outputsettingpage.h"
 
 OutputSettingPage::OutputSettingPage(QWidget *parent)
@@ -9,7 +8,12 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
 
   connect(ui->nextPushButton, &QPushButton::clicked, this,
           [=]() { emit goToNextPage(); });
+
+  connect(ui->editSelectedPresetPushButton, &QPushButton::clicked, this,
+          &OutputSettingPage::editSelectedPreset);
 }
+
+void OutputSettingPage::editSelectedPreset() {}
 
 void OutputSettingPage::showPresetSelector() {
   if (presetSelector) {
@@ -44,13 +48,21 @@ void OutputSettingPage::updatePage() {
   if (presetSelector) {
     bool presetSelected = presetSelector->hasValidSelectedPreset();
     ui->nextPushButton->setEnabled(presetSelected);
+    ui->editSelectedPresetPushButton->setEnabled(presetSelected);
   } else {
     ui->nextPushButton->setEnabled(false);
+    ui->editSelectedPresetPushButton->setEnabled(false);
   }
 }
 
+MediaPage *OutputSettingPage::getMediaPage() {
+  MediaPage *mediaPage = qobject_cast<MediaPage *>(getPreviousPage());
+
+  return mediaPage;
+}
+
 bool OutputSettingPage::isEnabled() {
-  Page *mediaPage = qobject_cast<MediaPage *>(getPreviousPage());
+  MediaPage *mediaPage = getMediaPage();
   if (mediaPage) {
     return mediaPage->isEnabled();
   } else {
@@ -71,11 +83,6 @@ void OutputSettingPage::setPreviousPage(Page *prevPage) {
   m_prevPage = prevPage;
 }
 
-void OutputSettingPage::activate() {
-  // if (presetSelector) {
-  //   presetSelector->clearSelection();
-  // }
-  this->updatePage();
-}
+void OutputSettingPage::activate() { this->updatePage(); }
 
 OutputSettingPage::~OutputSettingPage() { delete ui; }

@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QTimer>
 
 HomePage::HomePage(QWidget *parent) : Page(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);
@@ -24,8 +25,8 @@ void HomePage::addMedia() {
       tr("Media Files (*.mp3 *.mp4 *.avi *.mkv);;All Files (*)"));
 
   if (fileNames.isEmpty() == false) {
-    emit mediaFileLoaded(fileNames);
     emit goToNextPage();
+    emit mediaFileLoaded(fileNames);
   }
 }
 

@@ -40,21 +40,15 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    MediaProcessor/mediaprocessor.cpp \
+    Queue/widgets/queueitemswidget.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
-    Format/imageformat.cpp \
-    Media/audiofile.cpp \
-    Media/imagefile.cpp \
-    Media/videofile.cpp \
-    MediaConverter/audioconverter.cpp \
-    MediaConverter/imageconverter.cpp \
-    MediaConverter/videoconverter.cpp \
     Pages/homepage.cpp \
     Pages/mediapage.cpp \
     Pages/outputsettingpage.cpp \
     Pages/queuepage.cpp \
-    Core/conversionmanager.cpp \
     Presets/defaultpresetreader.cpp \
     Presets/preset.cpp \
     Presets/widgets/presetselector.cpp \
@@ -63,19 +57,10 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
+    MediaProcessor/mediaprocessor.h \
     Pages/page.h \
+    Queue/widgets/queueitemswidget.h \
     Widgets/mainwindow.h \
-    Core/conversionmanager.h \
-    Format/format.h \
-    Format/imageformat.h \
-    Media/audiofile.h \
-    Media/imagefile.h \
-    Media/mediafile.h \
-    Media/videofile.h \
-    MediaConverter/audioconverter.h \
-    MediaConverter/imageconverter.h \
-    MediaConverter/mediaconverter.h \
-    MediaConverter/videoconverter.h \
     Pages/homepage.h \
     Pages/mediapage.h \
     Pages/outputsettingpage.h \
@@ -89,6 +74,7 @@ HEADERS += \
     Core/utils.h
 
 FORMS += \
+    Queue/widgets/queueitemswidget.ui \
     Widgets/mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \

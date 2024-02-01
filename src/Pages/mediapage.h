@@ -1,9 +1,12 @@
 #ifndef MEDIAPAGE_H
 #define MEDIAPAGE_H
 
+#include "MediaProcessor/mediaprocessor.h"
 #include "page.h"
 
 #include <QWidget>
+
+#include <Widgets/spinner.h>
 
 namespace Ui {
 class MediaPage;
@@ -22,10 +25,14 @@ private:
   Ui::MediaPage *ui;
 
   Page *m_nextPage = nullptr;
-
   Page *m_prevPage = nullptr;
 
+  MediaProcessor mediaProcessor;
+  Spinner *spinner = nullptr;
+
   void updatePage();
+  void addMediaItem(const QString &fileName, const QString &result);
+  void processMedia(const QStringList &fileNameList);
 
 public slots:
   void activate();

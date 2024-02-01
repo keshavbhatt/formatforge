@@ -2,6 +2,7 @@
 #define OUTPUTSETTINGPAGE_H
 
 #include "Presets/widgets/presetselector.h"
+#include "mediapage.h"
 #include "page.h"
 #include <QWidget>
 
@@ -27,8 +28,10 @@ private:
   Page *m_prevPage = nullptr;
 
   void updatePage();
-
-signals:
+  
+  MediaPage * getMediaPage();
+  
+  signals:
   void presetSelectionChanged(const Preset &preset);
 
 public slots:
@@ -42,6 +45,9 @@ public:
   void setPreviousPage(Page *prevPage);
   bool hasValidSelectedPreset();
   void clearPresetSelection();
+
+private slots:
+  void editSelectedPreset();
 };
 
 #endif // OUTPUTSETTINGPAGE_H

@@ -18,12 +18,14 @@ public:
   ~PresetSelector();
 
   void setLayoutContentsMargins(int margin);
-  void clearSelection();
   bool hasValidSelectedPreset();
 
   Preset getSelectedPreset() const;
 
-  signals:
+public slots:
+  void clearSelection();
+
+signals:
   void presetSelectionChanged();
 
 private:

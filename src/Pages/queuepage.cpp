@@ -1,5 +1,4 @@
 #include "queuepage.h"
-#include "outputsettingpage.h"
 #include "ui_queuepage.h"
 
 QueuePage::QueuePage(QWidget *parent) : Page(parent), ui(new Ui::QueuePage) {
@@ -8,9 +7,15 @@ QueuePage::QueuePage(QWidget *parent) : Page(parent), ui(new Ui::QueuePage) {
 
 QueuePage::~QueuePage() { delete ui; }
 
-bool QueuePage::isEnabled() {
+OutputSettingPage *QueuePage::getOutputSettingPage() {
   OutputSettingPage *outputSettingPage =
       qobject_cast<OutputSettingPage *>(getPreviousPage());
+
+  return outputSettingPage;
+}
+
+bool QueuePage::isEnabled() {
+  OutputSettingPage *outputSettingPage = getOutputSettingPage();
   if (outputSettingPage) {
     return outputSettingPage->isEnabled() &&
            outputSettingPage->hasValidSelectedPreset();

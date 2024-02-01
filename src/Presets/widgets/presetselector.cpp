@@ -7,6 +7,10 @@
 PresetSelector::PresetSelector(QWidget *parent)
     : QWidget(parent), ui(new Ui::PresetSelector) {
   ui->setupUi(this);
+
+  connect(ui->tabWidget, &QTabWidget::currentChanged, this,
+          &PresetSelector::clearSelection);
+
   loadPresets();
 }
 
