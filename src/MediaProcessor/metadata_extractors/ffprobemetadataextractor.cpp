@@ -1,14 +1,11 @@
-// mediaprocessor.cpp
-#include "mediaprocessor.h"
-#include <QCoreApplication>
-#include <QProcess>
+#include "ffprobemetadataextractor.h"
 
-MediaProcessor::MediaProcessor(QObject *parent)
+FFProbeMetaDataExtractor::FFProbeMetaDataExtractor(QObject *parent)
     : QObject(parent), processedFilesCounter(0) {}
 
-MediaProcessor::~MediaProcessor() {}
+FFProbeMetaDataExtractor::~FFProbeMetaDataExtractor() {}
 
-void MediaProcessor::processMediaFiles(const QStringList &fileNames) {
+void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &fileNames) {
   processedFilesCounter = 0;
   int totalFilesToProcess = fileNames.size();
 

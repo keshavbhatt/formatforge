@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QStyleFactory>
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +24,9 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    //qApp->setStyle(QStyleFactory::create("fusion"));
+
     MainWindow w;
     w.setWindowTitle(QApplication::applicationName());
     w.show();

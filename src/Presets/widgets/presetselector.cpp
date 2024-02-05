@@ -48,8 +48,20 @@ void PresetSelector::createCategoryTab(const QString &name) {
   if (_name.isEmpty()) {
     _name = "Tab " + QString::number(targetIndex);
   }
+
   ui->tabWidget->insertTab(
-      targetIndex, new PresetTabWidget(ui->tabWidget, name.toLower()), _name);
+      targetIndex, new PresetTabWidget(ui->tabWidget, name.toLower()),QIcon(getTabIconPath(_name)), _name);
+}
+
+QString PresetSelector::getTabIconPath(const QString &name){
+  auto lower = name.toLower();
+  if(lower.contains("video")){
+    return ":/primo/video.png";
+  }else if(lower.contains("audio")){
+    return ":/primo/music.png";
+  }else{
+    return ":/primo/help_blue.png";
+  }
 }
 
 void PresetSelector::loadPresets() {

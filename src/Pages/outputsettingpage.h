@@ -28,9 +28,9 @@ private:
   Page *m_prevPage = nullptr;
 
   void updatePage();
-  
-  MediaPage * getMediaPage();
-  
+  MediaPage *getMediaPage();
+
+  void updatePageStatusMessage();
   signals:
   void presetSelectionChanged(const Preset &preset);
 

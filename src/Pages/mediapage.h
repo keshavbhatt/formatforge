@@ -1,12 +1,13 @@
 #ifndef MEDIAPAGE_H
 #define MEDIAPAGE_H
 
-#include "MediaProcessor/mediaprocessor.h"
 #include "page.h"
 
 #include <QWidget>
 
 #include <Widgets/spinner.h>
+
+#include <MediaProcessor/metadata_extractors/ffprobemetadataextractor.h>
 
 namespace Ui {
 class MediaPage;
@@ -27,15 +28,21 @@ private:
   Page *m_nextPage = nullptr;
   Page *m_prevPage = nullptr;
 
-  MediaProcessor mediaProcessor;
+  FFProbeMetaDataExtractor mediaMetadataProcessor;
+
   Spinner *spinner = nullptr;
 
   void updatePage();
-  void addMediaItem(const QString &fileName, const QString &result);
+  void addMediaItem(const QString &filePath, const QString &result);
   void processMedia(const QStringList &fileNameList);
+  void removeSelectedMediaListWidgetItems();
+  void updatePageStatusMessage();
 
 public slots:
   void activate();
+
+signals:
+  void addMoreFiles();
 
 public:
   bool isEnabled();
@@ -43,6 +50,8 @@ public:
   Page *getNextPage() const;
   Page *getPreviousPage() const;
   void setPreviousPage(Page *prevPage);
+private slots:
+  void updateBottomToolbarButtons();
 };
 
 #endif // MEDIAPAGE_H

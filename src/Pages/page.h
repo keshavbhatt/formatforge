@@ -20,6 +20,7 @@ public slots:
 signals:
   void goToNextPage();
   void goToPreviousPage();
+  void updateStatusMessage(const QString &message);
 };
 
 #endif // PAGE_H

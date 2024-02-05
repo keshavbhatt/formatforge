@@ -40,7 +40,12 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    MediaProcessor/mediaprocessor.cpp \
+    Media/widgets/mediaitemwidget.cpp \
+    MediaProcessor/metadata/audiometadata.cpp \
+    MediaProcessor/metadata/videometadata.cpp \
+    MediaProcessor/metadata_extractors/ffmpegthumbnailextractor.cpp \
+    MediaProcessor/metadata_extractors/ffprobemetadataextractor.cpp \
+    MediaProcessor/metadata_parsers/ffprobeparser.cpp \
     Queue/widgets/queueitemswidget.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
@@ -57,7 +62,13 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
-    MediaProcessor/mediaprocessor.h \
+    Media/widgets/mediaitemwidget.h \
+    MediaProcessor/metadata/audiometadata.h \
+    MediaProcessor/metadata/mediametadata.h \
+    MediaProcessor/metadata/videometadata.h \
+    MediaProcessor/metadata_extractors/ffmpegthumbnailextractor.h \
+    MediaProcessor/metadata_extractors/ffprobemetadataextractor.h \
+    MediaProcessor/metadata_parsers/ffprobeparser.h \
     Pages/page.h \
     Queue/widgets/queueitemswidget.h \
     Widgets/mainwindow.h \
@@ -74,6 +85,7 @@ HEADERS += \
     Core/utils.h
 
 FORMS += \
+    Media/widgets/mediaitemwidget.ui \
     Queue/widgets/queueitemswidget.ui \
     Widgets/mainwindow.ui \
     Pages/homepage.ui \
@@ -96,4 +108,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Icons/icons.qrc \
+    Media/resources/res.qrc \
     Presets/resources/presets.qrc

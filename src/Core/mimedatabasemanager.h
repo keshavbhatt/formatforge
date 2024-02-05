@@ -14,6 +14,8 @@ public:
   QStringList getSupportedAudioMimeTypes();
 
   QMimeType getMediaTypeByExtension(const QString &extension);
+  QMimeType getMimeTypeForFile(const QString &filePath);
+
 
 private:
   static MimeDatabaseManager *instance;

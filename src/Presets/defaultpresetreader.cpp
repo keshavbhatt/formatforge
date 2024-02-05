@@ -69,6 +69,14 @@ Preset DefaultPresetReader::getPresetByKey(const QString &key) const {
   return Preset("Null", "Null", "Null", "Null", "Null");
 }
 
+QSet<QString> DefaultPresetReader::getLoadedOutputExetensions() {
+  QStringList k;
+  foreach (auto preset, loadedPresets) {
+    k.append(preset.getExtension());
+  }
+  return QSet<QString>(k.begin(), k.end());
+}
+
 QList<Preset> DefaultPresetReader::getLoadedPresets() const {
   return loadedPresets;
 }

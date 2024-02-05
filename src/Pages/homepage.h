@@ -19,7 +19,7 @@ public:
 signals:
   void mediaFileLoaded(const QStringList &fileNames);
 
-private slots:
+public slots:
   void addMedia();
 
 private:

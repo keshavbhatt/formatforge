@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
   stackedWidget->setSpeed(200);
   connect(stackedWidget, &QStackedWidget::currentChanged, this,
           [=](int index) { updateMainToolbarActions(index); });
+  this->switchStackWidget(homePage);
 }
 
 void MainWindow::initSpinner() {
@@ -106,18 +107,26 @@ void MainWindow::initPages() {
   stackedWidget->addWidget(outputSettingPage);
   stackedWidget->addWidget(queuePage);
 
-  // navigation connections
+  // page connections
   for (int i = 0; i < stackedWidget->count(); ++i) {
+
     auto page = qobject_cast<Page *>(stackedWidget->widget(i));
+
     if (page) {
+
       connect(page, &Page::goToNextPage, this, [=]() {
         if (page->getNextPage())
           this->switchStackWidget(page->getNextPage());
       });
+
       connect(page, &Page::goToPreviousPage, this, [=]() {
         if (page->getPreviousPage())
           this->switchStackWidget(page->getPreviousPage());
       });
+
+      connect(
+          page, &Page::updateStatusMessage, this,
+          [=](const QString &message) { ui->statusbar->showMessage(message); });
     }
   }
 
@@ -130,6 +139,8 @@ void MainWindow::initPages() {
             qDebug() << "Preset selection changed";
             queueAction->setEnabled(preset.isValid());
           });
+
+  connect(mediaPage, &MediaPage::addMoreFiles, homePage, &HomePage::addMedia);
 }
 
 void MainWindow::initToolbar() {

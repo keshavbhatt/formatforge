@@ -20,6 +20,8 @@ public:
 
   Preset getPresetByKey(const QString &key) const;
 
+  QSet<QString> getLoadedOutputExetensions();
+
 private:
   explicit DefaultPresetReader(QObject *parent = nullptr);
 

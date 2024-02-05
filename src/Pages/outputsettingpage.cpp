@@ -6,9 +6,11 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
   ui->setupUi(this);
   showPresetSelector();
 
+  ui->nextPushButton->setIcon(QIcon(":/primo/next.png"));
   connect(ui->nextPushButton, &QPushButton::clicked, this,
           [=]() { emit goToNextPage(); });
 
+  ui->editSelectedPresetPushButton->setIcon(QIcon(":/primo/pencil.png"));
   connect(ui->editSelectedPresetPushButton, &QPushButton::clicked, this,
           &OutputSettingPage::editSelectedPreset);
 }
@@ -27,6 +29,7 @@ void OutputSettingPage::showPresetSelector() {
   connect(presetSelector, &PresetSelector::presetSelectionChanged, this, [=]() {
     this->updatePage();
     emit presetSelectionChanged(presetSelector->getSelectedPreset());
+    this->updatePageStatusMessage();
   });
   ui->presetSelectorLayout->addWidget(presetSelector);
 }
@@ -83,6 +86,18 @@ void OutputSettingPage::setPreviousPage(Page *prevPage) {
   m_prevPage = prevPage;
 }
 
-void OutputSettingPage::activate() { this->updatePage(); }
+void OutputSettingPage::activate() {
+  this->updatePage();
+  this->updatePageStatusMessage();
+}
+
+void OutputSettingPage::updatePageStatusMessage() {
+  QString message = "Select a Preset";
+  if (presetSelector && presetSelector->hasValidSelectedPreset()) {
+    auto selectedPreset = presetSelector->getSelectedPreset();
+    message = "Selected preset: " + selectedPreset.getLabel();
+  }
+  emit updateStatusMessage(message);
+}
 
 OutputSettingPage::~OutputSettingPage() { delete ui; }

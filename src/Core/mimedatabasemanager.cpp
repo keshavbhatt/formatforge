@@ -37,6 +37,11 @@ QMimeType MimeDatabaseManager::getMediaTypeByExtension(const QString &extension)
   }
 }
 
+QMimeType MimeDatabaseManager::getMimeTypeForFile(const QString &filePath)
+{
+    return mimeDb.mimeTypeForFile(filePath);
+}
+
 QStringList MimeDatabaseManager::getAllSupportedMediaMimeTypesBy(
     const QString &mimeFilterString) {
   QStringList allVideoMimeTypes;

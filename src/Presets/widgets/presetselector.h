@@ -39,6 +39,7 @@ private:
   QStringList getCurrentTabNames();
   PresetTabWidget *getTabByName(QTabWidget *tabWidget = nullptr,
                                 const QString &tabName = "");
+  QString getTabIconPath(const QString &name);
 };
 
 #endif // PRESETSELECTOR_H
