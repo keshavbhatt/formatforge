@@ -3,6 +3,7 @@
 
 #include "page.h"
 
+#include <QFileDialog>
 #include <QWidget>
 
 namespace Ui {
@@ -20,19 +21,22 @@ signals:
   void mediaFileLoaded(const QStringList &fileNames);
 
 public slots:
-  void addMedia();
+  void addMediaFromFolder();
+  void addMediaFromExistingFiles();
 
 private:
+  void
+  openFileSelector(QFileDialog::FileMode fileMode = QFileDialog::ExistingFiles);
   Ui::HomePage *ui;
 
   Page *m_nextPage = nullptr;
   Page *m_prevPage = nullptr;
 
-  // Page interface
+  void recursiveAddFiles(const QDir &dir, const QStringList &nameFilters,
+                         QStringList &filePaths);
 public slots:
   void activate();
 
-  // Page interface
 public:
   bool isEnabled();
   void setNextPage(Page *nextPage);

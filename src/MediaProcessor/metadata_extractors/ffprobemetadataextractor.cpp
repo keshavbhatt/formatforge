@@ -5,12 +5,14 @@ FFProbeMetaDataExtractor::FFProbeMetaDataExtractor(QObject *parent)
 
 FFProbeMetaDataExtractor::~FFProbeMetaDataExtractor() {}
 
-void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &fileNames) {
+void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
   processedFilesCounter = 0;
-  int totalFilesToProcess = fileNames.size();
+  int totalFilesToProcess = filePaths.size();
+
+  QEventLoop *eventLoop = new QEventLoop();
 
   for (int i = 0; i < totalFilesToProcess; ++i) {
-    const QString &fileName = fileNames.at(i);
+    const QString &fileName = filePaths.at(i);
 
     QProcess *ffprobeProcess = new QProcess(this);
 
@@ -31,14 +33,9 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &fileNames) {
                 emit mediaProcessed(fileName, result);
               }
 
-              QCoreApplication::processEvents();
-
-              // all files processed emit finish
-              if (processedFilesCounter == totalFilesToProcess) {
-                emit mediaProcessingFinished();
-              }
-
               ffprobeProcess->deleteLater();
+
+              eventLoop->quit();
             });
 
     ffprobeProcess->start("ffprobe", QStringList()
@@ -48,5 +45,9 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &fileNames) {
                                          << "json"
                                          << "-show_format"
                                          << "-show_streams" << fileName);
+    eventLoop->exec();
   }
+
+  emit mediaProcessingFinished();
+  eventLoop->deleteLater();
 }

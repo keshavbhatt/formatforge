@@ -7,6 +7,8 @@
 
 #include <Presets/defaultpresetreader.h>
 
+#include <Core/filescanner.h>
+
 HomePage::HomePage(QWidget *parent) : Page(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);
 
@@ -17,16 +19,24 @@ HomePage::HomePage(QWidget *parent) : Page(parent), ui(new Ui::HomePage) {
 
   ui->addMediaPushButton->setIcon(QIcon(":/primo/add.png"));
   connect(ui->addMediaPushButton, &QPushButton::clicked, this,
-          &HomePage::addMedia);
+          &HomePage::addMediaFromExistingFiles);
 
   ui->addMediaFolderPushButton->setIcon(QIcon(":/primo/folder_add.png"));
   connect(ui->addMediaFolderPushButton, &QPushButton::clicked, this,
-          &HomePage::addMedia);
+          &HomePage::addMediaFromFolder);
 }
 
 HomePage::~HomePage() { delete ui; }
 
-void HomePage::addMedia() {
+void HomePage::addMediaFromFolder() {
+  this->openFileSelector(QFileDialog::Directory);
+}
+
+void HomePage::addMediaFromExistingFiles() {
+  this->openFileSelector(QFileDialog::ExistingFiles);
+}
+
+void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
   QString extensionFilter;
   QSet<QString> loadedOutputExtensions =
       DefaultPresetReader::getInstance()->getLoadedOutputExetensions();
@@ -34,17 +44,20 @@ void HomePage::addMedia() {
     extensionFilter += "*." + extension + " ";
   }
 
-  // QStringList fileNames = QFileDialog::getOpenFileNames(
-  //     this, tr("Select Media Files"), QDir::homePath(),
-  //     tr("Media Files (*.mp3 *.mp4 *.avi *.mkv);;All Files (*)"));
-
-  QStringList fileNames = QFileDialog::getOpenFileNames(
-      this, tr("Select Media Files"), QDir::homePath(),
+  QFileDialog fileDialog(this);
+  fileDialog.setWindowTitle(tr("Select %1")
+                                .arg(fileMode == QFileDialog::Directory
+                                         ? "Folder containing Media Files"
+                                         : "Media Files"));
+  fileDialog.setDirectory(QDir::homePath());
+  fileDialog.setNameFilter(
       tr("Media Files (%1);;All Files (*)").arg(extensionFilter.trimmed()));
+  fileDialog.setFileMode(fileMode);
 
-  if (fileNames.isEmpty() == false) {
+  if (fileDialog.exec()) {
+    QStringList filePaths = fileDialog.selectedFiles();
     emit goToNextPage();
-    emit mediaFileLoaded(fileNames);
+    emit mediaFileLoaded(filePaths);
   }
 }
 

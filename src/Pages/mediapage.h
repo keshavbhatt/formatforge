@@ -20,7 +20,7 @@ public:
   explicit MediaPage(QWidget *parent = nullptr);
   ~MediaPage();
 
-  void loadMediaFiles(const QStringList &fileNameList);
+  void loadMediaFiles(const QStringList &filePathList);
 
 private:
   Ui::MediaPage *ui;

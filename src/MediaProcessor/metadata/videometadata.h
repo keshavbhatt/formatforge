@@ -7,12 +7,13 @@ class VideoMetaData : public MediaMetaData {
 public:
   VideoMetaData();
 
-  int index;
-  QString codecName;
-  QString codecType;
-
   void parse(const QJsonObject &jsonObject) override;
   void printInfo() const override;
+
+  QList<QJsonObject> getVideoStreams() const;
+
+  private:
+  QList<QJsonObject> videoStreams;
 };
 
 #endif // VIDEOMETADATA_H

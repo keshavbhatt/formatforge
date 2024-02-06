@@ -40,6 +40,7 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Core/filescanner.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
     MediaProcessor/metadata/videometadata.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
+    Core/filescanner.h \
     Media/widgets/mediaitemwidget.h \
     MediaProcessor/metadata/audiometadata.h \
     MediaProcessor/metadata/mediametadata.h \

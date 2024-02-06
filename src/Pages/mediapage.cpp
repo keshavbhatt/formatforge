@@ -1,6 +1,7 @@
 #include "mediapage.h"
 #include "outputsettingpage.h"
 #include "ui_mediapage.h"
+#include <Core/filescanner.h>
 #include <Media/widgets/mediaitemwidget.h>
 #include <MediaProcessor/metadata/audiometadata.h>
 #include <MediaProcessor/metadata/videometadata.h>
@@ -50,8 +51,8 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   connect(&mediaMetadataProcessor,
           &FFProbeMetaDataExtractor::mediaProcessingProgress, this,
           [=](int currentFileIndex, int totalFiles) {
-            qDebug() << "Processing file " << currentFileIndex << " of "
-                     << totalFiles;
+            qDebug() << "FFProbeMetaDataExtractor processing file "
+                     << currentFileIndex << " of " << totalFiles;
           });
 
   connect(&mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
@@ -96,13 +97,39 @@ void MediaPage::addMediaItem(const QString &filePath, const QString &result) {
     QListWidgetItem *item = new QListWidgetItem(ui->mediaListWidget);
     item->setSizeHint(mediaItemWidget->sizeHint());
     ui->mediaListWidget->setItemWidget(item, mediaItemWidget);
+
+    ui->mediaListWidget->scrollToBottom();
   } else {
-    qDebug() << "not added";
+    qDebug() << filePath << "not added";
   }
 }
 
-void MediaPage::loadMediaFiles(const QStringList &fileNameList) {
-  processMedia(fileNameList);
+void MediaPage::loadMediaFiles(const QStringList &filePathList) {
+
+  QSet<QString> loadedOutputExtensions =
+      DefaultPresetReader::getInstance()->getLoadedOutputExetensions();
+  QStringList nameFilters;
+  foreach (const QString &extension, loadedOutputExtensions) {
+    nameFilters << "*." + extension;
+  }
+
+  foreach (QString filePath, filePathList) {
+    QFileInfo fileInfo(filePath);
+    if (fileInfo.isDir()) {
+      QDir selectedDir(filePath);
+      FileScanner *fileScanner = new FileScanner(selectedDir, nameFilters);
+      connect(fileScanner, &FileScanner::scanningFinished, this,
+              [=](const QStringList &filePaths) {
+                processMedia(filePaths);
+                fileScanner->deleteLater();
+                this->spinner->stop();
+              });
+      this->spinner->start();
+      fileScanner->start();
+    } else {
+      processMedia(QStringList{filePath});
+    }
+  }
 }
 
 void MediaPage::processMedia(const QStringList &fileNameList) {

@@ -37,10 +37,6 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
           .arg(thumbnailLabelBackgrounColor.blue())
           .arg(thumbnailLabelBackgrounColor.alpha()));
 
-  ui->editFileNamePushButton->setIcon(QIcon(":/primo/pencil.png"));
-  ui->editFileNamePushButton->setFlat(true);
-  ui->editFileNamePushButton->setToolTip("Change output file name");
-
   ui->formatInfoPushButton->setText("More info");
   ui->formatInfoPushButton->setIcon(QIcon(":/primo/info_blue.png"));
   ui->formatInfoPushButton->setFlat(true);
@@ -58,13 +54,16 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   connect(mediaThumbnailProcessor,
           &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
           [=](int currentFileIndex, int totalFiles) {
-            qDebug() << "Processing file " << currentFileIndex << " of "
+            qDebug() << "FFMpegThumbnailExtractor processing file " << currentFileIndex << " of "
                      << totalFiles;
           });
 
   connect(mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
           this, &MediaItemWidget::setMediaItemThumbnail);
   // end FFMpegThumbnailExtractor connections
+
+  int width = height() * 1.78;
+  ui->fileThumbnailLabel->setMinimumSize(width, height());
 
   setValuesFromMetadata();
 }
@@ -74,8 +73,9 @@ void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,
   Q_UNUSED(fileName);
   QPixmap thumbnailPixmapFromData;
   if (thumbnailPixmapFromData.loadFromData(result)) {
+
     ui->fileThumbnailLabel->setPixmap(thumbnailPixmapFromData.scaled(
-        ui->fileThumbnailLabel->size(), Qt::KeepAspectRatio,
+        QSize(ui->fileThumbnailLabel->size()), Qt::KeepAspectRatio,
         Qt::SmoothTransformation));
   } else {
     qDebug() << "Error loading thumbnail from data.";
@@ -84,8 +84,7 @@ void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,
 
 void MediaItemWidget::setValuesFromMetadata() {
 
-  ui->fileTitleLable->setText(m_fileInfo.baseName());
-  ui->fileExetensionLabel->setText(m_fileInfo.suffix());
+  ui->fileTitleLable->setText(m_fileInfo.fileName());
   ui->fileSizeLabel->setText(
       this->locale().formattedDataSize(m_fileInfo.size()));
 
@@ -93,16 +92,31 @@ void MediaItemWidget::setValuesFromMetadata() {
       getIconThumbnailPixmapFor(m_mediaMetaData->mediaType()));
   ui->mediaDurationLabel->setText(Utils::durationStringToHumanReadable(
       m_mediaMetaData->formatObject().value("duration").toString()));
+  ui->fileExetensionLabel->setText(
+      m_mediaMetaData->formatObject().value("format_long_name").toString());
+  ui->mediaTypeLabel->setText(mediaMetaData()->mediaType().toUpper());
 
-  auto streamsCount =
-      m_mediaMetaData->formatObject().value("nb_streams").toInt();
-  ui->mediaStreamsLabel->setText(QString::number(streamsCount) +
-                                 (streamsCount > 1 ? " streams" : " stream"));
+  auto streamsCount = m_mediaMetaData->getStreamsCount();
+  if (streamsCount == 1) {
+    ui->mediaStreamsLabel->setText(m_mediaMetaData->getStreamInfo());
+  } else {
+    ui->mediaStreamsLabel->setText(QString::number(streamsCount) + " tracks (" +
+                                   m_mediaMetaData->getStreamInfo() + ")");
+  }
+
+  ui->videoDimensionLabel->setText("");
 
   if (VideoMetaData *videoMetaData =
           dynamic_cast<VideoMetaData *>(m_mediaMetaData)) {
     if (mediaThumbnailProcessor) {
       mediaThumbnailProcessor->processMediaFiles(QStringList{m_filePath});
+    }
+
+    if (videoMetaData->getVideoStreams().isEmpty() == false) {
+      auto firstVideoStream = videoMetaData->getVideoStreams().constFirst();
+      ui->videoDimensionLabel->setText(
+          QString::number(firstVideoStream.value("width").toDouble()) + "x" +
+          QString::number(firstVideoStream.value("height").toDouble()));
     }
   } else if (AudioMetaData *audioMetaData =
                  dynamic_cast<AudioMetaData *>(m_mediaMetaData)) {

@@ -140,7 +140,7 @@ void MainWindow::initPages() {
             queueAction->setEnabled(preset.isValid());
           });
 
-  connect(mediaPage, &MediaPage::addMoreFiles, homePage, &HomePage::addMedia);
+  connect(mediaPage, &MediaPage::addMoreFiles, homePage, &HomePage::addMediaFromExistingFiles);
 }
 
 void MainWindow::initToolbar() {

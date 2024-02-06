@@ -13,7 +13,7 @@ public:
   ~FFProbeMetaDataExtractor();
 
 public slots:
-  void processMediaFiles(const QStringList &fileNames);
+  void processMediaFiles(const QStringList &filePaths);
 
 signals:
   void mediaProcessingProgress(int currentFileIndex, int totalFiles);
