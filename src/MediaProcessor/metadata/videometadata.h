@@ -12,7 +12,7 @@ public:
 
   QList<QJsonObject> getVideoStreams() const;
 
-  private:
+private:
   QList<QJsonObject> videoStreams;
 };
 

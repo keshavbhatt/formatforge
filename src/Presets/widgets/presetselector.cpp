@@ -49,17 +49,18 @@ void PresetSelector::createCategoryTab(const QString &name) {
     _name = "Tab " + QString::number(targetIndex);
   }
 
-  ui->tabWidget->insertTab(
-      targetIndex, new PresetTabWidget(ui->tabWidget, name.toLower()),QIcon(getTabIconPath(_name)), _name);
+  ui->tabWidget->insertTab(targetIndex,
+                           new PresetTabWidget(ui->tabWidget, name.toLower()),
+                           QIcon(getTabIconPath(_name)), _name);
 }
 
-QString PresetSelector::getTabIconPath(const QString &name){
+QString PresetSelector::getTabIconPath(const QString &name) {
   auto lower = name.toLower();
-  if(lower.contains("video")){
+  if (lower.contains("video")) {
     return ":/primo/video.png";
-  }else if(lower.contains("audio")){
+  } else if (lower.contains("audio")) {
     return ":/primo/music.png";
-  }else{
+  } else {
     return ":/primo/help_blue.png";
   }
 }
@@ -69,6 +70,8 @@ void PresetSelector::loadPresets() {
   QList<Preset> defaultPresets =
       DefaultPresetReader::getInstance()->getLoadedPresets();
 
+  // DefaultPresetReader::getInstance()->printAllPresets();
+
   // create tab for supported multimedia mime types
   auto multimediaMimeTypes = Utils::getSupportedMultimediaMimeTypes();
   foreach (const Preset &preset, defaultPresets) {
@@ -76,11 +79,22 @@ void PresetSelector::loadPresets() {
         MimeDatabaseManager::getInstance()->getMediaTypeByExtension(
             preset.getExtension());
     QString type = mediaTypeByExtension.name().split("/").first();
-    if (presetTypes.contains(type) == false &&
-        multimediaMimeTypes.contains(type)) {
-      presetTypes.append(type);
-      createCategoryTab(Utils::toCamelCase(type));
+    QString type2 = mediaTypeByExtension.name().split("/").last();
+    QString tabTitle = "other";
+    tabTitle = type.contains("application") ? tabTitle : type;
+
+    if (presetTypes.contains(tabTitle) == false &&
+        (multimediaMimeTypes.contains(type) ||
+         multimediaMimeTypes.contains(type2))) {
+      presetTypes.append(tabTitle);
+      createCategoryTab(Utils::toCamelCase(tabTitle));
     }
+
+    // if (presetTypes.contains(type) == false &&
+    //     !multimediaMimeTypes.contains(type)) {
+    //   qDebug() << "skipping preset for mime type:"
+    //            << mediaTypeByExtension.name();
+    // }
   }
 
   // load them in view
@@ -95,6 +109,8 @@ void PresetSelector::loadPresets() {
             MimeDatabaseManager::getInstance()->getMediaTypeByExtension(
                 preset.getExtension());
         if (mediaTypeByExtension.name().contains(currentTabName,
+                                                 Qt::CaseInsensitive) ||
+            mediaTypeByExtension.name().contains("application",
                                                  Qt::CaseInsensitive)) {
           presetTabWidget->addExetension(preset.getExtension().toUpper());
         }

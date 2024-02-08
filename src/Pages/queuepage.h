@@ -6,6 +6,8 @@
 
 #include <QWidget>
 
+#include <Core/conversionmanager.h>
+
 namespace Ui {
 class QueuePage;
 }
@@ -24,7 +26,13 @@ private:
   Page *m_prevPage = nullptr;
 
   OutputSettingPage *getOutputSettingPage();
+  void updatePageStatusMessage();
+  void updatePage();
+  void prepare();
 
+  ConversionManager *m_conversionManager = nullptr;
+
+  void addConversionItem(const ConversionItem &conversionItem);
 public slots:
   void activate();
 
@@ -34,6 +42,9 @@ public:
   Page *getNextPage() const;
   Page *getPreviousPage() const;
   void setPreviousPage(Page *prevPage);
+  void setConversionManager(ConversionManager *conversionManager);
+  void convert();
+  ConversionQueue m_conversionQueue;
 };
 
 #endif // QUEUEPAGE_H

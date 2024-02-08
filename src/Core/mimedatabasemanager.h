@@ -2,6 +2,7 @@
 #define MIMEDATABASEMANAGER_H
 
 #include <QMimeDatabase>
+#include <QDebug>
 
 class MimeDatabaseManager {
 public:

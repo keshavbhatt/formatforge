@@ -8,11 +8,11 @@ PresetTabWidget::PresetTabWidget(QWidget *parent, QString name)
 
   this->tabName = name;
 
-  connect(ui->exetensionListWidget, &QListWidget::currentRowChanged, this,
-          &PresetTabWidget::exetensionListWidgetCurrentRowChanged);
+  connect(ui->exetensionListWidget, &QListWidget::itemClicked, this,
+          &PresetTabWidget::exetensionListWidgetItemClicked);
 
-  connect(ui->optionsListWidget, &QListWidget::currentRowChanged, this,
-          &PresetTabWidget::optionsListWidgeCurrentRowChanged);
+  connect(ui->optionsListWidget, &QListWidget::itemClicked, this,
+          &PresetTabWidget::optionsListWidgeItemClicked);
 }
 
 PresetTabWidget::~PresetTabWidget() { delete ui; }
@@ -34,13 +34,12 @@ void PresetTabWidget::clearSelection() {
   ui->optionsListWidget->clear();
 }
 
-void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
+void PresetTabWidget::exetensionListWidgetItemClicked(QListWidgetItem *item) {
   // load related presets in the optionsListWidget
   ui->optionsListWidget->blockSignals(true);
-  auto current = ui->exetensionListWidget->item(row);
   QList<Preset> presetsByExetension =
       DefaultPresetReader::getInstance()->getPresetsByExetension(
-          current->text().toLower());
+          item->text().toLower());
 
   ui->optionsListWidget->clear();
 
@@ -53,12 +52,11 @@ void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
   ui->optionsListWidget->blockSignals(false);
 }
 
-void PresetTabWidget::optionsListWidgeCurrentRowChanged(int row) {
-  auto currentItem = ui->optionsListWidget->item(row);
-  if(currentItem){
+void PresetTabWidget::optionsListWidgeItemClicked(QListWidgetItem *item) {
+  if (item) {
     // load preset's in the editPresetWidget
     Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
-        currentItem->data(Qt::UserRole).toString());
+        item->data(Qt::UserRole).toString());
 
     emit presetSelectionChanged(presetByKey);
 

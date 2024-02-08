@@ -21,6 +21,7 @@ signals:
   void goToNextPage();
   void goToPreviousPage();
   void updateStatusMessage(const QString &message);
+  void updateMainToolbarAction();
 };
 
 #endif // PAGE_H

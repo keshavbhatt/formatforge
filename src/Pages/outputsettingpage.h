@@ -29,9 +29,9 @@ private:
 
   void updatePage();
   MediaPage *getMediaPage();
-
   void updatePageStatusMessage();
-  signals:
+
+signals:
   void presetSelectionChanged(const Preset &preset);
 
 public slots:
@@ -45,6 +45,7 @@ public:
   void setPreviousPage(Page *prevPage);
   bool hasValidSelectedPreset();
   void clearPresetSelection();
+  Preset getSelectedPreset() const;
 
 private slots:
   void editSelectedPreset();

@@ -8,6 +8,7 @@
 #include <MediaProcessor/metadata/videometadata.h>
 
 #include <Core/mimedatabasemanager.h>
+#include <Core/utils.h>
 
 FFProbeParser::FFProbeParser() {}
 
@@ -51,7 +52,26 @@ MediaMetaData *FFProbeParser::getMediaMetaDataFor(const QString filePath,
     return audioMetaData;
   }
 
-  qWarning() << filePath << "Unknown media type.";
+  // some formats liek RealMedia ect are reporting mimetype application/...
+  // we will add them and try to guess the media type manually from streams
+  // array structure
+  if (mimeTypeName.contains("application")) {
+    auto mediaType = Utils::getMediaTypeFromFFProbeStreamArray(
+        topLevelObject["streams"].toArray());
+    if (mediaType == "audio") {
+      AudioMetaData *audioMetaData = new AudioMetaData();
+      audioMetaData->parse(topLevelObject);
+      return audioMetaData;
+    }
+
+    if (mediaType == "video") {
+      VideoMetaData *videoMetaData = new VideoMetaData();
+      videoMetaData->parse(topLevelObject);
+      return videoMetaData;
+    }
+  }
+
+  qWarning() << filePath << "Unknown mime type" << mimeTypeName;
 
   return nullptr;
 }

@@ -7,12 +7,20 @@ void AudioMetaData::parse(const QJsonObject &jsonObject) {
   m_formatObject = jsonObject["format"].toObject();
   m_streamsArray = jsonObject["streams"].toArray();
 
-  // index = jsonObject["index"].toInt();
-  // codecName = jsonObject["codec_name"].toString();
-  // codecType = jsonObject["codec_type"].toString();
+  foreach (QJsonValue stream, m_streamsArray) {
+    auto streamObject = stream.toObject();
+    if (streamObject["codec_type"].toString().contains(m_mediaType,
+                                                       Qt::CaseInsensitive)) {
+      audioStreams.append(streamObject);
+    }
+  }
 }
 
 void AudioMetaData::printInfo() const {
   // qDebug() << "Stream" << index << "Type:" << codecType
   //          << "Codec:" << codecName;
+}
+
+QList<QJsonObject> AudioMetaData::getAudioStreams() const {
+  return audioStreams;
 }

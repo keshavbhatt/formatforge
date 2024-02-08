@@ -20,13 +20,15 @@ public:
                            MediaMetaData *mediaMetaData = nullptr);
   ~MediaItemWidget();
 
-  QString filePath() const;
-
+  QString getFilePath() const;
   MediaMetaData *mediaMetaData() const;
 
-private:
+  QString getId() const;
+
+  private:
   Ui::MediaItemWidget *ui;
 
+  QString m_id;
   QString m_filePath;
   QFileInfo m_fileInfo;
   FFMpegThumbnailExtractor *mediaThumbnailProcessor = nullptr;
@@ -34,7 +36,7 @@ private:
 
   void setValuesFromMetadata();
   QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,
-                                int height = 32);
+                                    int height = 32);
   void setMediaItemThumbnail(const QString &fileName, const QByteArray &result);
 };
 

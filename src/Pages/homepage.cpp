@@ -50,12 +50,15 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
                                          ? "Folder containing Media Files"
                                          : "Media Files"));
   fileDialog.setDirectory(QDir::homePath());
-  fileDialog.setNameFilter(
-      tr("Media Files (%1);;All Files (*)").arg(extensionFilter.trimmed()));
   fileDialog.setFileMode(fileMode);
+  if (fileMode == QFileDialog::ExistingFiles) {
+    fileDialog.setNameFilter(
+        tr("Media Files (%1);;All Files (*)").arg(extensionFilter.trimmed()));
+  }
 
   if (fileDialog.exec()) {
     QStringList filePaths = fileDialog.selectedFiles();
+    qDebug() << "Selected files" << filePaths;
     emit goToNextPage();
     emit mediaFileLoaded(filePaths);
   }

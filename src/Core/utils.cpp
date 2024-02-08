@@ -14,7 +14,9 @@ QString Utils::toCamelCase(const QString &s) {
 }
 
 QStringList Utils::getSupportedMultimediaMimeTypes() {
-  return QStringList{"video", "audio", "image", "x-shockwave-flash"};
+  return QStringList{
+      "video",     "audio", "image", "x-shockwave-flash", "vnd.rn-realmedia",
+      "vnd.ms-asf"};
 }
 
 QString Utils::durationStringToHumanReadable(const QString &duration) {
@@ -24,4 +26,23 @@ QString Utils::durationStringToHumanReadable(const QString &duration) {
   QString formattedDuration = durationTime.toString("hh:mm:ss");
 
   return formattedDuration;
+}
+
+QString Utils::getMediaTypeFromFFProbeStreamArray(const QJsonArray &streams) {
+  for (const QJsonValue &streamValue : streams) {
+    if (streamValue.isObject()) {
+      QJsonObject streamObject = streamValue.toObject();
+
+      if (streamObject.contains("codec_type")) {
+        QString codecType = streamObject["codec_type"].toString();
+
+        if (codecType == "video" || codecType == "audio") {
+          return codecType;
+        } else {
+          // todo: add more cases ex subtitles, data, attachments
+        }
+      }
+    }
+  }
+  return "Unknown";
 }

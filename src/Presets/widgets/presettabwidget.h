@@ -27,9 +27,10 @@ signals:
   void presetSelectionChanged(const Preset &preset);
 
 private slots:
-  void exetensionListWidgetCurrentRowChanged(int row);
 
-  void optionsListWidgeCurrentRowChanged(int row);
+  void optionsListWidgeItemClicked(QListWidgetItem *item);
+
+  void exetensionListWidgetItemClicked(QListWidgetItem *item);
 
 private:
   Ui::PresetTabWidget *ui;

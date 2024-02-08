@@ -9,7 +9,8 @@
 MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
                                  MediaMetaData *mediaMetaData)
     : QWidget(parent), ui(new Ui::MediaItemWidget), m_filePath(filePath),
-      m_fileInfo(QFileInfo(filePath)), m_mediaMetaData(mediaMetaData) {
+      m_fileInfo(QFileInfo(filePath)), m_mediaMetaData(mediaMetaData),
+      m_id(QUuid::createUuid().toString()) {
   ui->setupUi(this);
 
   this->layout()->setContentsMargins(0, 0, 0, 0);
@@ -54,8 +55,8 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   connect(mediaThumbnailProcessor,
           &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
           [=](int currentFileIndex, int totalFiles) {
-            qDebug() << "FFMpegThumbnailExtractor processing file " << currentFileIndex << " of "
-                     << totalFiles;
+            qDebug() << "FFMpegThumbnailExtractor processing file "
+                     << currentFileIndex << " of " << totalFiles;
           });
 
   connect(mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
@@ -112,17 +113,65 @@ void MediaItemWidget::setValuesFromMetadata() {
       mediaThumbnailProcessor->processMediaFiles(QStringList{m_filePath});
     }
 
-    if (videoMetaData->getVideoStreams().isEmpty() == false) {
-      auto firstVideoStream = videoMetaData->getVideoStreams().constFirst();
-      ui->videoDimensionLabel->setText(
-          QString::number(firstVideoStream.value("width").toDouble()) + "x" +
-          QString::number(firstVideoStream.value("height").toDouble()));
+    const auto &videoStreams = videoMetaData->getVideoStreams();
+    if (videoStreams.isEmpty() == false) {
+      const auto &firstVideoStream = videoStreams.constFirst();
+      // video dimension
+      QString dimensionText =
+          QString("%1x%2")
+              .arg(firstVideoStream.value("width").toDouble())
+              .arg(firstVideoStream.value("height").toDouble());
+
+      int additionalVideoStreams = videoMetaData->getVideoStreams().count() - 1;
+      if (additionalVideoStreams > 0) {
+        dimensionText += QString(" (%1 more)").arg(additionalVideoStreams);
+      }
+      ui->videoDimensionLabel->setText(dimensionText);
+
+      // video bitrate(uses bit_rate from format object if first stream misses)
+      auto bitrateFromFirstVideoStream =
+          firstVideoStream.value("bit_rate").toString().toDouble();
+      auto bitrateFromVideoFormat =
+          videoMetaData->formatObject().value("bit_rate").toString().toDouble();
+      QString bitrateText = QString("%1/Sec").arg(
+          this->locale().formattedDataSize(bitrateFromFirstVideoStream == 0.0
+                                               ? bitrateFromVideoFormat
+                                               : bitrateFromFirstVideoStream));
+
+      int additionalAudioStreams = videoMetaData->getVideoStreams().count() - 1;
+      if (additionalAudioStreams > 0) {
+        bitrateText += QString(" (%1 more)").arg(additionalAudioStreams);
+      }
+      ui->bitrateLabel->setText(bitrateText);
     }
   } else if (AudioMetaData *audioMetaData =
                  dynamic_cast<AudioMetaData *>(m_mediaMetaData)) {
+    // hide n/a elements
+    ui->videoDimensionLabel->hide();
 
+    const auto &audioStreams = audioMetaData->getAudioStreams();
+    if (audioStreams.isEmpty() == false) {
+      const auto &firstAudioStream = audioStreams.constFirst();
+
+      // audio bitrate(uses bit_rate from format object if first stream misses)
+      auto bitrateFromFirstAudioStream =
+          firstAudioStream.value("bit_rate").toString().toDouble();
+      auto bitrateFromAudioFormat =
+          audioMetaData->formatObject().value("bit_rate").toString().toDouble();
+      QString bitrateText = QString("%1/Sec").arg(
+          this->locale().formattedDataSize(bitrateFromFirstAudioStream == 0.0
+                                               ? bitrateFromAudioFormat
+                                               : bitrateFromFirstAudioStream));
+
+      int additionalAudioStreams = audioMetaData->getAudioStreams().count() - 1;
+      if (additionalAudioStreams > 0) {
+        bitrateText += QString(" (%1 more)").arg(additionalAudioStreams);
+      }
+      ui->bitrateLabel->setText(bitrateText);
+    }
   } else {
     ui->mediaDurationLabel->setText("Unknown");
+    // TODO: other ui items
   }
 }
 
@@ -130,7 +179,8 @@ QPixmap MediaItemWidget::getIconThumbnailPixmapFor(const QString &mediaType,
                                                    int width, int height) {
   QMap<QString, QString> pixmapMap = {{"Video", ":/primo/video.png"},
                                       {"Audio", ":/primo/music.png"},
-                                      {"Image", ":/primo/photo.png"}};
+                                      {"Image", ":/primo/photo.png"},
+                                      {"Unknown", ":/primo/help_blue.png"}};
 
   QPixmap originalPixmap =
       QPixmap(pixmapMap.value(mediaType, ":/primo/help_blue.png"));
@@ -151,8 +201,10 @@ MediaItemWidget::~MediaItemWidget() {
   }
 }
 
-QString MediaItemWidget::filePath() const { return m_filePath; }
+QString MediaItemWidget::getFilePath() const { return m_filePath; }
 
 MediaMetaData *MediaItemWidget::mediaMetaData() const {
   return m_mediaMetaData;
 }
+
+QString MediaItemWidget::getId() const { return m_id; }

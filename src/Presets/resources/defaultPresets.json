@@ -290,13 +290,13 @@
     },
     "ac3dvd192": {
       "label": "Ac3 DVD - 192kbps Stereo",
-      "params": "-f ac3 -acodec ac3 -ab 192kb -ar 48000 -ac 2",
+      "params": "-f ac3 -acodec ac3 -ab 192k -ar 48000 -ac 2",
       "extension": "ac3",
       "category": "Audio"
     },
     "ac3dvd384": {
       "label": "Ac3 DVD - 384kbps Stereo",
-      "params": "-f ac3 -acodec ac3 -ab 384kb -ar 48000 -ac 2",
+      "params": "-f ac3 -acodec ac3 -ab 384k -ar 48000 -ac 2",
       "extension": "ac3",
       "category": "Audio"
     },
@@ -314,13 +314,13 @@
     },
     "RealVideoVersion1": {
       "label": "RealVideo 1.0",
-      "params": "-ar 44100 -ab 128kb -vcodec rv10",
+      "params": "-ar 44100 -ab 128k -vcodec rv10",
       "extension": "rm",
       "category": "RealMedia"
     },
     "RealVideoVersion2": {
       "label": "RealVideo 2.0",
-      "params": "-ar 44100 -ab 128kb -vcodec rv20",
+      "params": "-ar 44100 -ab 128k -vcodec rv20",
       "extension": "rm",
       "category": "RealMedia"
     },

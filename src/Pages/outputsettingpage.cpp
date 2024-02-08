@@ -47,6 +47,10 @@ void OutputSettingPage::clearPresetSelection() {
   }
 }
 
+Preset OutputSettingPage::getSelectedPreset() const {
+  return presetSelector->getSelectedPreset();
+}
+
 void OutputSettingPage::updatePage() {
   if (presetSelector) {
     bool presetSelected = presetSelector->hasValidSelectedPreset();
@@ -60,7 +64,6 @@ void OutputSettingPage::updatePage() {
 
 MediaPage *OutputSettingPage::getMediaPage() {
   MediaPage *mediaPage = qobject_cast<MediaPage *>(getPreviousPage());
-
   return mediaPage;
 }
 

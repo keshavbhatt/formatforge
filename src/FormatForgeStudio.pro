@@ -40,6 +40,8 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Core/conversionmanager.cpp \
+    Core/conversionprocess.cpp \
     Core/filescanner.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
@@ -47,6 +49,8 @@ SOURCES += \
     MediaProcessor/metadata_extractors/ffmpegthumbnailextractor.cpp \
     MediaProcessor/metadata_extractors/ffprobemetadataextractor.cpp \
     MediaProcessor/metadata_parsers/ffprobeparser.cpp \
+    Queue/conversionitem.cpp \
+    Queue/conversionqueue.cpp \
     Queue/widgets/queueitemswidget.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
@@ -63,6 +67,8 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
+    Core/conversionmanager.h \
+    Core/conversionprocess.h \
     Core/filescanner.h \
     Media/widgets/mediaitemwidget.h \
     MediaProcessor/metadata/audiometadata.h \
@@ -72,6 +78,8 @@ HEADERS += \
     MediaProcessor/metadata_extractors/ffprobemetadataextractor.h \
     MediaProcessor/metadata_parsers/ffprobeparser.h \
     Pages/page.h \
+    Queue/conversionitem.h \
+    Queue/conversionqueue.h \
     Queue/widgets/queueitemswidget.h \
     Widgets/mainwindow.h \
     Pages/homepage.h \

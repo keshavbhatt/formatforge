@@ -26,20 +26,22 @@ QStringList MimeDatabaseManager::getSupportedAudioMimeTypes() {
   return getAllSupportedMediaMimeTypesBy("video/");
 }
 
-QMimeType MimeDatabaseManager::getMediaTypeByExtension(const QString &extension) {
+QMimeType
+MimeDatabaseManager::getMediaTypeByExtension(const QString &extension) {
   QMimeDatabase mimeDb;
   QMimeType mimeType = mimeDb.mimeTypeForFile("dummy." + extension);
 
   if (mimeType.isValid()) {
     return mimeType;
   } else {
+    qWarning() << "MimeDatabaseManager::getMediaTypeByExtension"
+               << "exetension" << extension << "not known.";
     return QMimeType();
   }
 }
 
-QMimeType MimeDatabaseManager::getMimeTypeForFile(const QString &filePath)
-{
-    return mimeDb.mimeTypeForFile(filePath);
+QMimeType MimeDatabaseManager::getMimeTypeForFile(const QString &filePath) {
+  return mimeDb.mimeTypeForFile(filePath);
 }
 
 QStringList MimeDatabaseManager::getAllSupportedMediaMimeTypesBy(

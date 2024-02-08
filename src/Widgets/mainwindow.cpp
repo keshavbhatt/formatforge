@@ -2,6 +2,8 @@
 #include "Presets/widgets/presetselector.h"
 #include "ui_mainwindow.h"
 
+#include <Core/conversionmanager.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -54,12 +56,18 @@ void MainWindow::preparePages() {
   queuePage->setPreviousPage(outputSettingPage);
 
   // connect main toolbar action and add action to toolbar
-  for (QPair<QAction *, Page *> p : qAsConst(mainToolbarActionsWidgetPair)) {
+  for (int i = 0; i < mainToolbarActionsWidgetPair.size(); ++i) {
+    QPair<QAction *, Page *> p = mainToolbarActionsWidgetPair.at(i);
     QAction *a = p.first;
     a->setCheckable(true);
+
     connect(a, &QAction::triggered, this,
             [=]() { this->switchStackWidget(p.second); });
+
     ui->toolBar->addAction(a);
+
+    connect(p.second, &Page::updateMainToolbarAction, this,
+            [=]() { updateMainToolbarActions(i); });
   }
 
   this->updateMainToolbarActions();
@@ -84,6 +92,13 @@ void MainWindow::createActions() {
 
   ui->toolBar->addWidget(spinner);
   ui->toolBar->addAction(convertAction);
+
+  connect(convertAction, &QAction::triggered, this, [=]() {
+    if (queuePage) {
+      queuePage->setConversionManager(new ConversionManager(this));
+      queuePage->convert();
+    }
+  });
 }
 
 void MainWindow::updateMainToolbarActions(int activeActionIndex) {
@@ -140,7 +155,8 @@ void MainWindow::initPages() {
             queueAction->setEnabled(preset.isValid());
           });
 
-  connect(mediaPage, &MediaPage::addMoreFiles, homePage, &HomePage::addMediaFromExistingFiles);
+  connect(mediaPage, &MediaPage::addMoreFiles, homePage,
+          &HomePage::addMediaFromExistingFiles);
 }
 
 void MainWindow::initToolbar() {

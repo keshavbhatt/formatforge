@@ -96,7 +96,7 @@ void DefaultPresetReader::destroyInstance() {
 }
 
 void DefaultPresetReader::printAllPresets() {
-  qDebug() << "Loaded Presets:";
+  qDebug() << "Loaded Presets(" << loadedPresets.count() << "):";
   for (const Preset &preset : qAsConst(loadedPresets)) {
     qDebug() << "Label:" << preset.getLabel();
     qDebug() << "Params:" << preset.getParams();

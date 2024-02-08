@@ -66,7 +66,7 @@ inline QString MediaMetaData::getStreamInfo() const {
                       .arg(audioCount > 1 ? "s" : "");
   }
   if (subtitleCount > 0) {
-    streamInfo += QString("%1 subtitle track%2")
+    streamInfo += QString("%1 subtitle track,%2")
                       .arg(subtitleCount)
                       .arg(subtitleCount > 1 ? "s" : "");
   }

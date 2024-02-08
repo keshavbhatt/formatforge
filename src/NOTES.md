@@ -33,3 +33,10 @@
 
     ffmpeg -hide_banner -encoders | grep "A....D" | awk '{print $2}'
 
+### thumbnails from video in k directory, 0.03 defines
+
+    - https://superuser.com/questions/538112/meaningful-thumbnails-for-a-video-using-ffmpeg
+    - https://copyprogramming.com/howto/extract-thumbnail-in-ffmpeg-code-example
+
+    `ffmpeg -i l.webm -vf "thumbnail,select=gt(scene\,0.03)" -vsync vfr k/out%d.jpg`
+

@@ -7,6 +7,7 @@
 #include <MediaProcessor/metadata/videometadata.h>
 #include <MediaProcessor/metadata_parsers/ffprobeparser.h>
 #include <QDebug>
+#include <QScrollBar>
 
 MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   ui->setupUi(this);
@@ -92,19 +93,27 @@ void MediaPage::addMediaItem(const QString &filePath, const QString &result) {
   MediaMetaData *mediaMetaData =
       FFProbeParser::getMediaMetaDataFor(filePath, result);
   if (mediaMetaData) {
+
+    QScrollBar *vScrollBar = ui->mediaListWidget->verticalScrollBar();
+    bool atBottom = vScrollBar->value() == vScrollBar->maximum();
+
     MediaItemWidget *mediaItemWidget =
         new MediaItemWidget(ui->mediaListWidget, filePath, mediaMetaData);
     QListWidgetItem *item = new QListWidgetItem(ui->mediaListWidget);
-    item->setSizeHint(mediaItemWidget->sizeHint());
+    item->setSizeHint(mediaItemWidget->minimumSizeHint());
     ui->mediaListWidget->setItemWidget(item, mediaItemWidget);
 
-    ui->mediaListWidget->scrollToBottom();
+    if (atBottom) {
+      ui->mediaListWidget->scrollToBottom();
+    }
   } else {
     qDebug() << filePath << "not added";
   }
 }
 
 void MediaPage::loadMediaFiles(const QStringList &filePathList) {
+
+  ui->mediaListWidget->scrollToBottom();
 
   QSet<QString> loadedOutputExtensions =
       DefaultPresetReader::getInstance()->getLoadedOutputExetensions();
@@ -163,6 +172,41 @@ void MediaPage::updatePage() {
   }
 
   updatePageStatusMessage();
+  emit updateMainToolbarAction();
+}
+
+QStringList MediaPage::getLoadedMediaFilesPath() {
+  QStringList loadedMediaFilesPath;
+
+  for (int i = 0; i < ui->mediaListWidget->count(); ++i) {
+    QListWidgetItem *item = ui->mediaListWidget->item(i);
+    if (item) {
+      QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+      MediaItemWidget *mediaItemWidget =
+          qobject_cast<MediaItemWidget *>(itemWidget);
+      if (mediaItemWidget) {
+        loadedMediaFilesPath.append(mediaItemWidget->getFilePath());
+      }
+    }
+  }
+  return loadedMediaFilesPath;
+}
+
+QList<ConversionItem> MediaPage::getSelectedMediaItems() const {
+  QList<ConversionItem> conversionItems;
+  for (int i = 0; i < ui->mediaListWidget->count(); ++i) {
+    QListWidgetItem *item = ui->mediaListWidget->item(i);
+    if (item) {
+      QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+      MediaItemWidget *mediaItemWidget =
+          qobject_cast<MediaItemWidget *>(itemWidget);
+      if (mediaItemWidget) {
+        conversionItems.append(ConversionItem(
+            mediaItemWidget->getFilePath(), "", mediaItemWidget->getId(), ""));
+      }
+    }
+  }
+  return conversionItems;
 }
 
 bool MediaPage::isEnabled() { return ui->mediaListWidget->count() > 0; }

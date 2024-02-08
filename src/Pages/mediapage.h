@@ -9,6 +9,8 @@
 
 #include <MediaProcessor/metadata_extractors/ffprobemetadataextractor.h>
 
+#include <Queue/conversionqueue.h>
+
 namespace Ui {
 class MediaPage;
 }
@@ -40,16 +42,19 @@ private:
 
 public slots:
   void activate();
+  QStringList getLoadedMediaFilesPath();
 
 signals:
   void addMoreFiles();
 
 public:
+  QList<ConversionItem> getSelectedMediaItems() const;
   bool isEnabled();
   void setNextPage(Page *nextPage);
   Page *getNextPage() const;
   Page *getPreviousPage() const;
   void setPreviousPage(Page *prevPage);
+
 private slots:
   void updateBottomToolbarButtons();
 };

@@ -45,65 +45,44 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
               ffmpegProcess->deleteLater();
             });
 
+
+    // TIME BASED
+    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
+    //                                              << "quiet"
+    //                                              << "-i" << fileName << "-ss"
+    //                                              << "0"
+    //                                              << "-vframes"
+    //                                              << "1"
+    //                                              << "-f"
+    //                                              << "image2pipe"
+    //                                              << "-");
+
+    //ffmpeg  -i l.webm -vf "thumbnail,select=gt(scene\,0.015)" -vsync vfr "outd.jpg"
+
+    // THUMBNAIL PLUGIN BASED(probably broken here) see notes.md
+    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
+    //                                              << "quiet"
+    //                                              << "-i" << fileName << "-vf"
+    //                                              << "thumbnail,select=gt(scene\,0.015)"
+    //                                              << "-vsync"
+    //                                              << "vfr"
+    //                                              << "-f"
+    //                                              << "image2pipe"
+    //                                              << "-");
+
+    // ffmpeg -i l.webm -vf "select=gte(n\,100)" -vframes 1 out_img.png
+
     ffmpegProcess->start("ffmpeg", QStringList() << "-v"
                                                  << "quiet"
-                                                 << "-i" << fileName << "-ss"
-                                                 << "0"
+                                                 << "-i" << fileName << "-vf"
+                                                 << "select=gte(n\\,100)"
                                                  << "-vframes"
                                                  << "1"
                                                  << "-f"
                                                  << "image2pipe"
                                                  << "-");
+
   } else {
     emit mediaProcessingFinished();
   }
 }
-
-// void FFMpegThumbnailExtractor::processMediaFiles(const QStringList
-// &fileNames) {
-//   processedFilesCounter = 0;
-
-//   int totalFilesToProcess = fileNames.size();
-
-//   for (int i = 0; i < totalFilesToProcess; ++i) {
-//     const QString &fileName = fileNames.at(i);
-
-//     QProcess *ffmpegProcess = new QProcess(this);
-//     connect(ffmpegProcess,
-//             QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-//             this,
-//             [=](int exitCode, QProcess::ExitStatus exitStatus) {
-//               Q_UNUSED(exitStatus);
-
-//               processedFilesCounter++;
-//               emit mediaProcessingProgress(processedFilesCounter,
-//                                            totalFilesToProcess);
-//               QByteArray output = ffmpegProcess->readAllStandardOutput();
-
-//               if (exitCode != 0) {
-//                 emit mediaProcessed(fileName, "processing_error");
-//               } else {
-//                 emit mediaProcessed(fileName, output);
-//               }
-
-//               QCoreApplication::processEvents();
-
-//               // all files processed emit finish
-//               if (processedFilesCounter == totalFilesToProcess) {
-//                 emit mediaProcessingFinished();
-//               }
-
-//               ffmpegProcess->deleteLater();
-//             });
-
-//     ffmpegProcess->start("ffmpeg", QStringList() << "-v"
-//                                                  << "quiet"
-//                                                  << "-i" << fileName << "-ss"
-//                                                  << "0"
-//                                                  << "-vframes"
-//                                                  << "1"
-//                                                  << "-f"
-//                                                  << "image2pipe"
-//                                                  << "-");
-//   }
-// }
