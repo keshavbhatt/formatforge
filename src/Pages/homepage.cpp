@@ -8,6 +8,7 @@
 #include <Presets/defaultpresetreader.h>
 
 #include <Core/filescanner.h>
+#include <Core/settingsmanager.h>
 
 HomePage::HomePage(QWidget *parent) : Page(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);
@@ -36,6 +37,26 @@ void HomePage::addMediaFromExistingFiles() {
   this->openFileSelector(QFileDialog::ExistingFiles);
 }
 
+QString HomePage::getFileSelectorLastUsedPath() {
+
+  auto fallbackPath = QDir::homePath();
+
+  auto FILE_SELECTOR_LAST_USED_PATH =
+      SettingsManager::settings()
+          .value(SettingsConstants::FILE_SELECTOR_LAST_USED_PATH)
+          .toString();
+
+  if (FILE_SELECTOR_LAST_USED_PATH.isEmpty() == false) {
+    QFileInfo fileInfo(FILE_SELECTOR_LAST_USED_PATH);
+    if (fileInfo.isDir()) {
+      return FILE_SELECTOR_LAST_USED_PATH;
+    } else {
+      return fallbackPath;
+    }
+  }
+  return fallbackPath;
+}
+
 void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
   QString extensionFilter;
   QSet<QString> loadedOutputExtensions =
@@ -49,7 +70,8 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
                                 .arg(fileMode == QFileDialog::Directory
                                          ? "Folder containing Media Files"
                                          : "Media Files"));
-  fileDialog.setDirectory(QDir::homePath());
+
+  fileDialog.setDirectory(getFileSelectorLastUsedPath());
   fileDialog.setFileMode(fileMode);
   if (fileMode == QFileDialog::ExistingFiles) {
     fileDialog.setNameFilter(
@@ -58,7 +80,11 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
 
   if (fileDialog.exec()) {
     QStringList filePaths = fileDialog.selectedFiles();
-    qDebug() << "Selected files" << filePaths;
+
+    SettingsManager::settings().setValue(
+        SettingsConstants::FILE_SELECTOR_LAST_USED_PATH,
+        QFileInfo(filePaths.first()).dir().absolutePath());
+
     emit goToNextPage();
     emit mediaFileLoaded(filePaths);
   }

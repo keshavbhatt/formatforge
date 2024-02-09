@@ -9,3 +9,7 @@
 ```
 [] the goal is to load from existing preset or create custom commands for conversion by manually changing each supported operation
 ```
+
+### audio files with cover art
+
+	https://superuser.com/questions/1381642/ffprobe-count-video-and-audio-streams-tracks

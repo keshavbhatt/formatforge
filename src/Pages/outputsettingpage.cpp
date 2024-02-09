@@ -6,6 +6,7 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
   ui->setupUi(this);
   showPresetSelector();
 
+  ui->changeOutputDirPushButton->setIcon(QIcon(":/primo/folder_open.png"));
   ui->nextPushButton->setIcon(QIcon(":/primo/next.png"));
   connect(ui->nextPushButton, &QPushButton::clicked, this,
           [=]() { emit goToNextPage(); });

@@ -46,3 +46,14 @@ QString Utils::getMediaTypeFromFFProbeStreamArray(const QJsonArray &streams) {
   }
   return "Unknown";
 }
+
+QString Utils::getTabIconPath(const QString &name) {
+  auto lower = name.toLower();
+  if (lower.contains("video")) {
+    return ":/primo/video.png";
+  } else if (lower.contains("audio")) {
+    return ":/primo/music.png";
+  } else {
+    return ":/primo/help_blue.png";
+  }
+}

@@ -13,6 +13,8 @@ public:
   static QString durationStringToHumanReadable(const QString &duration);
 
   static QString getMediaTypeFromFFProbeStreamArray(const QJsonArray &streams);
+
+  static QString getTabIconPath(const QString &name);
 };
 
 #endif // UTILS_H

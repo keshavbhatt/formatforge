@@ -43,6 +43,7 @@ SOURCES += \
     Core/conversionmanager.cpp \
     Core/conversionprocess.cpp \
     Core/filescanner.cpp \
+    Core/settingsmanager.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
     MediaProcessor/metadata/videometadata.cpp \
@@ -70,6 +71,8 @@ HEADERS += \
     Core/conversionmanager.h \
     Core/conversionprocess.h \
     Core/filescanner.h \
+    Core/settings_constants.h \
+    Core/settingsmanager.h \
     Media/widgets/mediaitemwidget.h \
     MediaProcessor/metadata/audiometadata.h \
     MediaProcessor/metadata/mediametadata.h \

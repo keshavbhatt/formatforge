@@ -34,6 +34,9 @@ private:
 
   void recursiveAddFiles(const QDir &dir, const QStringList &nameFilters,
                          QStringList &filePaths);
+
+  QString getFileSelectorLastUsedPath();
+
 public slots:
   void activate();
 

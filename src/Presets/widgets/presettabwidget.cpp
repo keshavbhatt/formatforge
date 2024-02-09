@@ -2,11 +2,19 @@
 #include "Presets/defaultpresetreader.h"
 #include "ui_presettabwidget.h"
 
+#include <Core/utils.h>
+
 PresetTabWidget::PresetTabWidget(QWidget *parent, QString name)
     : QWidget(parent), ui(new Ui::PresetTabWidget) {
   ui->setupUi(this);
 
   this->tabName = name;
+
+  connect(ui->exetensionListWidget, &QListWidget::currentRowChanged, this,
+          &PresetTabWidget::exetensionListWidgetCurrentRowChanged);
+
+  connect(ui->optionsListWidget, &QListWidget::currentRowChanged, this,
+          &PresetTabWidget::optionsListWidgeCurrentRowChanged);
 
   connect(ui->exetensionListWidget, &QListWidget::itemClicked, this,
           &PresetTabWidget::exetensionListWidgetItemClicked);
@@ -19,11 +27,15 @@ PresetTabWidget::~PresetTabWidget() { delete ui; }
 
 QString PresetTabWidget::getTabName() const { return tabName; }
 
-void PresetTabWidget::addExetension(const QString &exetensionName) {
+void PresetTabWidget::addExetension(const QString &exetensionName,
+                                    const QString &type) {
 
   if (addedExtensions.contains(exetensionName) == false) {
     addedExtensions.append(exetensionName);
-    ui->exetensionListWidget->addItem(exetensionName);
+    QListWidgetItem *item =
+        new QListWidgetItem(QIcon(Utils::getTabIconPath(type)), exetensionName,
+                            ui->exetensionListWidget);
+    ui->exetensionListWidget->addItem(item);
   }
 }
 
@@ -44,8 +56,9 @@ void PresetTabWidget::exetensionListWidgetItemClicked(QListWidgetItem *item) {
   ui->optionsListWidget->clear();
 
   for (int i = 0; i < presetsByExetension.count(); ++i) {
-    QListWidgetItem *item =
-        new QListWidgetItem(presetsByExetension.at(i).getLabel());
+    QListWidgetItem *item = new QListWidgetItem(
+        QIcon(":/primo/receipt.png"), presetsByExetension.at(i).getLabel(),
+        ui->optionsListWidget);
     item->setData(Qt::UserRole, presetsByExetension.at(i).getKey());
     ui->optionsListWidget->addItem(item);
   }
@@ -67,5 +80,19 @@ void PresetTabWidget::optionsListWidgeItemClicked(QListWidgetItem *item) {
     qDebug() << "Extension:" << presetByKey.getExtension();
     qDebug() << "Category:" << presetByKey.getCategory();
     qDebug() << "------------------";
+  }
+}
+
+void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
+  auto currentItem = ui->exetensionListWidget->item(row);
+  if (currentItem) {
+    exetensionListWidgetItemClicked(currentItem);
+  }
+}
+
+void PresetTabWidget::optionsListWidgeCurrentRowChanged(int row) {
+  auto currentItem = ui->optionsListWidget->item(row);
+  if (currentItem) {
+    optionsListWidgeItemClicked(currentItem);
   }
 }

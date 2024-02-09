@@ -51,18 +51,7 @@ void PresetSelector::createCategoryTab(const QString &name) {
 
   ui->tabWidget->insertTab(targetIndex,
                            new PresetTabWidget(ui->tabWidget, name.toLower()),
-                           QIcon(getTabIconPath(_name)), _name);
-}
-
-QString PresetSelector::getTabIconPath(const QString &name) {
-  auto lower = name.toLower();
-  if (lower.contains("video")) {
-    return ":/primo/video.png";
-  } else if (lower.contains("audio")) {
-    return ":/primo/music.png";
-  } else {
-    return ":/primo/help_blue.png";
-  }
+                           QIcon(Utils::getTabIconPath(_name)), _name);
 }
 
 void PresetSelector::loadPresets() {
@@ -89,12 +78,6 @@ void PresetSelector::loadPresets() {
       presetTypes.append(tabTitle);
       createCategoryTab(Utils::toCamelCase(tabTitle));
     }
-
-    // if (presetTypes.contains(type) == false &&
-    //     !multimediaMimeTypes.contains(type)) {
-    //   qDebug() << "skipping preset for mime type:"
-    //            << mediaTypeByExtension.name();
-    // }
   }
 
   // load them in view
@@ -108,11 +91,12 @@ void PresetSelector::loadPresets() {
         QMimeType mediaTypeByExtension =
             MimeDatabaseManager::getInstance()->getMediaTypeByExtension(
                 preset.getExtension());
-        if (mediaTypeByExtension.name().contains(currentTabName,
-                                                 Qt::CaseInsensitive) ||
-            mediaTypeByExtension.name().contains("application",
-                                                 Qt::CaseInsensitive)) {
-          presetTabWidget->addExetension(preset.getExtension().toUpper());
+
+        QString type = mediaTypeByExtension.name().contains("application/")
+                           ? "other"
+                           : mediaTypeByExtension.name();
+        if (type.contains(currentTabName, Qt::CaseInsensitive)) {
+          presetTabWidget->addExetension(preset.getExtension().toUpper(), type);
         }
       }
     }

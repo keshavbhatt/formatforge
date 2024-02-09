@@ -19,7 +19,7 @@ public:
 
   QString getTabName() const;
 
-  void addExetension(const QString &exetensionName);
+  void addExetension(const QString &exetensionName, const QString &type);
 
   void clearSelection();
 
@@ -31,6 +31,10 @@ private slots:
   void optionsListWidgeItemClicked(QListWidgetItem *item);
 
   void exetensionListWidgetItemClicked(QListWidgetItem *item);
+
+  void exetensionListWidgetCurrentRowChanged(int row);
+
+  void optionsListWidgeCurrentRowChanged(int row);
 
 private:
   Ui::PresetTabWidget *ui;
