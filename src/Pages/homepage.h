@@ -18,7 +18,7 @@ public:
   ~HomePage();
 
 signals:
-  void mediaFileLoaded(const QStringList &fileNames);
+  void filesSelected(const QStringList &fileNames);
 
 public slots:
   void addMediaFromFolder();

@@ -17,7 +17,7 @@ PresetSelector::PresetSelector(QWidget *parent)
 QStringList PresetSelector::getCurrentTabNames() {
 
   QStringList tabNames;
-  for (int i = 0; i < ui->tabWidget->count(); ++i) {
+  for (int i = 0, total = ui->tabWidget->count(); i < total; ++i) {
     PresetTabWidget *presetTabWidget =
         qobject_cast<PresetTabWidget *>(ui->tabWidget->widget(i));
 
@@ -31,7 +31,7 @@ QStringList PresetSelector::getCurrentTabNames() {
 PresetTabWidget *PresetSelector::getTabByName(QTabWidget *tabWidget,
                                               const QString &tabName) {
   auto currentTabNames = this->getCurrentTabNames();
-  for (int i = 0; i < currentTabNames.count(); ++i) {
+  for (int i = 0, total = currentTabNames.count(); i < total; ++i) {
     PresetTabWidget *presetTabWidget =
         qobject_cast<PresetTabWidget *>(tabWidget->widget(i));
 
@@ -83,7 +83,7 @@ void PresetSelector::loadPresets() {
   // load them in view
   foreach (const Preset &preset, defaultPresets) {
     auto currentTabNames = this->getCurrentTabNames();
-    for (int i = 0; i < currentTabNames.count(); ++i) {
+    for (int i = 0, total = currentTabNames.count(); i < total; ++i) {
       auto currentTabName = currentTabNames.at(i);
       PresetTabWidget *presetTabWidget =
           this->getTabByName(ui->tabWidget, currentTabNames.at(i));
@@ -103,7 +103,7 @@ void PresetSelector::loadPresets() {
   }
 
   auto currentTabNames = this->getCurrentTabNames();
-  for (int i = 0; i < currentTabNames.count(); ++i) {
+  for (int i = 0, total = currentTabNames.count(); i < total; ++i) {
     PresetTabWidget *presetTabWidget =
         this->getTabByName(ui->tabWidget, currentTabNames.at(i));
     connect(presetTabWidget, &PresetTabWidget::presetSelectionChanged, this,
@@ -120,7 +120,7 @@ void PresetSelector::setLayoutContentsMargins(int margin) {
 
 void PresetSelector::clearSelection() {
   auto currentTabNames = this->getCurrentTabNames();
-  for (int i = 0; i < currentTabNames.count(); ++i) {
+  for (int i = 0, total = currentTabNames.count(); i < total; ++i) {
     PresetTabWidget *presetTabWidget =
         this->getTabByName(ui->tabWidget, currentTabNames.at(i));
     if (presetTabWidget) {

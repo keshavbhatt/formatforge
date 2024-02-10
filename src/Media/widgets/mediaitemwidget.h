@@ -25,7 +25,7 @@ public:
 
   QString getId() const;
 
-  private:
+private:
   Ui::MediaItemWidget *ui;
 
   QString m_id;

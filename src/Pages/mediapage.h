@@ -5,11 +5,9 @@
 
 #include <QWidget>
 
-#include <Widgets/spinner.h>
-
-#include <MediaProcessor/metadata_extractors/ffprobemetadataextractor.h>
-
-#include <Conversion/conversionqueue.h>
+#include "Conversion/conversionitem.h"
+#include "MediaProcessor/metadata_extractors/ffprobemetadataextractor.h"
+#include "Widgets/spinner.h"
 
 namespace Ui {
 class MediaPage;

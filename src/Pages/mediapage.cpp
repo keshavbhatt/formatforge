@@ -16,6 +16,7 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   ui->spinnerLayout->addWidget(spinner);
 
   ui->mediaListWidget->setSpacing(6);
+  ui->mediaListWidget->setEmptyText(tr("No media found"));
   ui->mediaListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
   // start UI connections
@@ -178,7 +179,7 @@ void MediaPage::updatePage() {
 QStringList MediaPage::getLoadedMediaFilesPath() {
   QStringList loadedMediaFilesPath;
 
-  for (int i = 0; i < ui->mediaListWidget->count(); ++i) {
+  for (int i = 0, total = ui->mediaListWidget->count(); i < total; ++i) {
     QListWidgetItem *item = ui->mediaListWidget->item(i);
     if (item) {
       QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
@@ -193,8 +194,9 @@ QStringList MediaPage::getLoadedMediaFilesPath() {
 }
 
 QList<ConversionItem> MediaPage::getSelectedMediaItems() const {
+
   QList<ConversionItem> conversionItems;
-  for (int i = 0; i < ui->mediaListWidget->count(); ++i) {
+  for (int i = 0, total = ui->mediaListWidget->count(); i < total; ++i) {
     QListWidgetItem *item = ui->mediaListWidget->item(i);
     if (item) {
       QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);

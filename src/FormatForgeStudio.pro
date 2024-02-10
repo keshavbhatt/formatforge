@@ -42,6 +42,7 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 SOURCES += \
     Conversion/conversionmanager.cpp \
     Conversion/conversionprocess.cpp \
+    Conversion/widgets/conversionitemwidget.cpp \
     Core/filescanner.cpp \
     Settings/settingsmanager.cpp \
     Media/widgets/mediaitemwidget.cpp \
@@ -51,8 +52,7 @@ SOURCES += \
     MediaProcessor/metadata_extractors/ffprobemetadataextractor.cpp \
     MediaProcessor/metadata_parsers/ffprobeparser.cpp \
     Conversion/conversionitem.cpp \
-    Conversion/conversionqueue.cpp \
-    Conversion/widgets/queueitemswidget.cpp \
+    Widgets/customlistwidget.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
@@ -70,6 +70,7 @@ SOURCES += \
 HEADERS += \
     Conversion/conversionmanager.h \
     Conversion/conversionprocess.h \
+    Conversion/widgets/conversionitemwidget.h \
     Core/filescanner.h \
     Settings/settings_constants.h \
     Settings/settingsmanager.h \
@@ -82,8 +83,7 @@ HEADERS += \
     MediaProcessor/metadata_parsers/ffprobeparser.h \
     Pages/page.h \
     Conversion/conversionitem.h \
-    Conversion/conversionqueue.h \
-    Conversion/widgets/queueitemswidget.h \
+    Widgets/customlistwidget.h \
     Widgets/mainwindow.h \
     Pages/homepage.h \
     Pages/mediapage.h \
@@ -98,8 +98,8 @@ HEADERS += \
     Core/utils.h
 
 FORMS += \
+    Conversion/widgets/conversionitemwidget.ui \
     Media/widgets/mediaitemwidget.ui \
-    Conversion/widgets/queueitemswidget.ui \
     Widgets/mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \

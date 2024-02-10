@@ -1,7 +1,5 @@
 #include "conversionmanager.h"
 
-#include <Conversion/conversionqueue.h>
-
 ConversionManager::ConversionManager(QObject *parent) : QObject{parent} {}
 
 ConversionManager::~ConversionManager() {
@@ -15,9 +13,8 @@ ConversionManager::~ConversionManager() {
 
 void ConversionManager::stopAllCoversions() { Q_UNIMPLEMENTED(); }
 
-void ConversionManager::convert(const ConversionQueue &queue) {
-  foreach (const ConversionItem &conversionItem,
-           queue.getAllConversionItems()) {
+void ConversionManager::convert(QList<ConversionItem> conversionItems) {
+  foreach (const ConversionItem &conversionItem, conversionItems) {
     ConversionProcess *conversionProcess =
         new ConversionProcess(this, conversionItem);
     m_conversionProcesses.append(conversionProcess);

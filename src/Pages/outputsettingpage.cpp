@@ -16,7 +16,7 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
           &OutputSettingPage::editSelectedPreset);
 }
 
-void OutputSettingPage::editSelectedPreset() {}
+void OutputSettingPage::editSelectedPreset() { Q_UNIMPLEMENTED(); }
 
 void OutputSettingPage::showPresetSelector() {
   if (presetSelector) {

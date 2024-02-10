@@ -65,28 +65,45 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
     extensionFilter += "*." + extension + " ";
   }
 
-  QFileDialog fileDialog(this);
+  auto DO_NOT_USE_NATIVE_FILE_SELECTOR =
+      SettingsManager::settings()
+          .value(SettingsConstants::DO_NOT_USE_NATIVE_FILE_SELECTOR, true)
+          .toBool();
+
+  QFileDialog fileDialog(0);
   fileDialog.setWindowTitle(tr("Select %1")
                                 .arg(fileMode == QFileDialog::Directory
                                          ? "Folder containing Media Files"
                                          : "Media Files"));
 
-  fileDialog.setDirectory(getFileSelectorLastUsedPath());
+  fileDialog.setOption(QFileDialog::DontUseNativeDialog,
+                       DO_NOT_USE_NATIVE_FILE_SELECTOR);
+
   fileDialog.setFileMode(fileMode);
   if (fileMode == QFileDialog::ExistingFiles) {
     fileDialog.setNameFilter(
         tr("Media Files (%1);;All Files (*)").arg(extensionFilter.trimmed()));
   }
 
+  fileDialog.setDirectory(getFileSelectorLastUsedPath());
+
   if (fileDialog.exec()) {
-    QStringList filePaths = fileDialog.selectedFiles();
+    const QStringList filePaths = fileDialog.selectedFiles();
 
-    SettingsManager::settings().setValue(
-        SettingsConstants::FILE_SELECTOR_LAST_USED_PATH,
-        QFileInfo(filePaths.first()).dir().absolutePath());
+    if (!filePaths.isEmpty()) {
+      const QString lastUsedDir =
+          QFileInfo(filePaths.first()).isDir()
+              ? filePaths.first()
+              : QFileInfo(filePaths.first()).dir().path();
 
-    emit goToNextPage();
-    emit mediaFileLoaded(filePaths);
+      SettingsManager::settings().setValue(
+          SettingsConstants::FILE_SELECTOR_LAST_USED_PATH, lastUsedDir);
+
+      emit goToNextPage();
+      emit filesSelected(filePaths);
+    } else {
+      qWarning() << "No file was selected!";
+    }
   }
 }
 

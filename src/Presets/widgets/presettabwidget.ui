@@ -35,7 +35,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="exetensionListWidget">
+        <widget class="CustomListWidget" name="exetensionListWidget">
          <property name="maximumSize">
           <size>
            <width>250</width>
@@ -59,7 +59,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="optionsListWidget"/>
+        <widget class="CustomListWidget" name="optionsListWidget"/>
        </item>
       </layout>
      </item>
@@ -67,6 +67,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomListWidget</class>
+   <extends>QListWidget</extends>
+   <header>Widgets/customlistwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

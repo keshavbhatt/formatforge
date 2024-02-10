@@ -1,11 +1,21 @@
 #include "queuepage.h"
 #include "ui_queuepage.h"
 
+#include <Conversion/widgets/conversionitemwidget.h>
+
 QueuePage::QueuePage(QWidget *parent) : Page(parent), ui(new Ui::QueuePage) {
   ui->setupUi(this);
+
+  m_conversionManager = new ConversionManager(this);
+
+  ui->mediaListWidget->setEmptyText(tr("Empty queue"));
 }
 
-QueuePage::~QueuePage() { delete ui; }
+QueuePage::~QueuePage() {
+  m_conversionManager->stopAllCoversions();
+  m_conversionManager->deleteLater();
+  delete ui;
+}
 
 OutputSettingPage *QueuePage::getOutputSettingPage() {
   OutputSettingPage *outputSettingPage =
@@ -35,22 +45,9 @@ Page *QueuePage::getPreviousPage() const { return m_prevPage; }
 
 void QueuePage::setPreviousPage(Page *prevPage) { m_prevPage = prevPage; }
 
-void QueuePage::setConversionManager(ConversionManager *conversionManager) {
-
-  if (m_conversionManager != nullptr) {
-    m_conversionManager->stopAllCoversions();
-    m_conversionManager->deleteLater();
-    qDebug() << "Settings conversion manager removing existing";
-    m_conversionManager = conversionManager;
-  } else {
-    qDebug() << "Settings conversion manager";
-    m_conversionManager = conversionManager;
-  }
-}
-
 void QueuePage::convert() {
   if (m_conversionManager) {
-    m_conversionManager->convert(m_conversionQueue);
+    m_conversionManager->convert(this->getAllConversionItems());
   } else {
     qWarning() << "No ConversionManager found";
   }
@@ -67,43 +64,63 @@ void QueuePage::prepare() {
   OutputSettingPage *outputSettingPage =
       qobject_cast<OutputSettingPage *>(getPreviousPage());
   if (outputSettingPage) {
-
-    // preset
+    // get selected preset from outputSettingPage
     auto selectedPreset = outputSettingPage->getSelectedPreset();
-
     if (selectedPreset.isValid()) {
       ui->presetLineEdit->setText(selectedPreset.getParams());
     } else {
       ui->presetLineEdit->setText("Invalid preset");
     }
 
-    // load selected media files
+    // load selected media files from mediaPage
     MediaPage *mediaPage =
         qobject_cast<MediaPage *>(outputSettingPage->getPreviousPage());
     if (mediaPage) {
-      m_conversionQueue.clearQueue();
-      ui->mediaListWidget->clear();
+      loadConversionItemsToView(mediaPage, selectedPreset);
+    } else {
+      qWarning() << Q_FUNC_INFO << "Unable to get mediaPage";
+    }
+  } else {
+    qWarning() << Q_FUNC_INFO << "Unable to get outputSettingPage";
+  }
+}
 
-      QList<ConversionItem> conversionItems;
-      foreach (ConversionItem conversionItem,
-               mediaPage->getSelectedMediaItems()) {
-        conversionItem.setFfmpegArguments(ui->presetLineEdit->text());
-        conversionItem.setOutputExetension(selectedPreset.getExtension());
+void QueuePage::loadConversionItemsToView(MediaPage *mediaPage,
+                                          const Preset &selectedPreset) {
+  ui->mediaListWidget->clear();
 
-        if (conversionItem.isValid()) {
-          this->addConversionItem(conversionItem);
-          conversionItems.append(conversionItem);
-          m_conversionQueue.addConversionItem(conversionItem);
-        } else {
-          qWarning() << "Conversion item is invalid";
-        }
-      }
+  foreach (ConversionItem conversionItem, mediaPage->getSelectedMediaItems()) {
+    conversionItem.setFfmpegArguments(ui->presetLineEdit->text());
+    conversionItem.setOutputExetension(selectedPreset.getExtension());
+
+    if (conversionItem.isValid()) {
+      this->addConversionItem(conversionItem);
+    } else {
+      qWarning() << "Conversion item is invalid";
     }
   }
 }
 
 void QueuePage::addConversionItem(const ConversionItem &conversionItem) {
+  // TODO: add conversionItem to the itemwidget
   ui->mediaListWidget->addItem(conversionItem.getFilePath());
+}
+
+QList<ConversionItem> QueuePage::getAllConversionItems() const {
+
+  QList<ConversionItem> conversionItems;
+  for (int i = 0, total = ui->mediaListWidget->count(); i < total; ++i) {
+    QListWidgetItem *item = ui->mediaListWidget->item(i);
+    if (item) {
+      QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+      ConversionItemWidget *conversionItemWidget =
+          qobject_cast<ConversionItemWidget *>(itemWidget);
+      if (conversionItemWidget) {
+        conversionItems.append(conversionItemWidget->getConversionItem());
+      }
+    }
+  }
+  return conversionItems;
 }
 
 void QueuePage::updatePage() {}

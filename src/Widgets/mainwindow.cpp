@@ -56,7 +56,7 @@ void MainWindow::preparePages() {
   queuePage->setPreviousPage(outputSettingPage);
 
   // connect main toolbar action and add action to toolbar
-  for (int i = 0; i < mainToolbarActionsWidgetPair.size(); ++i) {
+  for (int i = 0, total = mainToolbarActionsWidgetPair.size(); i < total; ++i) {
     QPair<QAction *, Page *> p = mainToolbarActionsWidgetPair.at(i);
     QAction *a = p.first;
     a->setCheckable(true);
@@ -95,7 +95,6 @@ void MainWindow::createActions() {
 
   connect(convertAction, &QAction::triggered, this, [=]() {
     if (queuePage) {
-      queuePage->setConversionManager(new ConversionManager(this));
       queuePage->convert();
     }
   });
@@ -123,12 +122,11 @@ void MainWindow::initPages() {
   stackedWidget->addWidget(queuePage);
 
   // page connections
-  for (int i = 0; i < stackedWidget->count(); ++i) {
+  for (int i = 0, total = stackedWidget->count(); i < total; ++i) {
 
     auto page = qobject_cast<Page *>(stackedWidget->widget(i));
 
     if (page) {
-
       connect(page, &Page::goToNextPage, this, [=]() {
         if (page->getNextPage())
           this->switchStackWidget(page->getNextPage());
@@ -146,7 +144,7 @@ void MainWindow::initPages() {
   }
 
   // other connections
-  connect(homePage, &HomePage::mediaFileLoaded, mediaPage,
+  connect(homePage, &HomePage::filesSelected, mediaPage,
           &MediaPage::loadMediaFiles);
 
   connect(outputSettingPage, &OutputSettingPage::presetSelectionChanged, this,

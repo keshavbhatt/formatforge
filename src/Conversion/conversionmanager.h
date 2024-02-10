@@ -7,8 +7,6 @@
 #include <QObject>
 #include <QProcess>
 
-#include <Conversion/conversionqueue.h>
-
 class ConversionManager : public QObject {
   Q_OBJECT
 public:
@@ -16,7 +14,7 @@ public:
   ~ConversionManager();
 
   void stopAllCoversions();
-  void convert(const ConversionQueue &queue);
+  void convert(QList<ConversionItem> conversionItems);
 signals:
 
 private:

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    //qApp->setStyle(QStyleFactory::create("fusion"));
+    qApp->setStyle(QStyleFactory::create("fusion"));
 
     MainWindow w;
     w.setWindowTitle(QApplication::applicationName());

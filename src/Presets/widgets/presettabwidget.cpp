@@ -10,6 +10,10 @@ PresetTabWidget::PresetTabWidget(QWidget *parent, QString name)
 
   this->tabName = name;
 
+  ui->exetensionListWidget->setEmptyText(tr("No exetensions found"));
+  ui->optionsListWidget->setEmptyText(
+      tr("No preset found for selected exetension"));
+
   connect(ui->exetensionListWidget, &QListWidget::currentRowChanged, this,
           &PresetTabWidget::exetensionListWidgetCurrentRowChanged);
 
@@ -55,7 +59,7 @@ void PresetTabWidget::exetensionListWidgetItemClicked(QListWidgetItem *item) {
 
   ui->optionsListWidget->clear();
 
-  for (int i = 0; i < presetsByExetension.count(); ++i) {
+  for (int i = 0, total = presetsByExetension.count(); i < total; ++i) {
     QListWidgetItem *item = new QListWidgetItem(
         QIcon(":/primo/receipt.png"), presetsByExetension.at(i).getLabel(),
         ui->optionsListWidget);
