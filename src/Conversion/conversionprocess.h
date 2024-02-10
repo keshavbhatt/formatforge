@@ -5,7 +5,7 @@
 #include <QProcess>
 #include <QDebug>
 
-#include <Queue/conversionitem.h>
+#include <Conversion/conversionitem.h>
 
 class ConversionProcess : public QObject {
   Q_OBJECT

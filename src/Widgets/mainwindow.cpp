@@ -2,7 +2,7 @@
 #include "Presets/widgets/presetselector.h"
 #include "ui_mainwindow.h"
 
-#include <Core/conversionmanager.h>
+#include <Conversion/conversionmanager.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {

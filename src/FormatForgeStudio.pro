@@ -40,19 +40,19 @@ include(Widgets/SlidingStackedWidget/SlidingStackedWidget.pri)
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Core/conversionmanager.cpp \
-    Core/conversionprocess.cpp \
+    Conversion/conversionmanager.cpp \
+    Conversion/conversionprocess.cpp \
     Core/filescanner.cpp \
-    Core/settingsmanager.cpp \
+    Settings/settingsmanager.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
     MediaProcessor/metadata/videometadata.cpp \
     MediaProcessor/metadata_extractors/ffmpegthumbnailextractor.cpp \
     MediaProcessor/metadata_extractors/ffprobemetadataextractor.cpp \
     MediaProcessor/metadata_parsers/ffprobeparser.cpp \
-    Queue/conversionitem.cpp \
-    Queue/conversionqueue.cpp \
-    Queue/widgets/queueitemswidget.cpp \
+    Conversion/conversionitem.cpp \
+    Conversion/conversionqueue.cpp \
+    Conversion/widgets/queueitemswidget.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
@@ -68,11 +68,11 @@ SOURCES += \
     Core/utils.cpp
 
 HEADERS += \
-    Core/conversionmanager.h \
-    Core/conversionprocess.h \
+    Conversion/conversionmanager.h \
+    Conversion/conversionprocess.h \
     Core/filescanner.h \
-    Core/settings_constants.h \
-    Core/settingsmanager.h \
+    Settings/settings_constants.h \
+    Settings/settingsmanager.h \
     Media/widgets/mediaitemwidget.h \
     MediaProcessor/metadata/audiometadata.h \
     MediaProcessor/metadata/mediametadata.h \
@@ -81,9 +81,9 @@ HEADERS += \
     MediaProcessor/metadata_extractors/ffprobemetadataextractor.h \
     MediaProcessor/metadata_parsers/ffprobeparser.h \
     Pages/page.h \
-    Queue/conversionitem.h \
-    Queue/conversionqueue.h \
-    Queue/widgets/queueitemswidget.h \
+    Conversion/conversionitem.h \
+    Conversion/conversionqueue.h \
+    Conversion/widgets/queueitemswidget.h \
     Widgets/mainwindow.h \
     Pages/homepage.h \
     Pages/mediapage.h \
@@ -99,7 +99,7 @@ HEADERS += \
 
 FORMS += \
     Media/widgets/mediaitemwidget.ui \
-    Queue/widgets/queueitemswidget.ui \
+    Conversion/widgets/queueitemswidget.ui \
     Widgets/mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \

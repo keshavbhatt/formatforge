@@ -6,7 +6,7 @@
 
 #include <QWidget>
 
-#include <Core/conversionmanager.h>
+#include <Conversion/conversionmanager.h>
 
 namespace Ui {
 class QueuePage;

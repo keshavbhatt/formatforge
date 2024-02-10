@@ -9,7 +9,7 @@
 
 #include <MediaProcessor/metadata_extractors/ffprobemetadataextractor.h>
 
-#include <Queue/conversionqueue.h>
+#include <Conversion/conversionqueue.h>
 
 namespace Ui {
 class MediaPage;

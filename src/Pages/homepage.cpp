@@ -8,7 +8,7 @@
 #include <Presets/defaultpresetreader.h>
 
 #include <Core/filescanner.h>
-#include <Core/settingsmanager.h>
+#include <Settings/settingsmanager.h>
 
 HomePage::HomePage(QWidget *parent) : Page(parent), ui(new Ui::HomePage) {
   ui->setupUi(this);

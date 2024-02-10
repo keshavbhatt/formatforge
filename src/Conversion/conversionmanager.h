@@ -7,7 +7,7 @@
 #include <QObject>
 #include <QProcess>
 
-#include <Queue/conversionqueue.h>
+#include <Conversion/conversionqueue.h>
 
 class ConversionManager : public QObject {
   Q_OBJECT

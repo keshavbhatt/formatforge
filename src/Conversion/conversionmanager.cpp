@@ -1,6 +1,6 @@
 #include "conversionmanager.h"
 
-#include <Queue/conversionqueue.h>
+#include <Conversion/conversionqueue.h>
 
 ConversionManager::ConversionManager(QObject *parent) : QObject{parent} {}
 
