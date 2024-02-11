@@ -109,8 +109,8 @@ void PresetSelector::loadPresets() {
     connect(presetTabWidget, &PresetTabWidget::presetSelectionChanged, this,
             [=](const Preset &selectedPreset) {
               this->selectedPreset = selectedPreset;
-              emit presetSelectionChanged();
-            });
+              emit this->presetSelectionChanged();
+        });
   }
 }
 

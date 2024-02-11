@@ -28,11 +28,11 @@ public:
 private:
   Ui::MediaItemWidget *ui;
 
-  QString m_id;
   QString m_filePath;
   QFileInfo m_fileInfo;
-  FFMpegThumbnailExtractor *mediaThumbnailProcessor = nullptr;
   MediaMetaData *m_mediaMetaData = nullptr;
+  QString m_id;
+  FFMpegThumbnailExtractor *mediaThumbnailProcessor = nullptr;
 
   void setValuesFromMetadata();
   QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,

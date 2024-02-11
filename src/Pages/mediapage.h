@@ -33,7 +33,7 @@ private:
   Spinner *spinner = nullptr;
 
   void updatePage();
-  void addMediaItem(const QString &filePath, const QString &result);
+  void addMediaItemToView(const QString &filePath, const QString &result);
   void processMedia(const QStringList &fileNameList);
   void removeSelectedMediaListWidgetItems();
   void updatePageStatusMessage();

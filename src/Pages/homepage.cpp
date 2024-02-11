@@ -39,17 +39,20 @@ void HomePage::addMediaFromExistingFiles() {
 
 QString HomePage::getFileSelectorLastUsedPath() {
 
-  auto fallbackPath = QDir::homePath();
-
-  auto FILE_SELECTOR_LAST_USED_PATH =
-      SettingsManager::settings()
-          .value(SettingsConstants::FILE_SELECTOR_LAST_USED_PATH)
+  auto fallbackPath =
+      SettingsConstantsGetDefaultFor(SettingKeys::FILE_SELECTOR_LAST_USED_PATH)
           .toString();
 
-  if (FILE_SELECTOR_LAST_USED_PATH.isEmpty() == false) {
-    QFileInfo fileInfo(FILE_SELECTOR_LAST_USED_PATH);
+  auto fileSelectorLastUsedPath =
+      SettingsManager::settings()
+          .value(SettingsConstantsGetNameFor(
+              SettingKeys::FILE_SELECTOR_LAST_USED_PATH))
+          .toString();
+
+  if (fileSelectorLastUsedPath.isEmpty() == false) {
+    QFileInfo fileInfo(fileSelectorLastUsedPath);
     if (fileInfo.isDir()) {
-      return FILE_SELECTOR_LAST_USED_PATH;
+      return fileSelectorLastUsedPath;
     } else {
       return fallbackPath;
     }
@@ -67,7 +70,10 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
 
   auto DO_NOT_USE_NATIVE_FILE_SELECTOR =
       SettingsManager::settings()
-          .value(SettingsConstants::DO_NOT_USE_NATIVE_FILE_SELECTOR, true)
+          .value(SettingsConstantsGetNameFor(
+                     SettingKeys::DO_NOT_USE_NATIVE_FILE_SELECTOR),
+                 SettingsConstantsGetDefaultFor(
+                     SettingKeys::DO_NOT_USE_NATIVE_FILE_SELECTOR))
           .toBool();
 
   QFileDialog fileDialog(0);
@@ -97,7 +103,9 @@ void HomePage::openFileSelector(QFileDialog::FileMode fileMode) {
               : QFileInfo(filePaths.first()).dir().path();
 
       SettingsManager::settings().setValue(
-          SettingsConstants::FILE_SELECTOR_LAST_USED_PATH, lastUsedDir);
+          SettingsConstantsGetNameFor(
+              SettingKeys::FILE_SELECTOR_LAST_USED_PATH),
+          lastUsedDir);
 
       emit goToNextPage();
       emit filesSelected(filePaths);

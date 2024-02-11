@@ -63,6 +63,7 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
           this, &MediaItemWidget::setMediaItemThumbnail);
   // end FFMpegThumbnailExtractor connections
 
+  // thumbnail size
   int width = height() * 1.78;
   ui->fileThumbnailLabel->setMinimumSize(width, height());
 

@@ -1,5 +1,7 @@
 #include "conversionitem.h"
 
+#include <QFileInfo>
+
 ConversionItem::ConversionItem() {}
 
 ConversionItem::ConversionItem(const QString &filePath,
@@ -20,9 +22,21 @@ void ConversionItem::setOutputExetension(const QString &newOutputExetension) {
   m_outputExetension = newOutputExetension;
 }
 
+void ConversionItem::setOutputDirectory(const QString &newOutputDirectory) {
+  m_outputDirectory = newOutputDirectory;
+}
+
+void ConversionItem::setPreserveHierarchy(bool newPreserveHierarchy) {
+  m_preserveHierarchy = newPreserveHierarchy;
+}
+
 void ConversionItem::setId(const QString &newId) { m_id = newId; }
 
 QString ConversionItem::getFilePath() const { return m_filePath; }
+
+QString ConversionItem::getFileBaseName() const {
+  return QFileInfo(m_filePath).baseName();
+}
 
 QString ConversionItem::getFfmpegArguments() const { return m_ffmpegArguments; }
 
@@ -32,7 +46,12 @@ QString ConversionItem::getOutputExetension() const {
   return m_outputExetension.toLower();
 }
 
+QString ConversionItem::getOutputDirectory() const { return m_outputDirectory; }
+
+bool ConversionItem::preserveHierarchy() const { return m_preserveHierarchy; }
+
 bool ConversionItem::isValid() {
   return !m_filePath.isEmpty() || !m_ffmpegArguments.isEmpty() ||
-         !m_id.isEmpty() || !m_outputExetension.isEmpty();
+         !m_id.isEmpty() || !m_outputExetension.isEmpty() ||
+         !m_outputDirectory.isEmpty();
 }

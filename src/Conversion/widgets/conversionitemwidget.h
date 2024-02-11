@@ -23,6 +23,8 @@ public:
 private:
   Ui::ConversionItemWidget *ui;
   ConversionItem m_conversionItem;
+
+  void setValuesFromConversionItem();
 };
 
 #endif // CONVERSIONITEMWIDGET_H

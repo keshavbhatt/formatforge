@@ -2,8 +2,11 @@
 #define OUTPUTSETTINGPAGE_H
 
 #include "Presets/widgets/presetselector.h"
+#include "Settings/settingsmanager.h"
 #include "mediapage.h"
 #include "page.h"
+
+#include <QFileDialog>
 #include <QWidget>
 
 namespace Ui {
@@ -17,7 +20,25 @@ public:
   explicit OutputSettingPage(QWidget *parent = nullptr);
   ~OutputSettingPage();
 
+  bool isEnabled();
+  Page *getNextPage() const;
+  Page *getPreviousPage() const;
+  void setNextPage(Page *nextPage);
+  void setPreviousPage(Page *prevPage);
+
   void showPresetSelector();
+  bool hasValidSelectedPreset();
+  void clearPresetSelection();
+
+  Preset getSelectedPreset() const;
+  QString getOutputDirectoryPath() const;
+  bool getPreserveHierarchy();
+public slots:
+  void activate();
+  void selectOutputDirectory();
+
+signals:
+  void presetSelectionChanged(const Preset &preset);
 
 private:
   Ui::OutputSettingPage *ui;
@@ -27,25 +48,11 @@ private:
   Page *m_nextPage = nullptr;
   Page *m_prevPage = nullptr;
 
+  QString m_outputDirectoryPath;
+
   void updatePage();
   MediaPage *getMediaPage();
   void updatePageStatusMessage();
-
-signals:
-  void presetSelectionChanged(const Preset &preset);
-
-public slots:
-  void activate();
-
-public:
-  bool isEnabled();
-  void setNextPage(Page *nextPage);
-  Page *getNextPage() const;
-  Page *getPreviousPage() const;
-  void setPreviousPage(Page *prevPage);
-  bool hasValidSelectedPreset();
-  void clearPresetSelection();
-  Preset getSelectedPreset() const;
 
 private slots:
   void editSelectedPreset();

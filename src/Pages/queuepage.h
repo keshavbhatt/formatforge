@@ -1,12 +1,12 @@
 #ifndef QUEUEPAGE_H
 #define QUEUEPAGE_H
 
+#include "Conversion/conversionmanager.h"
+#include "Conversion/widgets/conversionitemwidget.h"
 #include "outputsettingpage.h"
 #include "page.h"
-
+#include <QScrollBar>
 #include <QWidget>
-
-#include <Conversion/conversionmanager.h>
 
 namespace Ui {
 class QueuePage;
@@ -42,9 +42,10 @@ private:
 
   ConversionManager *m_conversionManager = nullptr;
 
-  void addConversionItem(const ConversionItem &conversionItem);
-  void loadConversionItemsToView(MediaPage *mediaPage,
-                                 const Preset &selectedPreset);
+  void addConversionItemToView(const ConversionItem &conversionItem);
+  void addConversionItems(MediaPage *mediaPage, const Preset &selectedPreset,
+                          const QString &outputDirectoryPath,
+                          bool preserveHierarchy);
 
   QList<ConversionItem> getAllConversionItems() const;
 };

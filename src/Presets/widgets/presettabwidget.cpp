@@ -12,19 +12,13 @@ PresetTabWidget::PresetTabWidget(QWidget *parent, QString name)
 
   ui->exetensionListWidget->setEmptyText(tr("No exetensions found"));
   ui->optionsListWidget->setEmptyText(
-      tr("No preset found for selected exetension"));
+      tr("Select an exetension to see available presets"));
 
-  connect(ui->exetensionListWidget, &QListWidget::currentRowChanged, this,
-          &PresetTabWidget::exetensionListWidgetCurrentRowChanged);
+  connect(ui->exetensionListWidget, &QListWidget::itemSelectionChanged, this,
+          &PresetTabWidget::exetensionListWidgetItemSelectionChanged);
 
-  connect(ui->optionsListWidget, &QListWidget::currentRowChanged, this,
-          &PresetTabWidget::optionsListWidgeCurrentRowChanged);
-
-  connect(ui->exetensionListWidget, &QListWidget::itemClicked, this,
-          &PresetTabWidget::exetensionListWidgetItemClicked);
-
-  connect(ui->optionsListWidget, &QListWidget::itemClicked, this,
-          &PresetTabWidget::optionsListWidgeItemClicked);
+  connect(ui->optionsListWidget, &QListWidget::itemSelectionChanged, this,
+          &PresetTabWidget::optionsListWidgetItemSelectionChanged);
 }
 
 PresetTabWidget::~PresetTabWidget() { delete ui; }
@@ -50,7 +44,8 @@ void PresetTabWidget::clearSelection() {
   ui->optionsListWidget->clear();
 }
 
-void PresetTabWidget::exetensionListWidgetItemClicked(QListWidgetItem *item) {
+void PresetTabWidget::exetensionListWidgetItemSelectionChanged() {
+  auto item = ui->exetensionListWidget->currentItem();
   // load related presets in the optionsListWidget
   ui->optionsListWidget->blockSignals(true);
   QList<Preset> presetsByExetension =
@@ -69,34 +64,13 @@ void PresetTabWidget::exetensionListWidgetItemClicked(QListWidgetItem *item) {
   ui->optionsListWidget->blockSignals(false);
 }
 
-void PresetTabWidget::optionsListWidgeItemClicked(QListWidgetItem *item) {
-  if (item) {
-    // load preset's in the editPresetWidget
-    Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
-        item->data(Qt::UserRole).toString());
+void PresetTabWidget::optionsListWidgetItemSelectionChanged() {
+  auto item = ui->optionsListWidget->currentItem();
 
-    emit presetSelectionChanged(presetByKey);
+  // load preset's in the editPresetWidget
+  Preset presetByKey = DefaultPresetReader::getInstance()->getPresetByKey(
+      item->data(Qt::UserRole).toString());
 
-    qDebug() << "------------------";
-    qDebug() << "Key:" << presetByKey.getKey();
-    qDebug() << "Label:" << presetByKey.getLabel();
-    qDebug() << "Params:" << presetByKey.getParams();
-    qDebug() << "Extension:" << presetByKey.getExtension();
-    qDebug() << "Category:" << presetByKey.getCategory();
-    qDebug() << "------------------";
-  }
-}
-
-void PresetTabWidget::exetensionListWidgetCurrentRowChanged(int row) {
-  auto currentItem = ui->exetensionListWidget->item(row);
-  if (currentItem) {
-    exetensionListWidgetItemClicked(currentItem);
-  }
-}
-
-void PresetTabWidget::optionsListWidgeCurrentRowChanged(int row) {
-  auto currentItem = ui->optionsListWidget->item(row);
-  if (currentItem) {
-    optionsListWidgeItemClicked(currentItem);
-  }
+  presetByKey.print();
+  emit presetSelectionChanged(presetByKey);
 }

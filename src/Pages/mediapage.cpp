@@ -58,7 +58,7 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
           });
 
   connect(&mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
-          this, &MediaPage::addMediaItem);
+          this, &MediaPage::addMediaItemToView);
   // end FFProbeMetaDataExtractor connections
 }
 
@@ -87,14 +87,14 @@ void MediaPage::removeSelectedMediaListWidgetItems() {
     }
   }
   updateBottomToolbarButtons();
+  this->updatePage();
 }
 
-void MediaPage::addMediaItem(const QString &filePath, const QString &result) {
+void MediaPage::addMediaItemToView(const QString &filePath, const QString &result) {
 
   MediaMetaData *mediaMetaData =
       FFProbeParser::getMediaMetaDataFor(filePath, result);
   if (mediaMetaData) {
-
     QScrollBar *vScrollBar = ui->mediaListWidget->verticalScrollBar();
     bool atBottom = vScrollBar->value() == vScrollBar->maximum();
 
@@ -108,7 +108,7 @@ void MediaPage::addMediaItem(const QString &filePath, const QString &result) {
       ui->mediaListWidget->scrollToBottom();
     }
   } else {
-    qDebug() << filePath << "not added";
+    qWarning() << filePath << "not added, unable to get metadata!";
   }
 }
 

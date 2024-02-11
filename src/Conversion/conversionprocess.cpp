@@ -2,7 +2,40 @@
 
 ConversionProcess::ConversionProcess(QObject *parent,
                                      const ConversionItem &conversionItem)
-    : QObject{parent}, m_conversionItem(conversionItem) {}
+    : QObject{parent}, m_conversionItem(conversionItem) {
+  ensureOutputDirectory();
+}
+
+ConversionProcess::~ConversionProcess() {
+  this->stop();
+  if (m_conversionProcess) {
+    m_conversionProcess->deleteLater();
+  }
+}
+
+void ConversionProcess::ensureOutputDirectory() {
+  QString inputFilePath = m_conversionItem.getFilePath();
+  QFileInfo inputFileInfo(inputFilePath);
+  QString outputDir = m_conversionItem.getOutputDirectory();
+
+  if (!outputDir.endsWith(QDir::separator())) {
+    outputDir += QDir::separator();
+  }
+
+  if (m_conversionItem.preserveHierarchy()) {
+    QString relativePath = inputFileInfo.absoluteDir().path();
+    if (!relativePath.endsWith(QDir::separator())) {
+      relativePath += QDir::separator();
+    }
+    m_outputDirectory = outputDir + relativePath;
+  } else {
+    m_outputDirectory = outputDir;
+  }
+
+  QDir().mkpath(m_outputDirectory);
+
+  m_outputDirectory = QDir::toNativeSeparators(m_outputDirectory);
+}
 
 void ConversionProcess::stop() {
   if (m_conversionProcess &&
@@ -41,10 +74,11 @@ void ConversionProcess::start() {
   QStringList args;
   args << "-i" << m_conversionItem.getFilePath();
   args << m_conversionItem.getFfmpegArguments().split(" ");
-  args << "/tmp/" + m_conversionItem.getId() + "." +
+  args << m_outputDirectory + m_conversionItem.getFileBaseName() + "." +
               m_conversionItem.getOutputExetension();
   m_conversionProcess->setArguments(args);
 
-  qDebug() << "Starting process" << m_conversionItem.getId();
+  qDebug() << "Starting process" << m_outputDirectory
+           << m_conversionItem.getId();
   m_conversionProcess->start();
 }

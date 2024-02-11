@@ -3,18 +3,50 @@
 
 #include <QStandardPaths>
 #include <QtCore>
+#include <qmetaobject.h>
 
 namespace SettingsConstants {
 
-inline const QString OUTPUT_DIRECTORY_PATH =
-    QStringLiteral("OUTPUT_DIRECTORY_PATH");
+Q_NAMESPACE
 
-inline const QString FILE_SELECTOR_LAST_USED_PATH =
-    QStringLiteral("FILE_SELECTOR_LAST_USED_PATH");
+enum SettingKeys {
+  OUTPUT_DIRECTORY_PATH,
+  FILE_SELECTOR_LAST_USED_PATH,
+  DO_NOT_USE_NATIVE_FILE_SELECTOR,
+  PRESERVE_HIERARCHY_IN_OUTPUT_DIR
+};
+Q_ENUM_NS(SettingKeys)
 
-inline const QString DO_NOT_USE_NATIVE_FILE_SELECTOR =
-    QStringLiteral("DO_NOT_USE_NATIVE_FILE_SELECTOR");
+inline QString SettingsConstantsGetNameFor(SettingKeys key) {
+  QMetaEnum metaEnum = QMetaEnum::fromType<SettingsConstants::SettingKeys>();
+  const char *valueToKey = metaEnum.valueToKey(key);
+
+  if (valueToKey) {
+    return QString(valueToKey);
+  } else {
+    qWarning() << "SettingKey not found for value:" << key;
+    return QString();
+  }
+}
+
+inline QVariant SettingsConstantsGetDefaultFor(SettingKeys key) {
+  switch (key) {
+  case SettingKeys::OUTPUT_DIRECTORY_PATH:
+    return QVariant(
+        QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
+  case SettingKeys::FILE_SELECTOR_LAST_USED_PATH:
+    return QVariant(QDir::homePath());
+  case SettingKeys::DO_NOT_USE_NATIVE_FILE_SELECTOR:
+    return QVariant(false);
+  case SettingKeys::PRESERVE_HIERARCHY_IN_OUTPUT_DIR:
+    return QVariant(true);
+  default:
+    return QVariant();
+  }
+}
 
 } // namespace SettingsConstants
+
+// Q_DECLARE_METATYPE(SettingsConstants::SettingKeys)
 
 #endif // SETTINGS_CONSTANTS_H

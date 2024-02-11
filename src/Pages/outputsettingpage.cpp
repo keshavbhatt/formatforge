@@ -14,6 +14,77 @@ OutputSettingPage::OutputSettingPage(QWidget *parent)
   ui->editSelectedPresetPushButton->setIcon(QIcon(":/primo/pencil.png"));
   connect(ui->editSelectedPresetPushButton, &QPushButton::clicked, this,
           &OutputSettingPage::editSelectedPreset);
+
+  // OUTPUT PRESERVE HIERARCHY
+  auto preserveHierarchy =
+      SettingsManager::settings()
+          .value(SettingsConstantsGetNameFor(
+                     SettingKeys::PRESERVE_HIERARCHY_IN_OUTPUT_DIR),
+                 true)
+          .toBool();
+  ui->preserveHierarchyCheckBox->setChecked(preserveHierarchy);
+  connect(ui->preserveHierarchyCheckBox, &QCheckBox::toggled,
+          [=](bool checked) {
+            SettingsManager::settings().setValue(
+                SettingsConstantsGetNameFor(
+                    SettingKeys::PRESERVE_HIERARCHY_IN_OUTPUT_DIR),
+                checked);
+          });
+
+  // OUTPUT DIRECTORY
+  ui->outputDirectoryLineEdit->setFocusPolicy(Qt::NoFocus);
+  ui->outputDirectoryLineEdit->setReadOnly(true);
+
+  m_outputDirectoryPath =
+      SettingsManager::settings()
+          .value(
+              SettingsConstantsGetNameFor(SettingKeys::OUTPUT_DIRECTORY_PATH),
+              SettingsConstantsGetDefaultFor(SettingKeys::OUTPUT_DIRECTORY_PATH)
+                  .toString())
+          .toString();
+  ui->outputDirectoryLineEdit->setText(m_outputDirectoryPath);
+  connect(ui->changeOutputDirPushButton, &QPushButton::clicked, this,
+          &OutputSettingPage::selectOutputDirectory);
+}
+
+void OutputSettingPage::selectOutputDirectory() {
+
+  auto doNotUseNativeFileSelector =
+      SettingsManager::settings()
+          .value(SettingsConstantsGetNameFor(
+                     SettingKeys::DO_NOT_USE_NATIVE_FILE_SELECTOR),
+                 SettingsConstantsGetDefaultFor(
+                     SettingKeys::DO_NOT_USE_NATIVE_FILE_SELECTOR))
+          .toBool();
+
+  QString newOutputDirectory;
+
+  if (doNotUseNativeFileSelector) {
+    newOutputDirectory = QFileDialog::getExistingDirectory(
+        this, tr("Select Output Directory"), m_outputDirectoryPath,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks |
+            QFileDialog::DontUseNativeDialog);
+  } else {
+    newOutputDirectory = QFileDialog::getExistingDirectory(
+        this, tr("Select Output Directory"), m_outputDirectoryPath,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  }
+
+  if (!newOutputDirectory.isEmpty()) {
+    m_outputDirectoryPath = newOutputDirectory;
+    ui->outputDirectoryLineEdit->setText(m_outputDirectoryPath);
+    SettingsManager::settings().setValue(
+        SettingsConstantsGetNameFor(SettingKeys::OUTPUT_DIRECTORY_PATH),
+        m_outputDirectoryPath);
+  }
+}
+
+QString OutputSettingPage::getOutputDirectoryPath() const {
+  return m_outputDirectoryPath;
+}
+
+bool OutputSettingPage::getPreserveHierarchy() {
+  return ui->preserveHierarchyCheckBox->isChecked();
 }
 
 void OutputSettingPage::editSelectedPreset() { Q_UNIMPLEMENTED(); }
