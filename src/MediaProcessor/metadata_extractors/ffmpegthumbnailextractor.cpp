@@ -1,5 +1,13 @@
 #include "ffmpegthumbnailextractor.h"
 
+#include <MediaProcessor/cache/cachestore.h>
+
+#include <Core/utils.h>
+
+/**
+ * @brief FFMpegThumbnailExtractor::FFMpegThumbnailExtractor
+ * @param parent
+ */
 FFMpegThumbnailExtractor::FFMpegThumbnailExtractor(QObject *parent)
     : MetadataExtractor(parent), processedFilesCounter(0) {}
 
@@ -19,7 +27,6 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
     const QString &filePath = fileNames.at(processedFilesCounter);
 
     QProcess *ffmpegProcess = new QProcess(this);
-
     connect(ffmpegProcess,
             QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this,
             [=](int exitCode, QProcess::ExitStatus exitStatus) {
@@ -44,34 +51,6 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
 
               ffmpegProcess->deleteLater();
             });
-
-    // TIME BASED
-    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
-    //                                              << "quiet"
-    //                                              << "-i" << fileName << "-ss"
-    //                                              << "0"
-    //                                              << "-vframes"
-    //                                              << "1"
-    //                                              << "-f"
-    //                                              << "image2pipe"
-    //                                              << "-");
-
-    // ffmpeg  -i l.webm -vf "thumbnail,select=gt(scene\,0.015)" -vsync vfr
-    // "outd.jpg"
-
-    // THUMBNAIL PLUGIN BASED(probably broken here) see notes.md
-    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
-    //                                              << "quiet"
-    //                                              << "-i" << fileName << "-vf"
-    //                                              <<
-    //                                              "thumbnail,select=gt(scene\,0.015)"
-    //                                              << "-vsync"
-    //                                              << "vfr"
-    //                                              << "-f"
-    //                                              << "image2pipe"
-    //                                              << "-");
-
-    // ffmpeg -i l.webm -vf "select=gte(n\,100)" -vframes 1 out_img.png
     ffmpegProcess->start("ffmpeg", QStringList() << "-v"
                                                  << "quiet"
                                                  << "-i" << filePath << "-vf"

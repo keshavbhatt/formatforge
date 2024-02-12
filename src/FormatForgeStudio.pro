@@ -44,7 +44,7 @@ SOURCES += \
     Conversion/conversionprocess.cpp \
     Conversion/widgets/conversionitemwidget.cpp \
     Core/filescanner.cpp \
-    MediaProcessor/cache/cache.cpp \
+    MediaProcessor/cache/cachestore.cpp \
     Settings/settingsmanager.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
@@ -73,7 +73,7 @@ HEADERS += \
     Conversion/conversionprocess.h \
     Conversion/widgets/conversionitemwidget.h \
     Core/filescanner.h \
-    MediaProcessor/cache/cache.h \
+    MediaProcessor/cache/cachestore.h \
     MediaProcessor/metadata_extractors/metadata_extractor.h \
     Settings/settings_constants.h \
     Settings/settingsmanager.h \
