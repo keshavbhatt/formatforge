@@ -1,0 +1,25 @@
+ // TIME BASED
+    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
+    //                                              << "quiet"
+    //                                              << "-i" << fileName << "-ss"
+    //                                              << "0"
+    //                                              << "-vframes"
+    //                                              << "1"
+    //                                              << "-f"
+    //                                              << "image2pipe"
+    //                                              << "-");
+
+    // ffmpeg  -i l.webm -vf "thumbnail,select=gt(scene\,0.015)" -vsync vfr
+    // "outd.jpg"
+
+    // THUMBNAIL PLUGIN BASED(probably broken here) see notes.md
+    // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
+    //                                              << "quiet"
+    //                                              << "-i" << fileName << "-vf"
+    //                                              <<
+    //                                              "thumbnail,select=gt(scene\,0.015)"
+    //                                              << "-vsync"
+    //                                              << "vfr"
+    //                                              << "-f"
+    //                                              << "image2pipe"
+    //                                              << "-");
