@@ -149,7 +149,7 @@ void MainWindow::initPages() {
 
   connect(outputSettingPage, &OutputSettingPage::presetSelectionChanged, this,
           [=](const Preset &preset) {
-            qDebug() << "Preset selection changed";
+            // qDebug() << "Preset selection changed";
             queueAction->setEnabled(preset.isValid());
           });
 

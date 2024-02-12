@@ -1,22 +1,22 @@
 #include "ffmpegthumbnailextractor.h"
-#include <QDebug>
 
 FFMpegThumbnailExtractor::FFMpegThumbnailExtractor(QObject *parent)
-    : QObject(parent), processedFilesCounter(0) {}
+    : MetadataExtractor(parent), processedFilesCounter(0) {}
 
 FFMpegThumbnailExtractor::~FFMpegThumbnailExtractor() {}
 
 void FFMpegThumbnailExtractor::processMediaFiles(const QStringList &fileNames) {
   processedFilesCounter = 0;
   totalFilesToProcess = fileNames.size();
-  QCoreApplication::processEvents(); // do no block gui thread
+
+  QCoreApplication::processEvents();
   processNextMediaFile(fileNames);
 }
 
 void FFMpegThumbnailExtractor::processNextMediaFile(
     const QStringList &fileNames) {
   if (processedFilesCounter < totalFilesToProcess) {
-    const QString &fileName = fileNames.at(processedFilesCounter);
+    const QString &filePath = fileNames.at(processedFilesCounter);
 
     QProcess *ffmpegProcess = new QProcess(this);
 
@@ -28,12 +28,12 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
               QByteArray output = ffmpegProcess->readAllStandardOutput();
 
               if (exitCode != 0) {
-                emit mediaProcessed(fileName,
-                                    QString("Processing error. Exit code: %1")
-                                        .arg(exitCode)
-                                        .toUtf8());
+                emit mediaProcessed(
+                    filePath, QString("%1 Processing error. Exit code: %2")
+                                  .arg(extractorId(), exitCode)
+                                  .toUtf8());
               } else {
-                emit mediaProcessed(fileName, output);
+                emit mediaProcessed(filePath, output);
               }
 
               processedFilesCounter++;
@@ -44,7 +44,6 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
 
               ffmpegProcess->deleteLater();
             });
-
 
     // TIME BASED
     // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
@@ -57,13 +56,15 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
     //                                              << "image2pipe"
     //                                              << "-");
 
-    //ffmpeg  -i l.webm -vf "thumbnail,select=gt(scene\,0.015)" -vsync vfr "outd.jpg"
+    // ffmpeg  -i l.webm -vf "thumbnail,select=gt(scene\,0.015)" -vsync vfr
+    // "outd.jpg"
 
     // THUMBNAIL PLUGIN BASED(probably broken here) see notes.md
     // ffmpegProcess->start("ffmpeg", QStringList() << "-v"
     //                                              << "quiet"
     //                                              << "-i" << fileName << "-vf"
-    //                                              << "thumbnail,select=gt(scene\,0.015)"
+    //                                              <<
+    //                                              "thumbnail,select=gt(scene\,0.015)"
     //                                              << "-vsync"
     //                                              << "vfr"
     //                                              << "-f"
@@ -71,10 +72,9 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
     //                                              << "-");
 
     // ffmpeg -i l.webm -vf "select=gte(n\,100)" -vframes 1 out_img.png
-
     ffmpegProcess->start("ffmpeg", QStringList() << "-v"
                                                  << "quiet"
-                                                 << "-i" << fileName << "-vf"
+                                                 << "-i" << filePath << "-vf"
                                                  << "select=gte(n\\,100)"
                                                  << "-vframes"
                                                  << "1"
@@ -85,4 +85,8 @@ void FFMpegThumbnailExtractor::processNextMediaFile(
   } else {
     emit mediaProcessingFinished();
   }
+}
+
+QString FFMpegThumbnailExtractor::extractorId() const {
+  return metaObject()->className();
 }

@@ -55,8 +55,9 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   connect(mediaThumbnailProcessor,
           &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
           [=](int currentFileIndex, int totalFiles) {
-            qDebug() << "FFMpegThumbnailExtractor processing file "
-                     << currentFileIndex << " of " << totalFiles;
+            qDebug() << mediaThumbnailProcessor->extractorId()
+                     << "processing file " << currentFileIndex << " of "
+                     << totalFiles;
           });
 
   connect(mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,

@@ -50,14 +50,14 @@
      <item row="0" column="1">
       <widget class="QPushButton" name="changeOutputDirPushButton">
        <property name="text">
-        <string>Change</string>
+        <string>Change output Directory</string>
        </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="QCheckBox" name="preserveHierarchyCheckBox">
        <property name="text">
-        <string>Preserve hierarchy</string>
+        <string>Preserve Directory Structure</string>
        </property>
       </widget>
      </item>

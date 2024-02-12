@@ -53,8 +53,9 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   connect(&mediaMetadataProcessor,
           &FFProbeMetaDataExtractor::mediaProcessingProgress, this,
           [=](int currentFileIndex, int totalFiles) {
-            qDebug() << "FFProbeMetaDataExtractor processing file "
-                     << currentFileIndex << " of " << totalFiles;
+            qDebug() << mediaMetadataProcessor.extractorId()
+                     << "processing file " << currentFileIndex << " of "
+                     << totalFiles;
           });
 
   connect(&mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
@@ -90,7 +91,8 @@ void MediaPage::removeSelectedMediaListWidgetItems() {
   this->updatePage();
 }
 
-void MediaPage::addMediaItemToView(const QString &filePath, const QString &result) {
+void MediaPage::addMediaItemToView(const QString &filePath,
+                                   const QString &result) {
 
   MediaMetaData *mediaMetaData =
       FFProbeParser::getMediaMetaDataFor(filePath, result);

@@ -57,3 +57,30 @@ QString Utils::getTabIconPath(const QString &name) {
     return ":/primo/help_blue.png";
   }
 }
+
+QString Utils::computeFileHash(const QString &filePath) {
+  QFileInfo fileInfo(filePath);
+
+  if (!fileInfo.exists() || !fileInfo.isFile()) {
+    qWarning() << "File does not exist or is not a regular file:" << filePath;
+    return QString();
+  }
+
+  QString fileProperties = fileInfo.filePath() +
+                           QString::number(fileInfo.size()) +
+                           fileInfo.lastModified().toString(Qt::ISODate);
+
+  QFile file(filePath);
+  if (!file.open(QIODevice::ReadOnly)) {
+    qWarning() << "Unable to open file:" << filePath;
+    return QString();
+  }
+  QByteArray fileHeader = file.read(8);
+  file.close();
+  fileProperties += QString::fromLatin1(fileHeader.toHex());
+
+  QCryptographicHash hash(QCryptographicHash::Sha256);
+  hash.addData(fileProperties.toUtf8());
+
+  return QString(hash.result().toHex());
+}

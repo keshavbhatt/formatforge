@@ -1,7 +1,7 @@
 #include "ffprobemetadataextractor.h"
 
 FFProbeMetaDataExtractor::FFProbeMetaDataExtractor(QObject *parent)
-    : QObject(parent), processedFilesCounter(0) {}
+    : MetadataExtractor(parent), processedFilesCounter(0) {}
 
 FFProbeMetaDataExtractor::~FFProbeMetaDataExtractor() {}
 
@@ -12,7 +12,7 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
   QEventLoop *eventLoop = new QEventLoop();
 
   for (int i = 0; i < totalFilesToProcess; ++i) {
-    const QString &fileName = filePaths.at(i);
+    const QString &filePath = filePaths.at(i);
 
     QProcess *ffprobeProcess = new QProcess(this);
 
@@ -25,12 +25,14 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
               emit mediaProcessingProgress(processedFilesCounter,
                                            totalFilesToProcess);
               QByteArray output = ffprobeProcess->readAllStandardOutput();
-              QString result = QString::fromUtf8(output);
 
               if (exitCode != 0) {
-                emit mediaProcessed(fileName, "processing_error");
+                emit mediaProcessed(
+                    filePath, QString("%1 Processing error. Exit code: %2")
+                                  .arg(extractorId(), exitCode)
+                                  .toUtf8());
               } else {
-                emit mediaProcessed(fileName, result);
+                emit mediaProcessed(filePath, output);
               }
 
               ffprobeProcess->deleteLater();
@@ -44,10 +46,14 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
                                          << "-print_format"
                                          << "json"
                                          << "-show_format"
-                                         << "-show_streams" << fileName);
+                                         << "-show_streams" << filePath);
     eventLoop->exec();
   }
 
   emit mediaProcessingFinished();
   eventLoop->deleteLater();
+}
+
+QString FFProbeMetaDataExtractor::extractorId() const {
+  return metaObject()->className();
 }

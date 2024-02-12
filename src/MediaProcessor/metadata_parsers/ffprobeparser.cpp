@@ -25,6 +25,7 @@ FFProbeParser::FFProbeParser() {}
 MediaMetaData *FFProbeParser::getMediaMetaDataFor(const QString filePath,
                                                   const QString &jsonString) {
 
+  qDebug() << filePath << Utils::computeFileHash(filePath);
   if (!isValidMediaFile(filePath, jsonString)) {
     qDebug() << "not a valid media file";
     return nullptr;

@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QCryptographicHash>
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QString>
@@ -15,6 +17,8 @@ public:
   static QString getMediaTypeFromFFProbeStreamArray(const QJsonArray &streams);
 
   static QString getTabIconPath(const QString &name);
+
+  static QString computeFileHash(const QString &filePath);
 };
 
 #endif // UTILS_H

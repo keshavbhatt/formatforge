@@ -1,27 +1,27 @@
 #ifndef FFPROBEMETADATAEXTRACTOR_H
 #define FFPROBEMETADATAEXTRACTOR_H
 
-#include <QObject>
+#include "metadata_extractor.h"
+
 #include <QCoreApplication>
+#include <QObject>
 #include <QProcess>
 
-class FFProbeMetaDataExtractor : public QObject {
+class FFProbeMetaDataExtractor : public MetadataExtractor {
   Q_OBJECT
 
 public:
   explicit FFProbeMetaDataExtractor(QObject *parent = nullptr);
-  ~FFProbeMetaDataExtractor();
+  ~FFProbeMetaDataExtractor() override;
 
 public slots:
-  void processMediaFiles(const QStringList &filePaths);
-
-signals:
-  void mediaProcessingProgress(int currentFileIndex, int totalFiles);
-  void mediaProcessed(const QString &fileName, const QString &result);
-  void mediaProcessingFinished();
+  void processMediaFiles(const QStringList &filePaths) override;
 
 private:
   int processedFilesCounter;
+
+public:
+  QString extractorId() const override;
 };
 
 #endif // FFPROBEMETADATAEXTRACTOR_H
