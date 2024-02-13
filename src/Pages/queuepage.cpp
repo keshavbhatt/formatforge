@@ -96,8 +96,10 @@ void QueuePage::addConversionItems(MediaPage *mediaPage,
   foreach (ConversionItem conversionItem, mediaPage->getSelectedMediaItems()) {
     conversionItem.setFfmpegArguments(selectedPreset.getParams());
     conversionItem.setOutputExetension(selectedPreset.getExtension());
-    conversionItem.setOutputDirectory(outputDirectoryPath);
     conversionItem.setPreserveHierarchy(preserveHierarchy);
+    conversionItem.setRootOutputDirectory(outputDirectoryPath);
+    conversionItem.setOutputDirectory(
+        this->getOutputDirectoryPathFrom(conversionItem));
 
     if (conversionItem.isValid()) {
       this->addConversionItemToView(conversionItem);
@@ -105,6 +107,37 @@ void QueuePage::addConversionItems(MediaPage *mediaPage,
       qWarning() << "Conversion item is invalid";
     }
   }
+}
+
+QString
+QueuePage::getOutputDirectoryPathFrom(const ConversionItem &conversionItem) {
+  QString outputDir = conversionItem.getRootOutputDirectory();
+
+  if (!outputDir.endsWith(QDir::separator())) {
+    outputDir += QDir::separator();
+  }
+
+  QString outputDirectory;
+  if (conversionItem.getPreserveHierarchy()) {
+    QString inputFilePath = conversionItem.getFilePath();
+    QFileInfo inputFileInfo(inputFilePath);
+    QString relativePath = inputFileInfo.absoluteDir().path();
+    if (!relativePath.endsWith(QDir::separator())) {
+      relativePath += QDir::separator();
+    }
+    outputDirectory = outputDir + relativePath;
+  } else {
+    outputDirectory = outputDir;
+  }
+
+  QDir targetDir(QDir::toNativeSeparators(outputDirectory));
+  auto targetDirAbsolutePath = targetDir.absolutePath();
+
+  if (!targetDirAbsolutePath.endsWith(QDir::separator())) {
+    targetDirAbsolutePath += QDir::separator();
+  }
+
+  return targetDirAbsolutePath;
 }
 
 void QueuePage::addConversionItemToView(const ConversionItem &conversionItem) {

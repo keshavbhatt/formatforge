@@ -5,6 +5,7 @@
 #include <MediaProcessor/metadata/videometadata.h>
 #include <QDebug>
 #include <QFileInfo>
+#include <Settings/settingsmanager.h>
 
 MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
                                  MediaMetaData *mediaMetaData)
@@ -65,7 +66,12 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   // end FFMpegThumbnailExtractor connections
 
   // thumbnail size
-  int width = height() * 1.78;
+  auto thumbnailAspectRatio =
+      SettingsManager::settings()
+          .value(SettingsConstantsGetNameFor(THUMBNAIL_ASPECT_RATIO),
+                 SettingsConstantsGetDefaultFor(THUMBNAIL_ASPECT_RATIO))
+          .toDouble();
+  int width = height() * thumbnailAspectRatio;
   ui->fileThumbnailLabel->setMinimumSize(width, height());
 
   setValuesFromMetadata();
@@ -88,6 +94,7 @@ void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,
 void MediaItemWidget::setValuesFromMetadata() {
 
   ui->fileTitleLable->setText(m_fileInfo.fileName());
+  ui->filePathLable->setText(m_fileInfo.dir().absolutePath());
   ui->fileSizeLabel->setText(
       this->locale().formattedDataSize(m_fileInfo.size()));
 

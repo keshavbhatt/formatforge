@@ -48,6 +48,7 @@ private:
                           bool preserveHierarchy);
 
   QList<ConversionItem> getAllConversionItems() const;
+  QString getOutputDirectoryPathFrom(const ConversionItem &conversionItem);
 };
 
 #endif // QUEUEPAGE_H

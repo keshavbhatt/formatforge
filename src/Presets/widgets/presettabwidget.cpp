@@ -46,6 +46,7 @@ void PresetTabWidget::clearSelection() {
 
 void PresetTabWidget::exetensionListWidgetItemSelectionChanged() {
   auto item = ui->exetensionListWidget->currentItem();
+
   // load related presets in the optionsListWidget
   ui->optionsListWidget->blockSignals(true);
   QList<Preset> presetsByExetension =
@@ -54,6 +55,7 @@ void PresetTabWidget::exetensionListWidgetItemSelectionChanged() {
 
   ui->optionsListWidget->clear();
 
+  // add presetsByExetension to optionsListWidget
   for (int i = 0, total = presetsByExetension.count(); i < total; ++i) {
     QListWidgetItem *item = new QListWidgetItem(
         QIcon(":/primo/receipt.png"), presetsByExetension.at(i).getLabel(),
@@ -62,6 +64,12 @@ void PresetTabWidget::exetensionListWidgetItemSelectionChanged() {
     ui->optionsListWidget->addItem(item);
   }
   ui->optionsListWidget->blockSignals(false);
+
+  // select first item if there is only one item ;)
+  if (presetsByExetension.count() == 1) {
+    ui->optionsListWidget->setCurrentRow(0);
+    ui->optionsListWidget->setFocus();
+  }
 }
 
 void PresetTabWidget::optionsListWidgetItemSelectionChanged() {

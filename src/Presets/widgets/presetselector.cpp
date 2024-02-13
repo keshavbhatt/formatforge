@@ -102,6 +102,7 @@ void PresetSelector::loadPresets() {
     }
   }
 
+  // connect tabs
   auto currentTabNames = this->getCurrentTabNames();
   for (int i = 0, total = currentTabNames.count(); i < total; ++i) {
     PresetTabWidget *presetTabWidget =
@@ -110,7 +111,7 @@ void PresetSelector::loadPresets() {
             [=](const Preset &selectedPreset) {
               this->selectedPreset = selectedPreset;
               emit this->presetSelectionChanged();
-        });
+            });
   }
 }
 

@@ -24,9 +24,6 @@ signals:
 private:
   ConversionItem m_conversionItem;
   QProcess *m_conversionProcess = nullptr;
-
-  void ensureOutputDirectory();
-
   QString m_outputDirectory;
 };
 

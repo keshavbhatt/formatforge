@@ -22,6 +22,11 @@ void ConversionItem::setOutputExetension(const QString &newOutputExetension) {
   m_outputExetension = newOutputExetension;
 }
 
+void ConversionItem::setRootOutputDirectory(
+    const QString &newRootOutputDirectory) {
+  m_rootOutputDirectory = newRootOutputDirectory;
+}
+
 void ConversionItem::setOutputDirectory(const QString &newOutputDirectory) {
   m_outputDirectory = newOutputDirectory;
 }
@@ -48,7 +53,13 @@ QString ConversionItem::getOutputExetension() const {
 
 QString ConversionItem::getOutputDirectory() const { return m_outputDirectory; }
 
-bool ConversionItem::preserveHierarchy() const { return m_preserveHierarchy; }
+QString ConversionItem::getRootOutputDirectory() const {
+  return m_rootOutputDirectory;
+}
+
+bool ConversionItem::getPreserveHierarchy() const {
+  return m_preserveHierarchy;
+}
 
 bool ConversionItem::isValid() {
   return !m_filePath.isEmpty() || !m_ffmpegArguments.isEmpty() ||

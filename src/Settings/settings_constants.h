@@ -13,7 +13,8 @@ enum SettingKeys {
   OUTPUT_DIRECTORY_PATH,
   FILE_SELECTOR_LAST_USED_PATH,
   DO_NOT_USE_NATIVE_FILE_SELECTOR,
-  PRESERVE_HIERARCHY_IN_OUTPUT_DIR
+  PRESERVE_HIERARCHY_IN_OUTPUT_DIR,
+  THUMBNAIL_ASPECT_RATIO
 };
 Q_ENUM_NS(SettingKeys)
 
@@ -40,6 +41,8 @@ inline QVariant SettingsConstantsGetDefaultFor(SettingKeys key) {
     return QVariant(false);
   case SettingKeys::PRESERVE_HIERARCHY_IN_OUTPUT_DIR:
     return QVariant(true);
+  case SettingKeys::THUMBNAIL_ASPECT_RATIO:
+    return QVariant(1.78);
   default:
     return QVariant();
   }

@@ -1,40 +1,16 @@
 #include "conversionprocess.h"
 
+#include <Core/utils.h>
+
 ConversionProcess::ConversionProcess(QObject *parent,
                                      const ConversionItem &conversionItem)
-    : QObject{parent}, m_conversionItem(conversionItem) {
-  ensureOutputDirectory();
-}
+    : QObject{parent}, m_conversionItem(conversionItem) {}
 
 ConversionProcess::~ConversionProcess() {
   this->stop();
   if (m_conversionProcess) {
     m_conversionProcess->deleteLater();
   }
-}
-
-void ConversionProcess::ensureOutputDirectory() {
-  QString inputFilePath = m_conversionItem.getFilePath();
-  QFileInfo inputFileInfo(inputFilePath);
-  QString outputDir = m_conversionItem.getOutputDirectory();
-
-  if (!outputDir.endsWith(QDir::separator())) {
-    outputDir += QDir::separator();
-  }
-
-  if (m_conversionItem.preserveHierarchy()) {
-    QString relativePath = inputFileInfo.absoluteDir().path();
-    if (!relativePath.endsWith(QDir::separator())) {
-      relativePath += QDir::separator();
-    }
-    m_outputDirectory = outputDir + relativePath;
-  } else {
-    m_outputDirectory = outputDir;
-  }
-
-  QDir().mkpath(m_outputDirectory);
-
-  m_outputDirectory = QDir::toNativeSeparators(m_outputDirectory);
 }
 
 void ConversionProcess::stop() {
@@ -48,6 +24,7 @@ void ConversionProcess::stop() {
 }
 
 void ConversionProcess::start() {
+  Utils::ensureDirectoryPath(m_conversionItem.getOutputDirectory());
 
   this->stop();
 
@@ -70,15 +47,19 @@ void ConversionProcess::start() {
             }
           });
 
-  m_conversionProcess->setProgram("ffmpeg");
-  QStringList args;
-  args << "-i" << m_conversionItem.getFilePath();
-  args << m_conversionItem.getFfmpegArguments().split(" ");
-  args << m_outputDirectory + m_conversionItem.getFileBaseName() + "." +
-              m_conversionItem.getOutputExetension();
-  m_conversionProcess->setArguments(args);
+  auto outputFilePath =
+      Utils::getFileNameFor(m_conversionItem.getOutputDirectory() +
+                                m_conversionItem.getFileBaseName(),
+                            m_conversionItem.getOutputExetension());
+  auto inputFilePath = m_conversionItem.getFilePath();
+  auto ffmpegArgs = m_conversionItem.getFfmpegArguments().split(" ");
 
-  qDebug() << "Starting process" << m_outputDirectory
-           << m_conversionItem.getId();
-  m_conversionProcess->start();
+  QStringList args;
+  args << "-i" << inputFilePath;
+  args << ffmpegArgs;
+  args << outputFilePath;
+
+  qDebug() << "Starting process" << outputFilePath;
+
+  m_conversionProcess->start("ffmpeg", args);
 }

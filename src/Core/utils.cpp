@@ -1,5 +1,6 @@
 #include "Core/utils.h"
 
+#include <QDir>
 #include <QStringList>
 #include <QTime>
 
@@ -91,4 +92,14 @@ QString Utils::computeFileHash(const QString &filePath) {
   hash.addData(fileProperties.toUtf8());
 
   return QString(hash.result().toHex());
+}
+
+bool Utils::ensureDirectoryPath(const QString &path) {
+  QDir dir(path);
+  return dir.mkpath(".");
+}
+
+QString Utils::getFileNameFor(const QString &baseFileNae,
+                              const QString &fileExetension) {
+  return baseFileNae + "." + fileExetension;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>726</width>
-    <height>97</height>
+    <width>717</width>
+    <height>112</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,6 +66,18 @@
           </property>
           <property name="text">
            <string>Title of media file</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="filePathLable">
+          <property name="font">
+           <font>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>filepath</string>
           </property>
          </widget>
         </item>

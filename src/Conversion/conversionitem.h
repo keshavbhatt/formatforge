@@ -9,6 +9,7 @@ class ConversionItem {
   QString m_ffmpegArguments;
   QString m_id;
   QString m_outputExetension;
+  QString m_rootOutputDirectory;
   QString m_outputDirectory;
   bool m_preserveHierarchy;
 
@@ -25,7 +26,8 @@ public:
   QString getId() const;
   QString getOutputExetension() const;
   QString getOutputDirectory() const;
-  bool preserveHierarchy() const;
+  QString getRootOutputDirectory() const;
+  bool getPreserveHierarchy() const;
 
   void setFfmpegArguments(const QString &newFfmpegArguments);
   void setFilePath(const QString &newFilePath);
@@ -33,6 +35,7 @@ public:
   void setOutputExetension(const QString &newOutputExetension);
   void setOutputDirectory(const QString &newOutputDirectory);
   void setPreserveHierarchy(bool newPreserveHierarchy);
+  void setRootOutputDirectory(const QString &newRootOutputDirectory);
 };
 
 #endif // CONVERSIONITEM_H

@@ -3,6 +3,8 @@
 
 #include <Core/utils.h>
 
+#include <Settings/settingsmanager.h>
+
 ConversionItemWidget::ConversionItemWidget(QWidget *parent,
                                            ConversionItem conversionItem)
     : QWidget(parent), ui(new Ui::ConversionItemWidget),
@@ -49,9 +51,15 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
   ui->formatInfoPushButton->setToolTip("Show more information");
 
   // thumbnail size
-  int width = height() * 1.78;
+  auto thumbnailAspectRatio =
+      SettingsManager::settings()
+          .value(SettingsConstantsGetNameFor(THUMBNAIL_ASPECT_RATIO),
+                 SettingsConstantsGetDefaultFor(THUMBNAIL_ASPECT_RATIO))
+          .toDouble();
+  int width = height() * thumbnailAspectRatio;
   ui->fileThumbnailLabel->setMinimumSize(width, height());
 
+  ui->formatInfoPushButton->hide();
   setValuesFromConversionItem();
 }
 
@@ -64,9 +72,13 @@ ConversionItem ConversionItemWidget::getConversionItem() const {
 }
 
 void ConversionItemWidget::setValuesFromConversionItem() {
-  ui->fileTitleLable->setText(getFileNameFrom(m_conversionItem));
+
+  ui->fileTitleLable->setText(
+      Utils::getFileNameFor(m_conversionItem.getFileBaseName(),
+                            m_conversionItem.getOutputExetension()));
+  ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
   ui->fileSizeLabel->setText("~");
-  ui->fileThumbnailLabel->setPixmap(getIconThumbnailPixmapFor("Waiting"));
+  ui->fileThumbnailLabel->setPixmap(this->getIconThumbnailPixmapFor("Waiting"));
   ui->mediaDurationLabel->setText("~");
   ui->fileExetensionLabel->setText("~");
   ui->mediaTypeLabel->setText("~");
@@ -78,6 +90,7 @@ void ConversionItemWidget::setValuesFromConversionItem() {
 
 void ConversionItemWidget::updateAfterConversion() {
   ui->fileSizeLabel->setText("~");
+  ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
   ui->fileThumbnailLabel->setPixmap(getIconThumbnailPixmapFor("Waiting"));
   ui->mediaDurationLabel->setText("~");
   ui->fileExetensionLabel->setText("~");
@@ -86,6 +99,9 @@ void ConversionItemWidget::updateAfterConversion() {
 
   ui->videoDimensionLabel->setText("~");
   ui->bitrateLabel->setText("~");
+
+  ui->formatInfoPushButton->show();
+  ui->changeOutputSettingsPushButton->hide();
 }
 
 QPixmap
@@ -107,10 +123,4 @@ ConversionItemWidget::getIconThumbnailPixmapFor(const QString &mediaType,
     return QPixmap(":/primo/help_blue.png")
         .scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   }
-}
-
-QString
-ConversionItemWidget::getFileNameFrom(const ConversionItem &conversionItem) {
-  return conversionItem.getFileBaseName() + "." +
-         conversionItem.getOutputExetension();
 }

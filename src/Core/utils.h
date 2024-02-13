@@ -19,6 +19,10 @@ public:
   static QString getTabIconPath(const QString &name);
 
   static QString computeFileHash(const QString &filePath);
+
+  static bool ensureDirectoryPath(const QString &path);
+  static QString getFileNameFor(const QString &baseFileNae,
+                                const QString &fileExetension);
 };
 
 #endif // UTILS_H
