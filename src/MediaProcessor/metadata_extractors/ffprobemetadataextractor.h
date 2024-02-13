@@ -1,6 +1,8 @@
 #ifndef FFPROBEMETADATAEXTRACTOR_H
 #define FFPROBEMETADATAEXTRACTOR_H
 
+#include "Core/utils.h"
+#include "MediaProcessor/cache/cachestore.h"
 #include "metadata_extractor.h"
 
 #include <QCoreApplication>

@@ -1,6 +1,8 @@
 #ifndef FFMPEGTHUMBNAILEXTRACTOR_H
 #define FFMPEGTHUMBNAILEXTRACTOR_H
 
+#include "Core/utils.h"
+#include "MediaProcessor/cache/cachestore.h"
 #include "metadata_extractor.h"
 
 #include <QCoreApplication>
@@ -21,8 +23,8 @@ public slots:
 private:
   void processNextMediaFile(const QStringList &fileNames);
 
-  int processedFilesCounter;
-  int totalFilesToProcess;
+  int m_processedFilesCounter;
+  int m_totalFilesToProcess;
 
 public:
   QString extractorId() const override;

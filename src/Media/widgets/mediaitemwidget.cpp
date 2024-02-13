@@ -52,13 +52,13 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
             mediaThumbnailProcessor = nullptr;
           });
 
-  connect(mediaThumbnailProcessor,
-          &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
-          [=](int currentFileIndex, int totalFiles) {
-            qDebug() << mediaThumbnailProcessor->extractorId()
-                     << "processing file " << currentFileIndex << " of "
-                     << totalFiles;
-          });
+  // connect(mediaThumbnailProcessor,
+  //         &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
+  //         [=](int currentFileIndex, int totalFiles) {
+  //           qDebug() << mediaThumbnailProcessor->extractorId()
+  //                    << "processing file " << currentFileIndex << " of "
+  //                    << totalFiles;
+  //         });
 
   connect(mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
           this, &MediaItemWidget::setMediaItemThumbnail);

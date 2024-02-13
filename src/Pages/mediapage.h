@@ -3,11 +3,19 @@
 
 #include "page.h"
 
+#include <QDebug>
+#include <QScrollBar>
 #include <QWidget>
 
 #include "Conversion/conversionitem.h"
+#include "Core/filescanner.h"
+#include "Media/widgets/mediaitemwidget.h"
+#include "MediaProcessor/metadata/audiometadata.h"
+#include "MediaProcessor/metadata/videometadata.h"
 #include "MediaProcessor/metadata_extractors/ffprobemetadataextractor.h"
+#include "MediaProcessor/metadata_parsers/ffprobeparser.h"
 #include "Widgets/spinner.h"
+#include "outputsettingpage.h"
 
 namespace Ui {
 class MediaPage;

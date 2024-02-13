@@ -1,13 +1,5 @@
 #include "mediapage.h"
-#include "outputsettingpage.h"
 #include "ui_mediapage.h"
-#include <Core/filescanner.h>
-#include <Media/widgets/mediaitemwidget.h>
-#include <MediaProcessor/metadata/audiometadata.h>
-#include <MediaProcessor/metadata/videometadata.h>
-#include <MediaProcessor/metadata_parsers/ffprobeparser.h>
-#include <QDebug>
-#include <QScrollBar>
 
 MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   ui->setupUi(this);
@@ -50,13 +42,13 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
             this->updatePage();
           });
 
-  connect(&mediaMetadataProcessor,
-          &FFProbeMetaDataExtractor::mediaProcessingProgress, this,
-          [=](int currentFileIndex, int totalFiles) {
-            qDebug() << mediaMetadataProcessor.extractorId()
-                     << "processing file " << currentFileIndex << " of "
-                     << totalFiles;
-          });
+  // connect(&mediaMetadataProcessor,
+  //         &FFProbeMetaDataExtractor::mediaProcessingProgress, this,
+  //         [=](int currentFileIndex, int totalFiles) {
+  //           qDebug() << mediaMetadataProcessor.extractorId()
+  //                    << "processing file " << currentFileIndex << " of "
+  //                    << totalFiles;
+  //         });
 
   connect(&mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
           this, &MediaPage::addMediaItemToView);

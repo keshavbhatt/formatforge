@@ -66,18 +66,26 @@ QString Utils::computeFileHash(const QString &filePath) {
     return QString();
   }
 
-  QString fileProperties = fileInfo.filePath() +
-                           QString::number(fileInfo.size()) +
-                           fileInfo.lastModified().toString(Qt::ISODate);
+  QString fileProperties =
+      QString::number(fileInfo.size()) +
+      QString::number(fileInfo.lastModified().toMSecsSinceEpoch()) +
+      QString::number(fileInfo.metadataChangeTime().toMSecsSinceEpoch());
 
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning() << "Unable to open file:" << filePath;
     return QString();
   }
-  QByteArray fileHeader = file.read(8);
+
+  // read first 4096 bytes(4Kb) or entire file if smaller
+  const qint64 bytesToRead = qMin(qint64(4096), fileInfo.size());
+  QByteArray fileContent = file.read(bytesToRead);
+
   file.close();
-  fileProperties += QString::fromLatin1(fileHeader.toHex());
+
+  QCryptographicHash contentHash(QCryptographicHash::Sha256);
+  contentHash.addData(fileContent);
+  fileProperties += QString::fromLatin1(contentHash.result().toHex());
 
   QCryptographicHash hash(QCryptographicHash::Sha256);
   hash.addData(fileProperties.toUtf8());

@@ -14,40 +14,49 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
   for (int i = 0; i < totalFilesToProcess; ++i) {
     const QString &filePath = filePaths.at(i);
 
-    QProcess *ffprobeProcess = new QProcess(this);
+    auto cacheKey = Utils::computeFileHash(filePath);
+    if (CacheStore::instance().exists(cacheKey, this->extractorId())) {
+      auto dataFromCache =
+          CacheStore::instance().load(cacheKey, this->extractorId());
+      emit mediaProcessed(filePath, dataFromCache);
+      processedFilesCounter++;
+      emit mediaProcessingProgress(processedFilesCounter, totalFilesToProcess);
+    } else {
+      QProcess *ffprobeProcess = new QProcess(this);
+      connect(ffprobeProcess,
+              QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+              this, [=](int exitCode, QProcess::ExitStatus exitStatus) {
+                Q_UNUSED(exitStatus);
 
-    connect(ffprobeProcess,
-            QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this,
-            [=](int exitCode, QProcess::ExitStatus exitStatus) {
-              Q_UNUSED(exitStatus);
+                QByteArray output = ffprobeProcess->readAllStandardOutput();
+                if (exitCode != 0) {
+                  emit mediaProcessed(
+                      filePath, QString("%1 Processing error. Exit code: %2")
+                                    .arg(extractorId(), exitCode)
+                                    .toUtf8());
+                } else {
+                  CacheStore::instance().save(cacheKey, output,
+                                              this->extractorId());
+                  emit mediaProcessed(filePath, output);
+                }
 
-              processedFilesCounter++;
-              emit mediaProcessingProgress(processedFilesCounter,
-                                           totalFilesToProcess);
-              QByteArray output = ffprobeProcess->readAllStandardOutput();
+                processedFilesCounter++;
+                emit mediaProcessingProgress(processedFilesCounter,
+                                             totalFilesToProcess);
 
-              if (exitCode != 0) {
-                emit mediaProcessed(
-                    filePath, QString("%1 Processing error. Exit code: %2")
-                                  .arg(extractorId(), exitCode)
-                                  .toUtf8());
-              } else {
-                emit mediaProcessed(filePath, output);
-              }
+                ffprobeProcess->deleteLater();
+                eventLoop->quit();
+              });
 
-              ffprobeProcess->deleteLater();
-
-              eventLoop->quit();
-            });
-
-    ffprobeProcess->start("ffprobe", QStringList()
-                                         << "-v"
-                                         << "quiet"
-                                         << "-print_format"
-                                         << "json"
-                                         << "-show_format"
-                                         << "-show_streams" << filePath);
-    eventLoop->exec();
+      ffprobeProcess->start("ffprobe", QStringList()
+                                           << "-v"
+                                           << "quiet"
+                                           << "-print_format"
+                                           << "json"
+                                           << "-show_format"
+                                           << "-show_streams" << filePath);
+      eventLoop->exec();
+    }
   }
 
   emit mediaProcessingFinished();

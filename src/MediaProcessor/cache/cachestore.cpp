@@ -1,5 +1,6 @@
 #include "cachestore.h"
 
+
 CacheStore::CacheStore() : m_initialized(false) {
   m_cacheRootDirPath =
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation) +
@@ -18,7 +19,6 @@ CacheStore &CacheStore::instance() {
 
 bool CacheStore::save(const QString &key, const QByteArray &data,
                       const QString &subdirectory) {
-
   if (!instance().initialized())
     return false;
 
@@ -29,7 +29,7 @@ bool CacheStore::save(const QString &key, const QByteArray &data,
   QString filePath = cacheDirPath + QDir::separator() + key;
   QFile file(filePath);
   if (file.open(QIODevice::WriteOnly)) {
-    QTextStream stream(&file);
+    QDataStream stream(&file);
     stream << data;
     file.close();
     return true;
@@ -37,21 +37,21 @@ bool CacheStore::save(const QString &key, const QByteArray &data,
   return false;
 }
 
-QString CacheStore::load(const QString &key, const QString &subdirectory) {
-
+QByteArray CacheStore::load(const QString &key, const QString &subdirectory) {
   if (!instance().initialized())
-    return QString();
+    return QByteArray();
 
-  QString filePath =
-      instance().cacheRootDirPath() + "/" + subdirectory + "/" + key;
+  QString filePath = instance().cacheRootDirPath() + QDir::separator() +
+                     subdirectory + QDir::separator() + key;
   QFile file(filePath);
   if (file.open(QIODevice::ReadOnly)) {
-    QTextStream stream(&file);
-    QString data = stream.readAll();
+    QDataStream stream(&file);
+    QByteArray data;
+    stream >> data;
     file.close();
     return data;
   }
-  return QString();
+  return QByteArray();
 }
 
 bool CacheStore::exists(const QString &key, const QString &subdirectory) {

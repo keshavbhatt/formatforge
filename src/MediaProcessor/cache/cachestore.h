@@ -1,6 +1,7 @@
 #ifndef CACHESTORE_H
 #define CACHESTORE_H
 
+#include <QDataStream>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -13,7 +14,7 @@ public:
 
   static bool save(const QString &key, const QByteArray &data,
                    const QString &subdirectory = "");
-  static QString load(const QString &key, const QString &subdirectory = "");
+  static QByteArray load(const QString &key, const QString &subdirectory = "");
   static bool exists(const QString &key, const QString &subdirectory = "");
   static bool remove(const QString &key, const QString &subdirectory = "");
 

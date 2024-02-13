@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include <QWidget>
 
+class MediaPage;
+
 namespace Ui {
 class OutputSettingPage;
 }

@@ -20,11 +20,18 @@ public:
 
   ConversionItem getConversionItem() const;
 
+private slots:
+  void updateAfterConversion();
+  void openOutputSettings();
+
 private:
   Ui::ConversionItemWidget *ui;
   ConversionItem m_conversionItem;
 
   void setValuesFromConversionItem();
+  QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,
+                                    int height = 32);
+  QString getFileNameFrom(const ConversionItem &conversionItem);
 };
 
 #endif // CONVERSIONITEMWIDGET_H
