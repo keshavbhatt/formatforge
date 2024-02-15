@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>696</width>
-    <height>113</height>
+    <height>137</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="fileThumbnailLabel">
+       <widget class="ProgressLabel" name="fileThumbnailProgressLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -261,6 +261,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProgressLabel</class>
+   <extends>QLabel</extends>
+   <header>Widgets/progresslabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -49,6 +49,9 @@ private:
 
   QList<ConversionItem> getAllConversionItems() const;
   QString getOutputDirectoryPathFrom(const ConversionItem &conversionItem);
+  void updateItemProgress(const QJsonObject &progressData);
+  void updateItemStatus(QString pid, int exitCode, QProcess::ExitStatus exitStatus);
+  ConversionItemWidget *findConversionItemWidget(const QString &itemId) const;
 };
 
 #endif // QUEUEPAGE_H

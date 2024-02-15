@@ -6,6 +6,12 @@ QueuePage::QueuePage(QWidget *parent) : Page(parent), ui(new Ui::QueuePage) {
 
   m_conversionManager = new ConversionManager(this);
 
+  connect(m_conversionManager, &ConversionManager::processProgressChanged, this,
+          &QueuePage::updateItemProgress);
+
+  connect(m_conversionManager, &ConversionManager::processFinished, this,
+          &QueuePage::updateItemStatus);
+
   ui->mediaListWidget->setSpacing(6);
   ui->mediaListWidget->setEmptyText(tr("Empty queue"));
   ui->mediaListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -15,6 +21,43 @@ QueuePage::~QueuePage() {
   m_conversionManager->stopAllCoversions();
   m_conversionManager->deleteLater();
   delete ui;
+}
+
+void QueuePage::updateItemProgress(const QJsonObject &progressData) {
+  QString itemId = progressData.value("pid").toString();
+  double progress = progressData.value("progress_calculated").toDouble();
+
+  ConversionItemWidget *conversionItemWidget = findConversionItemWidget(itemId);
+  if (conversionItemWidget) {
+    conversionItemWidget->conversionProcessProgressChanged(progress);
+  }
+}
+
+ConversionItemWidget *
+QueuePage::findConversionItemWidget(const QString &itemId) const {
+  for (int i = 0, total = ui->mediaListWidget->count(); i < total; ++i) {
+    QListWidgetItem *item = ui->mediaListWidget->item(i);
+    if (item) {
+      QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+      ConversionItemWidget *conversionItemWidget =
+          qobject_cast<ConversionItemWidget *>(itemWidget);
+      if (conversionItemWidget) {
+        auto conversionItem = conversionItemWidget->getConversionItem();
+        if (conversionItem.getId() == itemId) {
+          return conversionItemWidget;
+        }
+      }
+    }
+  }
+  return nullptr;
+}
+
+void QueuePage::updateItemStatus(QString pid, int exitCode,
+                                 QProcess::ExitStatus exitStatus) {
+  ConversionItemWidget *conversionItemWidget = findConversionItemWidget(pid);
+  if (conversionItemWidget) {
+    conversionItemWidget->conversionProcessFinished(exitCode, exitStatus);
+  }
 }
 
 OutputSettingPage *QueuePage::getOutputSettingPage() {

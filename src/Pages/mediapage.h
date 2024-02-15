@@ -36,7 +36,7 @@ private:
   Page *m_nextPage = nullptr;
   Page *m_prevPage = nullptr;
 
-  FFProbeMetaDataExtractor mediaMetadataProcessor;
+  FFProbeMetaDataExtractor m_mediaMetadataProcessor;
 
   Spinner *spinner = nullptr;
 

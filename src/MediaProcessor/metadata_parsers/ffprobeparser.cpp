@@ -52,7 +52,7 @@ MediaMetaData *FFProbeParser::getMediaMetaDataFor(const QString filePath,
     return audioMetaData;
   }
 
-  // some formats liek RealMedia ect are reporting mimetype application/...
+  // some formats like RealMedia etc are reporting mimetype application/...
   // we will add them and try to guess the media type manually from streams
   // array structure
   if (mimeTypeName.contains("application")) {

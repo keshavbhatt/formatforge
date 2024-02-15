@@ -15,7 +15,10 @@ public:
 
   void stopAllCoversions();
   void convert(QList<ConversionItem> conversionItems);
+
 signals:
+  void processProgressChanged(const QJsonObject &progressData);
+  void processFinished(QString pid, int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
   QList<ConversionProcess *> m_conversionProcesses;

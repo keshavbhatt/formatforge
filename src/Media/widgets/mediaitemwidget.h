@@ -31,8 +31,8 @@ private:
   QString m_filePath;
   QFileInfo m_fileInfo;
   MediaMetaData *m_mediaMetaData = nullptr;
-  QString m_id;
-  FFMpegThumbnailExtractor *mediaThumbnailProcessor = nullptr;
+  QString m_id; // id is session based uuid just to track process progress etc
+  FFMpegThumbnailExtractor *m_mediaThumbnailProcessor = nullptr;
 
   void setValuesFromMetadata();
   QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,

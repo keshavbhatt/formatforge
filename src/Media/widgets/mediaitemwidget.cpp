@@ -45,23 +45,14 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   ui->formatInfoPushButton->setToolTip("Show more information");
 
   // start FFMpegThumbnailExtractor connections
-  mediaThumbnailProcessor = new FFMpegThumbnailExtractor(this);
-  connect(mediaThumbnailProcessor,
+  m_mediaThumbnailProcessor = new FFMpegThumbnailExtractor(this);
+  connect(m_mediaThumbnailProcessor,
           &FFMpegThumbnailExtractor::mediaProcessingFinished, this, [=]() {
-            disconnect(mediaThumbnailProcessor, nullptr, nullptr, nullptr);
-            mediaThumbnailProcessor->deleteLater();
-            mediaThumbnailProcessor = nullptr;
+            disconnect(m_mediaThumbnailProcessor, nullptr, nullptr, nullptr);
+            m_mediaThumbnailProcessor->deleteLater();
+            m_mediaThumbnailProcessor = nullptr;
           });
-
-  // connect(mediaThumbnailProcessor,
-  //         &FFMpegThumbnailExtractor::mediaProcessingProgress, this,
-  //         [=](int currentFileIndex, int totalFiles) {
-  //           qDebug() << mediaThumbnailProcessor->extractorId()
-  //                    << "processing file " << currentFileIndex << " of "
-  //                    << totalFiles;
-  //         });
-
-  connect(mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
+  connect(m_mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
           this, &MediaItemWidget::setMediaItemThumbnail);
   // end FFMpegThumbnailExtractor connections
 
@@ -73,13 +64,13 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
           .toDouble();
   int width = height() * thumbnailAspectRatio;
   ui->fileThumbnailLabel->setMinimumSize(width, height());
+  // end thumbnail size
 
   setValuesFromMetadata();
 }
 
 void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,
                                             const QByteArray &result) {
-  Q_UNUSED(fileName);
   QPixmap thumbnailPixmapFromData;
   if (thumbnailPixmapFromData.loadFromData(result)) {
 
@@ -87,7 +78,7 @@ void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,
         QSize(ui->fileThumbnailLabel->size()), Qt::KeepAspectRatio,
         Qt::SmoothTransformation));
   } else {
-    qDebug() << "Error loading thumbnail from data.";
+    qDebug() << "Error loading thumbnail from data for file" << fileName;
   }
 }
 
@@ -118,8 +109,8 @@ void MediaItemWidget::setValuesFromMetadata() {
 
   if (VideoMetaData *videoMetaData =
           dynamic_cast<VideoMetaData *>(m_mediaMetaData)) {
-    if (mediaThumbnailProcessor) {
-      mediaThumbnailProcessor->processMediaFiles(QStringList{m_filePath});
+    if (m_mediaThumbnailProcessor) {
+      m_mediaThumbnailProcessor->processMediaFiles(QStringList{m_filePath});
     }
 
     const auto &videoStreams = videoMetaData->getVideoStreams();

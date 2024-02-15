@@ -36,21 +36,13 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
   // end UI connections
 
   // start FFProbeMetaDataExtractor connections
-  connect(&mediaMetadataProcessor,
+  connect(&m_mediaMetadataProcessor,
           &FFProbeMetaDataExtractor::mediaProcessingFinished, this, [=]() {
             this->spinner->stop();
             this->updatePage();
           });
 
-  // connect(&mediaMetadataProcessor,
-  //         &FFProbeMetaDataExtractor::mediaProcessingProgress, this,
-  //         [=](int currentFileIndex, int totalFiles) {
-  //           qDebug() << mediaMetadataProcessor.extractorId()
-  //                    << "processing file " << currentFileIndex << " of "
-  //                    << totalFiles;
-  //         });
-
-  connect(&mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
+  connect(&m_mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
           this, &MediaPage::addMediaItemToView);
   // end FFProbeMetaDataExtractor connections
 }
@@ -138,7 +130,7 @@ void MediaPage::loadMediaFiles(const QStringList &filePathList) {
 
 void MediaPage::processMedia(const QStringList &fileNameList) {
   spinner->start();
-  mediaMetadataProcessor.processMediaFiles(fileNameList);
+  m_mediaMetadataProcessor.processMediaFiles(fileNameList);
 }
 
 MediaPage::~MediaPage() { delete ui; }

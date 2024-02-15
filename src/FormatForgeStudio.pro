@@ -54,6 +54,7 @@ SOURCES += \
     MediaProcessor/metadata_parsers/ffprobeparser.cpp \
     Conversion/conversionitem.cpp \
     Widgets/customlistwidget.cpp \
+    Widgets/progresslabel.cpp \
     main.cpp \
     Widgets/mainwindow.cpp \
     Core/mimedatabasemanager.cpp \
@@ -97,6 +98,7 @@ HEADERS += \
     Presets/preset.h \
     Presets/widgets/presetselector.h \
     Presets/widgets/presettabwidget.h \
+    Widgets/progresslabel.h \
     Widgets/spinner.h \
     Core/utils.h
 

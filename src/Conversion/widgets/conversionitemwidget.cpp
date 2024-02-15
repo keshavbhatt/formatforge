@@ -5,11 +5,19 @@
 
 #include <Settings/settingsmanager.h>
 
+#include <MediaProcessor/metadata/audiometadata.h>
+#include <MediaProcessor/metadata/mediametadata.h>
+#include <MediaProcessor/metadata/videometadata.h>
+
+#include <MediaProcessor/metadata_parsers/ffprobeparser.h>
+
 ConversionItemWidget::ConversionItemWidget(QWidget *parent,
                                            ConversionItem conversionItem)
     : QWidget(parent), ui(new Ui::ConversionItemWidget),
       m_conversionItem(conversionItem) {
   ui->setupUi(this);
+
+  ui->formatInfoPushButton->hide();
 
   ui->changeOutputSettingsPushButton->setText(tr("Change out Setting"));
   ui->changeOutputSettingsPushButton->setFlat(true);
@@ -38,17 +46,49 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
   QColor thumbnailLabelBackgrounColor = palette.color(QPalette::Highlight);
   thumbnailLabelBackgrounColor = thumbnailLabelBackgrounColor.darker(160);
   thumbnailLabelBackgrounColor.setAlpha(60);
-  ui->fileThumbnailLabel->setStyleSheet(
+  ui->fileThumbnailProgressLabel->setStyleSheet(
       QString("background-color: rgba(%1, %2, %3, %4);")
           .arg(thumbnailLabelBackgrounColor.red())
           .arg(thumbnailLabelBackgrounColor.green())
           .arg(thumbnailLabelBackgrounColor.blue())
           .arg(thumbnailLabelBackgrounColor.alpha()));
 
+  ui->fileThumbnailProgressLabel->setProgress(0);
+  QColor c(innerWidgetBackgroundColor);
+  c.setAlpha(80);
+  ui->fileThumbnailProgressLabel->setProgressColor(c);
+  ui->fileThumbnailProgressLabel->setAlignment(Qt::AlignCenter);
+  connect(ui->fileThumbnailProgressLabel, &ProgressLabel::progressChanged, this,
+          [=](int progress) {
+            ui->fileThumbnailProgressLabel->setText(QString::number(progress) +
+                                                    "%");
+          });
+
   ui->formatInfoPushButton->setText("More info");
   ui->formatInfoPushButton->setIcon(QIcon(":/primo/info_blue.png"));
   ui->formatInfoPushButton->setFlat(true);
   ui->formatInfoPushButton->setToolTip("Show more information");
+
+  // start FFMpegThumbnailExtractor connections
+  m_mediaThumbnailProcessor = new FFMpegThumbnailExtractor(this);
+  connect(m_mediaThumbnailProcessor,
+          &FFMpegThumbnailExtractor::mediaProcessingFinished, this, [=]() {
+            disconnect(m_mediaThumbnailProcessor, nullptr, nullptr, nullptr);
+            m_mediaThumbnailProcessor->deleteLater();
+            m_mediaThumbnailProcessor = nullptr;
+          });
+  connect(m_mediaThumbnailProcessor, &FFMpegThumbnailExtractor::mediaProcessed,
+          this, &ConversionItemWidget::setMediaItemThumbnail);
+  // end FFMpegThumbnailExtractor connections
+
+  // start FFProbeMetaDataExtractor connections
+  connect(&m_mediaMetadataProcessor,
+          &FFProbeMetaDataExtractor::mediaProcessingFinished, this,
+          [=]() { this->setEnabled(true); });
+
+  connect(&m_mediaMetadataProcessor, &FFProbeMetaDataExtractor::mediaProcessed,
+          this, &ConversionItemWidget::updateMediaItemMetaData);
+  // end FFProbeMetaDataExtractor connections
 
   // thumbnail size
   auto thumbnailAspectRatio =
@@ -57,9 +97,9 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
                  SettingsConstantsGetDefaultFor(THUMBNAIL_ASPECT_RATIO))
           .toDouble();
   int width = height() * thumbnailAspectRatio;
-  ui->fileThumbnailLabel->setMinimumSize(width, height());
+  ui->fileThumbnailProgressLabel->setMinimumSize(width, height());
+  // end thumbnail size
 
-  ui->formatInfoPushButton->hide();
   setValuesFromConversionItem();
 }
 
@@ -71,6 +111,10 @@ ConversionItem ConversionItemWidget::getConversionItem() const {
   return m_conversionItem;
 }
 
+void ConversionItemWidget::conversionProcessProgressChanged(double progress) {
+  ui->fileThumbnailProgressLabel->setProgress(qRound(progress));
+}
+
 void ConversionItemWidget::setValuesFromConversionItem() {
 
   ui->fileTitleLable->setText(
@@ -78,7 +122,8 @@ void ConversionItemWidget::setValuesFromConversionItem() {
                             m_conversionItem.getOutputExetension()));
   ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
   ui->fileSizeLabel->setText("~");
-  ui->fileThumbnailLabel->setPixmap(this->getIconThumbnailPixmapFor("Waiting"));
+  ui->fileThumbnailProgressLabel->setPixmap(
+      this->getIconThumbnailPixmapFor("Waiting"));
   ui->mediaDurationLabel->setText("~");
   ui->fileExetensionLabel->setText("~");
   ui->mediaTypeLabel->setText("~");
@@ -88,20 +133,23 @@ void ConversionItemWidget::setValuesFromConversionItem() {
   ui->mediaStreamsLabel->setText("~");
 }
 
-void ConversionItemWidget::updateAfterConversion() {
-  ui->fileSizeLabel->setText("~");
-  ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
-  ui->fileThumbnailLabel->setPixmap(getIconThumbnailPixmapFor("Waiting"));
-  ui->mediaDurationLabel->setText("~");
-  ui->fileExetensionLabel->setText("~");
-  ui->mediaTypeLabel->setText("~");
-  ui->mediaStreamsLabel->setText("~");
+void ConversionItemWidget::conversionProcessFinished(
+    int exitCode, QProcess::ExitStatus exitStatus) {
+  Q_UNUSED(exitStatus);
+  auto outputFilePath =
+      Utils::getFileNameFor(m_conversionItem.getOutputDirectory() +
+                                m_conversionItem.getFileBaseName(),
+                            m_conversionItem.getOutputExetension());
+  if (exitCode == 0) {
+    ui->fileThumbnailProgressLabel->setProgress(100);
+    m_mediaMetadataProcessor.processMediaFiles(QStringList{outputFilePath});
 
-  ui->videoDimensionLabel->setText("~");
-  ui->bitrateLabel->setText("~");
-
-  ui->formatInfoPushButton->show();
-  ui->changeOutputSettingsPushButton->hide();
+    ui->formatInfoPushButton->show();
+    ui->changeOutputSettingsPushButton->hide();
+  } else {
+    ui->fileThumbnailProgressLabel->setPixmap(
+        getIconThumbnailPixmapFor("Unknown"));
+  }
 }
 
 QPixmap
@@ -123,4 +171,142 @@ ConversionItemWidget::getIconThumbnailPixmapFor(const QString &mediaType,
     return QPixmap(":/primo/help_blue.png")
         .scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   }
+}
+
+void ConversionItemWidget::setMediaItemThumbnail(const QString &fileName,
+                                                 const QByteArray &result) {
+
+  QPixmap thumbnailPixmapFromData;
+  if (thumbnailPixmapFromData.loadFromData(result)) {
+
+    ui->fileThumbnailProgressLabel->setPixmap(thumbnailPixmapFromData.scaled(
+        QSize(ui->fileThumbnailProgressLabel->size()), Qt::KeepAspectRatio,
+        Qt::SmoothTransformation));
+  } else {
+    qDebug() << "Error loading thumbnail from data for file" << fileName;
+  }
+}
+
+void ConversionItemWidget::updateMediaItemMetaData(const QString &filePath,
+                                                   const QString &result) {
+
+  MediaMetaData *mediaMetaData =
+      FFProbeParser::getMediaMetaDataFor(filePath, result);
+  if (mediaMetaData) {
+
+    QFileInfo fileInfo(filePath);
+
+    ui->fileTitleLable->setText(fileInfo.fileName());
+    ui->filePathLable->setText(fileInfo.dir().absolutePath());
+    ui->fileSizeLabel->setText(
+        this->locale().formattedDataSize(fileInfo.size()));
+
+    ui->fileThumbnailProgressLabel->setPixmap(
+        getIconThumbnailPixmapFor(mediaMetaData->mediaType()));
+    ui->mediaDurationLabel->setText(Utils::durationStringToHumanReadable(
+        mediaMetaData->formatObject().value("duration").toString()));
+    ui->fileExetensionLabel->setText(
+        mediaMetaData->formatObject().value("format_long_name").toString());
+    ui->mediaTypeLabel->setText(mediaMetaData->mediaType().toUpper());
+
+    auto streamsCount = mediaMetaData->getStreamsCount();
+    if (streamsCount == 1) {
+      ui->mediaStreamsLabel->setText(mediaMetaData->getStreamInfo());
+    } else {
+      ui->mediaStreamsLabel->setText(QString::number(streamsCount) +
+                                     " tracks (" +
+                                     mediaMetaData->getStreamInfo() + ")");
+    }
+
+    ui->videoDimensionLabel->setText("");
+
+    if (VideoMetaData *videoMetaData =
+            dynamic_cast<VideoMetaData *>(mediaMetaData)) {
+      if (m_mediaThumbnailProcessor) {
+        m_mediaThumbnailProcessor->processMediaFiles(QStringList{filePath});
+      }
+
+      const auto &videoStreams = videoMetaData->getVideoStreams();
+      if (videoStreams.isEmpty() == false) {
+        const auto &firstVideoStream = videoStreams.constFirst();
+        // video dimension
+        QString dimensionText =
+            QString("%1x%2")
+                .arg(firstVideoStream.value("width").toDouble())
+                .arg(firstVideoStream.value("height").toDouble());
+
+        int additionalVideoStreams =
+            videoMetaData->getVideoStreams().count() - 1;
+        if (additionalVideoStreams > 0) {
+          dimensionText += QString(" (%1 more)").arg(additionalVideoStreams);
+        }
+        ui->videoDimensionLabel->setText(dimensionText);
+
+        // video bitrate(uses bit_rate from format object if first stream
+        // misses)
+        auto bitrateFromFirstVideoStream =
+            firstVideoStream.value("bit_rate").toString().toDouble();
+        auto bitrateFromVideoFormat = videoMetaData->formatObject()
+                                          .value("bit_rate")
+                                          .toString()
+                                          .toDouble();
+        QString bitrateText =
+            QString("%1/Sec").arg(this->locale().formattedDataSize(
+                bitrateFromFirstVideoStream == 0.0
+                    ? bitrateFromVideoFormat
+                    : bitrateFromFirstVideoStream));
+
+        int additionalAudioStreams =
+            videoMetaData->getVideoStreams().count() - 1;
+        if (additionalAudioStreams > 0) {
+          bitrateText += QString(" (%1 more)").arg(additionalAudioStreams);
+        }
+        ui->bitrateLabel->setText(bitrateText);
+      }
+    } else if (AudioMetaData *audioMetaData =
+                   dynamic_cast<AudioMetaData *>(mediaMetaData)) {
+      // hide n/a elements
+      ui->videoDimensionLabel->hide();
+
+      const auto &audioStreams = audioMetaData->getAudioStreams();
+      if (audioStreams.isEmpty() == false) {
+        const auto &firstAudioStream = audioStreams.constFirst();
+
+        // audio bitrate(uses bit_rate from format object if first stream
+        // misses)
+        auto bitrateFromFirstAudioStream =
+            firstAudioStream.value("bit_rate").toString().toDouble();
+        auto bitrateFromAudioFormat = audioMetaData->formatObject()
+                                          .value("bit_rate")
+                                          .toString()
+                                          .toDouble();
+        QString bitrateText =
+            QString("%1/Sec").arg(this->locale().formattedDataSize(
+                bitrateFromFirstAudioStream == 0.0
+                    ? bitrateFromAudioFormat
+                    : bitrateFromFirstAudioStream));
+
+        int additionalAudioStreams =
+            audioMetaData->getAudioStreams().count() - 1;
+        if (additionalAudioStreams > 0) {
+          bitrateText += QString(" (%1 more)").arg(additionalAudioStreams);
+        }
+        ui->bitrateLabel->setText(bitrateText);
+      }
+    } else {
+      ui->mediaDurationLabel->setText("Unknown");
+      // TODO: other ui items
+    }
+  }
+
+  // ui->fileThumbnailLabel->setPixmap(getIconThumbnailPixmapFor("Waiting"));
+  // ui->fileSizeLabel->setText("~");
+  // ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
+  // ui->mediaDurationLabel->setText("~");
+  // ui->fileExetensionLabel->setText("~");
+  // ui->mediaTypeLabel->setText("~");
+  // ui->mediaStreamsLabel->setText("~");
+
+  // ui->videoDimensionLabel->setText("~");
+  // ui->bitrateLabel->setText("~");
 }
