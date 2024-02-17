@@ -13,7 +13,6 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
       m_fileInfo(QFileInfo(filePath)), m_mediaMetaData(mediaMetaData),
       m_id(QUuid::createUuid().toString()) {
   ui->setupUi(this);
-
   this->layout()->setContentsMargins(0, 0, 0, 0);
 
   // styling

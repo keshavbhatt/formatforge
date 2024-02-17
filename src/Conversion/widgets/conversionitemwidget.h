@@ -24,7 +24,7 @@ public:
 
   ConversionItem getConversionItem() const;
 
-  void conversionProcessProgressChanged(double progress);
+  void conversionProcessProgressChanged(const QJsonObject &progressData);
 
   void conversionProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 

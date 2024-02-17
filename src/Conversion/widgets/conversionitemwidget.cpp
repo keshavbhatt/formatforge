@@ -16,8 +16,12 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
     : QWidget(parent), ui(new Ui::ConversionItemWidget),
       m_conversionItem(conversionItem) {
   ui->setupUi(this);
+  this->layout()->setContentsMargins(0, 0, 0, 0);
 
   ui->formatInfoPushButton->hide();
+  ui->progressLabel->show();
+  ui->progressLabel->setText("~");
+  ui->metaDataWidget->hide();
 
   ui->changeOutputSettingsPushButton->setText(tr("Change out Setting"));
   ui->changeOutputSettingsPushButton->setFlat(true);
@@ -27,8 +31,6 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
 
   connect(ui->changeOutputSettingsPushButton, &QPushButton::clicked, this,
           &ConversionItemWidget::openOutputSettings);
-
-  this->layout()->setContentsMargins(0, 0, 0, 0);
 
   // styling
   QPalette palette = ui->innerWidget->palette();
@@ -54,9 +56,9 @@ ConversionItemWidget::ConversionItemWidget(QWidget *parent,
           .arg(thumbnailLabelBackgrounColor.alpha()));
 
   ui->fileThumbnailProgressLabel->setProgress(0);
-  QColor c(innerWidgetBackgroundColor);
-  c.setAlpha(80);
-  ui->fileThumbnailProgressLabel->setProgressColor(c);
+  QColor c(palette.color(QPalette::Highlight));
+  c.setAlpha(120);
+  ui->fileThumbnailProgressLabel->setProgressColor(c.lighter(140));
   ui->fileThumbnailProgressLabel->setAlignment(Qt::AlignCenter);
   connect(ui->fileThumbnailProgressLabel, &ProgressLabel::progressChanged, this,
           [=](int progress) {
@@ -111,8 +113,35 @@ ConversionItem ConversionItemWidget::getConversionItem() const {
   return m_conversionItem;
 }
 
-void ConversionItemWidget::conversionProcessProgressChanged(double progress) {
-  ui->fileThumbnailProgressLabel->setProgress(qRound(progress));
+void ConversionItemWidget::conversionProcessProgressChanged(
+    const QJsonObject &progressData) {
+  if (!progressData.isEmpty()) {
+    double progress = progressData.value("progress_calculated").toDouble();
+    ui->fileThumbnailProgressLabel->setProgress(qRound(progress));
+
+    QString progressLabelText;
+    QStringList excludeKeys{"_", "pid", "progress"};
+
+    for (auto it = progressData.constBegin(); it != progressData.constEnd();
+         ++it) {
+      bool excludeKey = false;
+      for (const QString &excluded : excludeKeys) {
+        if (it.key().contains(excluded)) {
+          excludeKey = true;
+          break;
+        }
+      }
+
+      if (!excludeKey) {
+        progressLabelText.append(it.key())
+            .append(": ")
+            .append(it.value().toString())
+            .append("   ");
+      }
+    }
+
+    ui->progressLabel->setText(progressLabelText.trimmed());
+  }
 }
 
 void ConversionItemWidget::setValuesFromConversionItem() {
@@ -128,9 +157,9 @@ void ConversionItemWidget::setValuesFromConversionItem() {
   ui->fileExetensionLabel->setText("~");
   ui->mediaTypeLabel->setText("~");
 
-  ui->videoDimensionLabel->setText("~");
-  ui->bitrateLabel->setText("~");
-  ui->mediaStreamsLabel->setText("~");
+  ui->videoDimensionLabel->setText("");
+  ui->bitrateLabel->setText("");
+  ui->mediaStreamsLabel->setText("");
 }
 
 void ConversionItemWidget::conversionProcessFinished(
@@ -150,6 +179,10 @@ void ConversionItemWidget::conversionProcessFinished(
     ui->fileThumbnailProgressLabel->setPixmap(
         getIconThumbnailPixmapFor("Unknown"));
   }
+
+  ui->progressLabel->setText("~");
+  ui->progressLabel->hide();
+  ui->metaDataWidget->show();
 }
 
 QPixmap
@@ -298,15 +331,4 @@ void ConversionItemWidget::updateMediaItemMetaData(const QString &filePath,
       // TODO: other ui items
     }
   }
-
-  // ui->fileThumbnailLabel->setPixmap(getIconThumbnailPixmapFor("Waiting"));
-  // ui->fileSizeLabel->setText("~");
-  // ui->filePathLable->setText(m_conversionItem.getOutputDirectory());
-  // ui->mediaDurationLabel->setText("~");
-  // ui->fileExetensionLabel->setText("~");
-  // ui->mediaTypeLabel->setText("~");
-  // ui->mediaStreamsLabel->setText("~");
-
-  // ui->videoDimensionLabel->setText("~");
-  // ui->bitrateLabel->setText("~");
 }

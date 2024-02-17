@@ -25,11 +25,9 @@ QueuePage::~QueuePage() {
 
 void QueuePage::updateItemProgress(const QJsonObject &progressData) {
   QString itemId = progressData.value("pid").toString();
-  double progress = progressData.value("progress_calculated").toDouble();
-
   ConversionItemWidget *conversionItemWidget = findConversionItemWidget(itemId);
   if (conversionItemWidget) {
-    conversionItemWidget->conversionProcessProgressChanged(progress);
+    conversionItemWidget->conversionProcessProgressChanged(progressData);
   }
 }
 

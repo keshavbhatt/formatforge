@@ -14,8 +14,6 @@ public:
 
   void setProgressColor(const QColor &color);
 
-  void setGrooveColor(const QColor &color);
-
 signals:
   void progressChanged(int progress);
 
@@ -25,7 +23,6 @@ protected:
 private:
   int m_progress;
   QColor m_progressColor;
-  QColor m_grooveColor;
 };
 
 #endif // PROGRESSLABEL_H
