@@ -29,6 +29,12 @@ public:
   ~MediaPage();
 
   void loadMediaFiles(const QStringList &filePathList);
+  QList<ConversionItem> getSelectedMediaItems() const;
+  bool isEnabled();
+  void setNextPage(Page *nextPage);
+  Page *getNextPage() const;
+  Page *getPreviousPage() const;
+  void setPreviousPage(Page *prevPage);
 
 private:
   Ui::MediaPage *ui;
@@ -37,7 +43,6 @@ private:
   Page *m_prevPage = nullptr;
 
   FFProbeMetaDataExtractor m_mediaMetadataProcessor;
-
   Spinner *spinner = nullptr;
 
   void updatePage();
@@ -51,17 +56,11 @@ public slots:
   QStringList getLoadedMediaFilesPath();
 
 signals:
+  void playMediaRequested(const QString &filePath);
   void addMoreFiles();
 
-public:
-  QList<ConversionItem> getSelectedMediaItems() const;
-  bool isEnabled();
-  void setNextPage(Page *nextPage);
-  Page *getNextPage() const;
-  Page *getPreviousPage() const;
-  void setPreviousPage(Page *prevPage);
-
 private slots:
+  void mediaItemDoubleClicked(QListWidgetItem *item);
   void updateBottomToolbarButtons();
 };
 

@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui qml quick quickwidgets x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -6,6 +6,8 @@ CONFIG += c++17
 
 TARGET = formatforge
 TEMPLATE = app
+
+LIBS += -lmpv -lxcb
 
 # No debug output in release mode
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
@@ -45,6 +47,8 @@ SOURCES += \
     Conversion/widgets/conversionitemwidget.cpp \
     Core/filescanner.cpp \
     MediaProcessor/cache/cachestore.cpp \
+    Pages/playerpage.cpp \
+    Player/mpvobject.cpp \
     Settings/settingsmanager.cpp \
     Media/widgets/mediaitemwidget.cpp \
     MediaProcessor/metadata/audiometadata.cpp \
@@ -76,6 +80,10 @@ HEADERS += \
     Core/filescanner.h \
     MediaProcessor/cache/cachestore.h \
     MediaProcessor/metadata_extractors/metadata_extractor.h \
+    Pages/playerpage.h \
+    Player/mpvhelpers.h \
+    Player/mpvobject.h \
+    Player/qthelper.hpp \
     Settings/settings_constants.h \
     Settings/settingsmanager.h \
     Media/widgets/mediaitemwidget.h \
@@ -105,6 +113,7 @@ HEADERS += \
 FORMS += \
     Conversion/widgets/conversionitemwidget.ui \
     Media/widgets/mediaitemwidget.ui \
+    Pages/playerpage.ui \
     Widgets/mainwindow.ui \
     Pages/homepage.ui \
     Pages/mediapage.ui \
@@ -127,4 +136,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Icons/icons.qrc \
     Media/resources/res.qrc \
+    Player/player.qrc \
     Presets/resources/presets.qrc

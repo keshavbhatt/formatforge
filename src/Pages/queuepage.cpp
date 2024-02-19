@@ -12,6 +12,9 @@ QueuePage::QueuePage(QWidget *parent) : Page(parent), ui(new Ui::QueuePage) {
   connect(m_conversionManager, &ConversionManager::processFinished, this,
           &QueuePage::updateItemStatus);
 
+  connect(ui->mediaListWidget, &QListWidget::itemDoubleClicked, this,
+          &QueuePage::mediaItemDoubleClicked);
+
   ui->mediaListWidget->setSpacing(6);
   ui->mediaListWidget->setEmptyText(tr("Empty queue"));
   ui->mediaListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -210,6 +213,22 @@ QList<ConversionItem> QueuePage::getAllConversionItems() const {
     }
   }
   return conversionItems;
+}
+
+void QueuePage::mediaItemDoubleClicked(QListWidgetItem *item) {
+  if (item) {
+    QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+    ConversionItemWidget *conversionItemWidget =
+        qobject_cast<ConversionItemWidget *>(itemWidget);
+    if (conversionItemWidget) {
+      auto conversionItem = conversionItemWidget->getConversionItem();
+      auto outputFilePath =
+          Utils::getFileNameFor(conversionItem.getOutputDirectory() +
+                                    conversionItem.getFileBaseName(),
+                                conversionItem.getOutputExetension());
+      emit playMediaRequested(outputFilePath);
+    }
+  }
 }
 
 void QueuePage::updatePage() {}

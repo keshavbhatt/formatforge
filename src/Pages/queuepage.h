@@ -29,6 +29,12 @@ public:
 public slots:
   void activate();
 
+signals:
+  void playMediaRequested(const QString &filePath);
+
+private slots:
+  void mediaItemDoubleClicked(QListWidgetItem *item);
+
 private:
   Ui::QueuePage *ui;
 
@@ -50,7 +56,8 @@ private:
   QList<ConversionItem> getAllConversionItems() const;
   QString getOutputDirectoryPathFrom(const ConversionItem &conversionItem);
   void updateItemProgress(const QJsonObject &progressData);
-  void updateItemStatus(QString pid, int exitCode, QProcess::ExitStatus exitStatus);
+  void updateItemStatus(QString pid, int exitCode,
+                        QProcess::ExitStatus exitStatus);
   ConversionItemWidget *findConversionItemWidget(const QString &itemId) const;
 };
 

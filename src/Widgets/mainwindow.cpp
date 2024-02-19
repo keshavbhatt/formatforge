@@ -4,6 +4,9 @@
 
 #include <Conversion/conversionmanager.h>
 
+#include <QQuickView>
+#include <QQuickWidget>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
@@ -42,7 +45,6 @@ void MainWindow::preparePages() {
       << qMakePair(homeAction, homePage) << qMakePair(mediaAction, mediaPage)
       << qMakePair(outputSettingAction, outputSettingPage)
       << qMakePair(queueAction, queuePage);
-
   // netPage
   homePage->setNextPage(mediaPage);
   mediaPage->setNextPage(outputSettingPage);
@@ -84,6 +86,8 @@ void MainWindow::createActions() {
       new QAction(QIcon("://primo/button_play.png"), tr("&Convert"), this);
   queueAction =
       new QAction(QIcon("://primo/database_active.png"), tr("&Queue"), this);
+  playerAction =
+      new QAction(QIcon("://primo/button_black_play.png"), tr("&Player"), this);
 
   preparePages();
 
@@ -92,10 +96,17 @@ void MainWindow::createActions() {
 
   ui->toolBar->addWidget(spinner);
   ui->toolBar->addAction(convertAction);
+  ui->toolBar->addAction(playerAction);
 
   connect(convertAction, &QAction::triggered, this, [=]() {
     if (queuePage) {
       queuePage->convert();
+    }
+  });
+
+  connect(playerAction, &QAction::triggered, this, [=]() {
+    if (playerPage) {
+      this->switchStackWidget(playerPage);
     }
   });
 }
@@ -105,7 +116,8 @@ void MainWindow::updateMainToolbarActions(int activeActionIndex) {
     p.first->setChecked(false);
     p.first->setEnabled(p.second->isEnabled());
   }
-  mainToolbarActionsWidgetPair.at(activeActionIndex).first->setChecked(true);
+  if (activeActionIndex + 1 <= mainToolbarActionsWidgetPair.count())
+    mainToolbarActionsWidgetPair.at(activeActionIndex).first->setChecked(true);
 }
 
 void MainWindow::initPages() {
@@ -114,12 +126,14 @@ void MainWindow::initPages() {
   mediaPage = new MediaPage;
   outputSettingPage = new OutputSettingPage;
   queuePage = new QueuePage;
+  playerPage = new PlayerPage;
 
   // add pages to stackedWidget
   stackedWidget->addWidget(homePage);
   stackedWidget->addWidget(mediaPage);
   stackedWidget->addWidget(outputSettingPage);
   stackedWidget->addWidget(queuePage);
+  stackedWidget->addWidget(playerPage);
 
   // page connections
   for (int i = 0, total = stackedWidget->count(); i < total; ++i) {
@@ -155,6 +169,12 @@ void MainWindow::initPages() {
 
   connect(mediaPage, &MediaPage::addMoreFiles, homePage,
           &HomePage::addMediaFromExistingFiles);
+
+  connect(mediaPage, &MediaPage::playMediaRequested, this,
+          &MainWindow::playMediaRequested);
+
+  connect(queuePage, &QueuePage::playMediaRequested, this,
+          &MainWindow::playMediaRequested);
 }
 
 void MainWindow::initToolbar() {
@@ -193,6 +213,20 @@ void MainWindow::switchStackWidget(QWidget *widget, bool addToStackVector) {
   auto page = qobject_cast<Page *>(widget);
   if (page) {
     page->activate();
+  }
+}
+
+void MainWindow::playMediaRequested(const QString &filePath) {
+  if (playerPage) {
+    switchStackWidget(playerPage);
+
+    auto playMediaDelayed = [this, filePath]() {
+      if (playerPage) {
+        playerPage->play(filePath);
+      }
+    };
+
+    QTimer::singleShot(300, this, playMediaDelayed);
   }
 }
 

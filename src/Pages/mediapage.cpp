@@ -33,6 +33,9 @@ MediaPage::MediaPage(QWidget *parent) : Page(parent), ui(new Ui::MediaPage) {
 
   connect(ui->mediaListWidget, &QListWidget::itemSelectionChanged, this,
           [=]() { updateBottomToolbarButtons(); });
+
+  connect(ui->mediaListWidget, &QListWidget::itemDoubleClicked, this,
+          &MediaPage::mediaItemDoubleClicked);
   // end UI connections
 
   // start FFProbeMetaDataExtractor connections
@@ -195,6 +198,17 @@ QList<ConversionItem> MediaPage::getSelectedMediaItems() const {
     }
   }
   return conversionItems;
+}
+
+void MediaPage::mediaItemDoubleClicked(QListWidgetItem *item) {
+  if (item) {
+    QWidget *itemWidget = ui->mediaListWidget->itemWidget(item);
+    MediaItemWidget *mediaItemWidget =
+        qobject_cast<MediaItemWidget *>(itemWidget);
+    if (mediaItemWidget) {
+      emit playMediaRequested(mediaItemWidget->getFilePath());
+    }
+  }
 }
 
 bool MediaPage::isEnabled() { return ui->mediaListWidget->count() > 0; }

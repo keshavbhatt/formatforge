@@ -10,6 +10,8 @@
 #include <Pages/outputsettingpage.h>
 #include <Pages/queuepage.h>
 
+#include <Pages/playerpage.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -44,10 +46,11 @@ private:
   MediaPage *mediaPage;
   OutputSettingPage *outputSettingPage;
   QueuePage *queuePage;
+  PlayerPage *playerPage;
 
   // actions
   QAction *homeAction, *mediaAction, *outputSettingAction, *convertAction,
-      *queueAction;
+      *queueAction, *playerAction;
 
   QList<QPair<QAction *, Page *>> mainToolbarActionsWidgetPair;
 
@@ -56,5 +59,6 @@ private:
   void initPages();
   void initSpinner();
   void preparePages();
+  void playMediaRequested(const QString &filePath);
 };
 #endif // MAINWINDOW_H

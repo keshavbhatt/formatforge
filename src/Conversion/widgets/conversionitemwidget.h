@@ -37,16 +37,14 @@ private:
   Ui::ConversionItemWidget *ui;
   ConversionItem m_conversionItem;
 
-  //todo turn this to regular member not pointer
+  // todo turn this to regular member not pointer
   FFMpegThumbnailExtractor *m_mediaThumbnailProcessor = nullptr;
   FFProbeMetaDataExtractor m_mediaMetadataProcessor;
 
   void setValuesFromConversionItem();
   QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,
                                     int height = 32);
-  QString getFileNameFrom(const ConversionItem &conversionItem);
-
-
+  // QString getFileNameFrom(const ConversionItem &conversionItem);
 };
 
 #endif // CONVERSIONITEMWIDGET_H
