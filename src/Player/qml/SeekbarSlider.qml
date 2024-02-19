@@ -149,8 +149,8 @@ AppSlider {
 				Rectangle {
 					width: styleData.handlePosition
 					height: parent.height
-
-					color: "#3DAEE6"
+                    color: "#ec810c"
+                    //color: "#3DAEE6"
 				}
 			}
 

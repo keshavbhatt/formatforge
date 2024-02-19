@@ -39,15 +39,15 @@ MouseArea {
             }
 
             ControlBarButton {
-                visible: false //!controlBar.compactMode
+                visible: false
                 iconName: "previous"
-                action: appActions.previousVideoAction
+                //action: appActions.previousVideoAction
             }
 
             ControlBarButton {
-                visible: false //!controlBar.compactMode
+                visible: false
                 iconName: "next"
-                action: appActions.nextVideoAction
+                //action: appActions.nextVideoAction
             }
 
             ControlBarButton {
@@ -93,28 +93,27 @@ MouseArea {
             }
 
             ControlBarButton {
-                visible: !controlBar.compactMode
                 iconName: "audio"
                 text: "" + mpvObject.aid + " / " + mpvObject.numAudioTracks
                 action: appActions.nextAudioTrackAction
             }
 
             ControlBarButton {
-                visible: !controlBar.compactMode
                 iconName: "sub"
                 text: "" + mpvObject.sid + " / " + mpvObject.numSubTracks
                 action: appActions.nextSubTrackAction
             }
 
             ControlBarButton {
-                visible: false //!controlBar.compactMode
+                visible: false
                 iconName: "playlist"
-                action: appActions.togglePlaylistAction
+                //action: appActions.togglePlaylistAction
             }
 
             ControlBarButton {
+                visible: false
                 iconName: window.isFullscreen ? "fs-checked" : "fs"
-                action: appActions.toggleFullscreenAction
+                //action: appActions.toggleFullscreenAction
             }
         }
 

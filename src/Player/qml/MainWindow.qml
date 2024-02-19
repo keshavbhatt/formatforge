@@ -34,40 +34,26 @@ Item {
     readonly property bool isPlaying: !mpvPlayer.mpvObject.paused
 
     property bool intialized: false
-    property bool hideMenuBar: true
     property bool isFullscreen: false
 
-    readonly property bool bordersVisible: !hideBorders && !pictureInPicture
+    //readonly property bool bordersVisible: !hideBorders && !pictureInPicture
     property bool hideBorders: false
     property string alwaysOnTop: 'never' // 'never', 'always', 'whilePlaying'
 
-    property bool pictureInPicture: false
-    property int pipWidth: videoLoaded ? pipHeight * videoWidth / videoHeight : 480
-    property int pipHeight: 270
-    property int pipMargin: 10
-    property point beforePipPoint: Qt.point(0, 0)
-    property int beforePipVisibility: 0
-
-
-    // Connections {
-    //     target: playerPageObject
-    //     onKeyPressed: {
-    //         appActions.handleKeyEvent(key, modifiers);
-    //     }
-    // }
-
+    // property bool pictureInPicture: false
+    // property int pipWidth: videoLoaded ? pipHeight * videoWidth / videoHeight : 480
+    // property int pipHeight: 270
+    // property int pipMargin: 10
+    // property point beforePipPoint: Qt.point(0, 0)
+    // property int beforePipVisibility: 0
 
     AppActions {
         id: appActions
-    }
-
-    AppContextMenu {
-        id: contextMenu
+        objectName: "playerActions"
     }
 
     MpvPlayer {
         id: mpvPlayer
         anchors.fill: parent
     }
-
 }

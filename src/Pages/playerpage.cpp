@@ -1,8 +1,10 @@
 #include "playerpage.h"
 #include "ui_playerpage.h"
 #include <Player/mpvobject.h>
+#include <QAction>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlProperty>
 
 PlayerPage::PlayerPage(QWidget *parent) : Page(parent), ui(new Ui::PlayerPage) {
   ui->setupUi(this);
@@ -13,48 +15,44 @@ PlayerPage::PlayerPage(QWidget *parent) : Page(parent), ui(new Ui::PlayerPage) {
 
   QObject *rootObject = ui->quickWidget->rootObject();
   if (rootObject) {
-    // ui->quickWidget->engine()->rootContext()->setContextProperty(
-    //     "playerPageObject", this);
-
-    // ui->quickWidget->installEventFilter(this);
-
     m_mpvObject = rootObject->findChild<MpvObject *>("mpvObject");
-    m_mpvObject->setParent(this);
+    m_mpvObject->setParent(this); // to properly delete qml mpvObject
+
+    // reuse actions from qml
+    auto actionsListQml =
+        rootObject->findChild<QObject *>("playerActions")->children();
+    foreach (QObject *actionObject, actionsListQml) {
+      if (actionObject->inherits("QQuickAction1")) {
+        QString text = QQmlProperty::read(actionObject, "text").toString();
+        QString shortcut =
+            QQmlProperty::read(actionObject, "shortcut").toString();
+        if (shortcut.isEmpty() == false) {
+          QAction *action = new QAction(text, this);
+          QObject::connect(action, &QAction::triggered, [=]() {
+            QMetaObject::invokeMethod(actionObject, "triggered");
+          });
+          action->setShortcut(QKeySequence(shortcut));
+          this->addAction(action);
+        }
+      }
+    }
   } else {
     qWarning() << Q_FUNC_INFO << "Unable to find player object in qml context";
   }
-
   ui->quickWidget->setFocus();
 }
 
 void PlayerPage::keyPressEvent(QKeyEvent *event) {
-
-  // QObject *rootObject = ui->quickWidget->rootObject();
-  // if (rootObject) {
-  //   QCoreApplication::sendEvent(rootObject, &event);
-  // } else {
-  //   qWarning() << Q_FUNC_INFO << "Unable to find player object in qml
-  //   context";
-  // }
-
-  // Call the base class implementation
-  QWidget::keyPressEvent(event);
-}
-
-bool PlayerPage::eventFilter(QObject *obj, QEvent *event) {
-  Q_UNUSED(obj);
-  if (event->type() == QEvent::KeyPress) {
-    QObject *rootObject = ui->quickWidget->rootObject();
-    if (rootObject) {
-      auto kp = static_cast<QKeyEvent *>(event);
-      emit keyPressed(kp->key(), kp->modifiers());
-
-      // QCoreApplication::sendEvent(rootObject, event);
+  if (event->key() == Qt::Key_F11) {
+    Q_UNIMPLEMENTED();
+    if (this->isFullScreen()) {
+      this->showNormal();
+    } else {
+      this->showFullScreen();
     }
-    // emit rootObject->keyPressed(static_cast<QKeyEvent *>(event));
-    return true; // Consume the event to prevent further processing
+  } else {
+    QWidget::keyPressEvent(event);
   }
-  return false; // Pass the event through for normal handling
 }
 
 void PlayerPage::play(const QString &filePath) {

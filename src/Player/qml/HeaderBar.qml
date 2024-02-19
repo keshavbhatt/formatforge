@@ -16,8 +16,9 @@ MouseArea {
 		Item { Layout.fillWidth: true }
 
 		ControlBarButton {
+            visible: false
 			iconSource: "qrc:icons/window-close.png"
-			action: appActions.exitAction
+            //action: appActions.exitAction
 			tooltipAbove: false
 		}
 

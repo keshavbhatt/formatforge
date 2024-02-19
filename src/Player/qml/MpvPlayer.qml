@@ -284,14 +284,14 @@ Item {
         acceptedButtons: Qt.AllButtons
         hoverEnabled: true
         property double lastClickToPause: 0
-        onClicked: {
-            if (mouse.button == Qt.LeftButton) {
-                lastClickToPause = Date.now()
-                mpvObject.playPause()
-            } else if (mouse.button == Qt.RightButton) {
-                contextMenu.popup()
-            }
-        }
+        // onClicked: {
+        //     if (mouse.button == Qt.LeftButton) {
+        //         lastClickToPause = Date.now()
+        //         mpvObject.playPause()
+        //     } else if (mouse.button == Qt.RightButton) {
+        //         contextMenu.popup()
+        //     }
+        // }
         onDoubleClicked: {
             if (mouse.button == Qt.LeftButton) {
                 window.toggleFullscreen()

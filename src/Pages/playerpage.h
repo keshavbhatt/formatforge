@@ -29,16 +29,12 @@ public:
 public slots:
   void activate() override;
 
-signals:
-  void keyPressed(int key, Qt::KeyboardModifiers modifiers);
-
 private:
   Ui::PlayerPage *ui;
   MpvObject *m_mpvObject = nullptr;
 
 protected:
   void keyPressEvent(QKeyEvent *event) override;
-  bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
 #endif // PLAYERPAGE_H
