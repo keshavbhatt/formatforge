@@ -333,7 +333,7 @@ Item {
                     // videoMouseArea.cursorShape = Qt.DragMoveCursor
                     // window.x = clickedWinPos.x + delta.x
                     // window.y = clickedWinPos.y + delta.y
-                    app.dragWindow(window)
+                   // app.dragWindow(window)
                 }
             } else {
                 var delta1 = Qt.point(curPos.x - cursorHiddenPos.x,

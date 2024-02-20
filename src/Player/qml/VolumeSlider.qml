@@ -77,7 +77,7 @@ AppSlider {
 					width: styleData.handlePosition
 					height: parent.height
 
-					color: "#FFFFFF"
+                    color: "#ec810c"
 				}
 			}
 		}
