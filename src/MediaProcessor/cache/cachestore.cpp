@@ -1,10 +1,11 @@
 #include "cachestore.h"
 
+const QChar CacheStore::dir_path_separator = QDir::separator();
 
 CacheStore::CacheStore() : m_initialized(false) {
   m_cacheRootDirPath =
       QStandardPaths::writableLocation(QStandardPaths::CacheLocation) +
-      "/Cache";
+                                 dir_path_separator + "Cache";
   this->setInitialized(ensureCacheRootDirExists(m_cacheRootDirPath));
 }
 
@@ -60,7 +61,7 @@ bool CacheStore::exists(const QString &key, const QString &subdirectory) {
     return false;
 
   QString filePath =
-      instance().cacheRootDirPath() + "/" + subdirectory + "/" + key;
+      instance().cacheRootDirPath() + dir_path_separator + subdirectory + dir_path_separator + key;
   return QFile::exists(filePath);
 }
 
@@ -70,7 +71,7 @@ bool CacheStore::remove(const QString &key, const QString &subdirectory) {
     return false;
 
   QString filePath =
-      instance().cacheRootDirPath() + "/" + subdirectory + "/" + key;
+      instance().cacheRootDirPath() + dir_path_separator + subdirectory + dir_path_separator + key;
   return QFile::remove(filePath);
 }
 

@@ -23,6 +23,8 @@ public:
 private:
   CacheStore();
 
+  static const QChar dir_path_separator;
+
   bool m_initialized;
   QString m_cacheRootDirPath;
 
