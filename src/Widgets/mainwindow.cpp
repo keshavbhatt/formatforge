@@ -44,7 +44,8 @@ void MainWindow::preparePages() {
   mainToolbarActionsWidgetPair
       << qMakePair(homeAction, homePage) << qMakePair(mediaAction, mediaPage)
       << qMakePair(outputSettingAction, outputSettingPage)
-      << qMakePair(queueAction, queuePage);
+      << qMakePair(queueAction, queuePage)
+      << qMakePair(playerAction, playerPage);
   // netPage
   homePage->setNextPage(mediaPage);
   mediaPage->setNextPage(outputSettingPage);
@@ -88,6 +89,7 @@ void MainWindow::createActions() {
       new QAction(QIcon("://primo/database_active.png"), tr("&Queue"), this);
   playerAction =
       new QAction(QIcon("://primo/button_black_play.png"), tr("&Player"), this);
+  playerAction->setProperty("autoAdded", false);
 
   preparePages();
 
