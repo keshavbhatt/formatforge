@@ -13,31 +13,29 @@ Item {
     objectName: "mainWindow"
     focus: true
 
-    property bool videoLoaded: mpvPlayer.mpvObject.playlistCount >= 1
+    readonly property alias mpvObject: mpvPlayer.mpvObject
+    readonly property alias sidebar: mpvPlayer.sidebar
+    readonly property bool isPlaying: !mpvPlayer.mpvObject.paused
+
+    property bool videoLoaded: mpvObject.playlistCount >= 1
                                && videoWidth > 0 && videoHeight > 0
-    property int videoWidth: mpvPlayer.mpvObject.dwidth
-    property int videoHeight: mpvPlayer.mpvObject.dheight
+    property int videoWidth: mpvObject.dwidth
+    property int videoHeight: mpvObject.dheight
 
     QtObject {
         id: config
-        property bool autoplayNextFile: true
+        property bool autoplayNextFile: false
         property bool showPlaybackInfo: false
         property bool showConsole: false
         property bool do60fps: false
         property bool showTimeLeft: false
     }
 
-    visible: true
-
-    readonly property alias mpvObject: mpvPlayer.mpvObject
-    readonly property alias sidebar: mpvPlayer.sidebar
-    readonly property bool isPlaying: !mpvPlayer.mpvObject.paused
 
     property bool intialized: false
     property bool isFullscreen: false
 
     //readonly property bool bordersVisible: !hideBorders && !pictureInPicture
-    property bool hideBorders: false
     property string alwaysOnTop: 'never' // 'never', 'always', 'whilePlaying'
 
     // property bool pictureInPicture: false

@@ -33,9 +33,9 @@ Item {
             folderModel.currentFileName = fileName
         }
 
-        onCountChanged: {
-            console.log('folderModel.count', count)
-        }
+        // onCountChanged: {
+        //     console.log('folderModel.count', count)
+        // }
 
         property var mpvConnection: Connections {
             target: mpvObject
@@ -48,9 +48,9 @@ Item {
                 folderModel.setCurrentFile(filePath)
                 mpvPlayer.shouldAutoplay = true
             }
-            function onFileEnded() {
-                //console.log('onFileEnded', reason)
-                if (reason == "eof") {
+            function onFileEnded(reason) {
+                console.log('onFileEnded', reason)
+                if (reason === "eof") {
                     if (mpvPlayer.isAutoplayingFolder()) {
                         mpvPlayer.playNextFileInFolder()
                     }
@@ -333,7 +333,7 @@ Item {
                     // videoMouseArea.cursorShape = Qt.DragMoveCursor
                     // window.x = clickedWinPos.x + delta.x
                     // window.y = clickedWinPos.y + delta.y
-                   // app.dragWindow(window)
+                    // app.dragWindow(window)
                 }
             } else {
                 var delta1 = Qt.point(curPos.x - cursorHiddenPos.x,

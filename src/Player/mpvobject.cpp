@@ -2,35 +2,23 @@
 
 // std
 #include <clocale>
-
 #include <stdexcept>
 
 // Qt
 #include <QApplication>
-
 #include <QObject>
-
 #include <QOpenGLContext>
-
 #include <QtGlobal>
-
 #include <QGuiApplication>
-
 #include <QtQuick/QQuickView>
-
 #include <QtQuick/QQuickWindow>
-
 #include <QtGui/QOpenGLFramebufferObject>
-
 #include <QtQuick/QQuickFramebufferObject>
-
 #include <QtX11Extras/QX11Info>
-
 #include <QDebug>
 
 // libmpv
 #include <mpv/client.h>
-
 #include <mpv/render_gl.h>
 
 // own
@@ -339,12 +327,12 @@ void MpvObject::handle_mpv_event(mpv_event * event) {
     switch (event -> event_id) {
     case MPV_EVENT_LOG_MESSAGE: {
         mpv_event_log_message * logData = (mpv_event_log_message * ) event -> data;
-        Q_EMIT logMessage(QString(logData -> prefix), QString(logData -> level),
+        emit logMessage(QString(logData -> prefix), QString(logData -> level),
                           QString(logData -> text));
         break;
     }
     case MPV_EVENT_START_FILE: {
-        Q_EMIT fileStarted();
+        emit fileStarted();
         break;
     }
     case MPV_EVENT_END_FILE: {
@@ -369,11 +357,12 @@ void MpvObject::handle_mpv_event(mpv_event * event) {
         default:
             reason = "unknown";
         }
-        Q_EMIT fileEnded(QString(reason));
+        this->update(); // trigger repaint to get black screen
+        emit fileEnded(QString(reason));
         break;
     }
     case MPV_EVENT_FILE_LOADED: {
-        Q_EMIT fileLoaded();
+        emit fileLoaded();
         break;
     }
     case MPV_EVENT_PROPERTY_CHANGE: {
@@ -392,11 +381,11 @@ void MpvObject::handle_mpv_event(mpv_event * event) {
             if (strcmp(prop -> name, "time-pos") == 0) {
                 double time = * (double * ) prop -> data;
                 m_position = time;
-                Q_EMIT positionChanged(time);
+                emit positionChanged(time);
             } else if (strcmp(prop -> name, "duration") == 0) {
                 double time = * (double * ) prop -> data;
                 m_duration = time;
-                Q_EMIT durationChanged(time);
+                emit durationChanged(time);
             } else if HANDLE_PROP_DOUBLE("audio-bitrate", audioBitrate)
                 else if HANDLE_PROP_DOUBLE("avsync", avsync)
                     else if HANDLE_PROP_DOUBLE(
