@@ -4,6 +4,7 @@
 
 #include <Conversion/conversionmanager.h>
 
+#include <QMessageBox>
 #include <QQuickView>
 #include <QQuickWidget>
 
@@ -219,16 +220,27 @@ void MainWindow::switchStackWidget(QWidget *widget, bool addToStackVector) {
 }
 
 void MainWindow::playMediaRequested(const QString &filePath) {
-  if (playerPage) {
-    switchStackWidget(playerPage);
+  QFileInfo file(filePath);
+  if (file.exists() && file.isFile()) {
+    if (playerPage) {
+      switchStackWidget(playerPage);
 
-    auto playMediaDelayed = [this, filePath]() {
-      if (playerPage) {
-        playerPage->play(filePath);
-      }
-    };
+      auto playMediaDelayed = [this, filePath]() {
+        if (playerPage) {
+          playerPage->play(filePath);
+        }
+      };
 
-    QTimer::singleShot(300, this, playMediaDelayed);
+      QTimer::singleShot(300, this, playMediaDelayed);
+    }
+  } else {
+    QMessageBox msgBox;
+    msgBox.setIconPixmap(QPixmap(":/app/icon-64.png"));
+    msgBox.setText(QString("Player: Unable to play requested file.\nFile Path: %1").arg(filePath));
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.setDetailedText(
+        QString("File: %1 doesn't exists or not a valid file.").arg(filePath));
+    msgBox.exec();
   }
 }
 
