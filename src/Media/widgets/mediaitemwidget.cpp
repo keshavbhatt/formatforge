@@ -80,7 +80,8 @@ void MediaItemWidget::showDetailedFormatInfo() {
     qDebug() << "Unsupported MediaMetaData subclass";
     return;
   }
-  infoWidget->setWindowFlag(Qt::Window);
+  infoWidget->setWindowFlags(infoWidget->windowFlags() | Qt::Window);
+  infoWidget->setWindowModality(Qt::NonModal);
   infoWidget->setAttribute(Qt::WA_DeleteOnClose);
   infoWidget->show();
 }

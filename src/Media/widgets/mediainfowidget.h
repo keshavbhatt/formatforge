@@ -1,6 +1,8 @@
 #ifndef MEDIAINFOWIDGET_H
 #define MEDIAINFOWIDGET_H
 
+#include <QClipboard>
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QTableWidget>
 #include <QWidget>
@@ -19,6 +21,14 @@ public:
                            MediaInfo mediaInfo = MediaInfo());
   ~MediaInfoWidget();
 
+protected:
+  void keyPressEvent(QKeyEvent *event) override;
+
+private slots:
+  void updateFilterRadioButton(const QString &filterText);
+  void updateFilterText();
+  void copyRowActionTriggered();
+
 private:
   Ui::MediaInfoWidget *ui;
   void populateTableWidget(QTableWidget *tableWidget,
@@ -26,6 +36,7 @@ private:
 
   MediaInfo m_mediaInfo;
   void applyFilter(const QString &filterText);
+  void setupContextMenuForMediaInfoTable();
 };
 
 #endif // MEDIAINFOWIDGET_H

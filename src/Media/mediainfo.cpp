@@ -1,4 +1,5 @@
 #include "mediainfo.h"
+#include <QLocale>
 
 MediaInfo::MediaInfo() : m_mediaMetaData(nullptr) {
   // TODO: hold file path and make generation of media info reproducible
@@ -19,14 +20,24 @@ MediaInfo::MediaInfo(const QFileInfo &fileInfo, MediaMetaData *mediaMetaData)
 void MediaInfo::populateFileInfo() {
   const QString keyName = "FileInfo::";
 
+  QString sizeString = QLocale().formattedDataSize(m_fileInfo.size());
+
+  QString creationDate = QLocale().toString(
+      m_fileInfo.birthTime().toLocalTime(), QLocale::LongFormat);
+  QString lastModifiedDate = QLocale().toString(
+      m_fileInfo.lastModified().toLocalTime(), QLocale::LongFormat);
+  QString lastAccessDate = QLocale().toString(
+      m_fileInfo.lastRead().toLocalTime(), QLocale::LongFormat);
+
   m_generalFileInfo.append(
       qMakePair(QString(keyName + "name"), m_fileInfo.fileName()));
+  m_generalFileInfo.append(qMakePair(QString(keyName + "size"), sizeString));
   m_generalFileInfo.append(
-      qMakePair(QString(keyName + "size"), m_fileInfo.size()));
+      qMakePair(QString(keyName + "creation_date"), creationDate));
   m_generalFileInfo.append(
-      qMakePair(QString(keyName + "creation date"), m_fileInfo.birthTime()));
+      qMakePair(QString(keyName + "last_modified"), lastModifiedDate));
   m_generalFileInfo.append(
-      qMakePair(QString(keyName + "last modified"), m_fileInfo.lastModified()));
+      qMakePair(QString(keyName + "last_accessed"), lastAccessDate));
 }
 
 void MediaInfo::populateMediaInfo() {
@@ -92,3 +103,5 @@ QList<QPair<QString, QVariant>> MediaInfo::mediaInfo() const {
 }
 
 QString MediaInfo::filePath() const { return m_fileInfo.filePath(); }
+
+QString MediaInfo::fileName() const { return m_fileInfo.fileName(); }

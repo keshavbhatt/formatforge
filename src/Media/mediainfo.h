@@ -21,6 +21,8 @@ public:
 
   QString filePath() const;
 
+  QString fileName() const;
+
 private:
   QFileInfo m_fileInfo;
   MediaMetaData *m_mediaMetaData = nullptr;
@@ -31,7 +33,8 @@ private:
 
   void populateMediaInfo();
   void populateFileInfo();
-  void populateMediaInfoRecursive(const QJsonValue &value, const QString &prefix = "");
+  void populateMediaInfoRecursive(const QJsonValue &value,
+                                  const QString &prefix = "");
 };
 
 #endif // MEDIAINFO_H
