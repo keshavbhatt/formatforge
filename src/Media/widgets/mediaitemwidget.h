@@ -4,9 +4,14 @@
 #include <QFileInfo>
 #include <QWidget>
 
+#include <Core/utils.h>
+#include <MediaProcessor/metadata/audiometadata.h>
 #include <MediaProcessor/metadata/mediametadata.h>
-
+#include <MediaProcessor/metadata/videometadata.h>
 #include <MediaProcessor/metadata_extractors/ffmpegthumbnailextractor.h>
+#include <QDebug>
+#include <QFileInfo>
+#include <Settings/settingsmanager.h>
 
 namespace Ui {
 class MediaItemWidget;
@@ -38,6 +43,7 @@ private:
   QPixmap getIconThumbnailPixmapFor(const QString &mediaType, int width = 32,
                                     int height = 32);
   void setMediaItemThumbnail(const QString &fileName, const QByteArray &result);
+  void showDetailedFormatInfo();
 };
 
 #endif // MEDIAITEMWIDGET_H

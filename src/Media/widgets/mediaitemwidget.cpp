@@ -1,11 +1,6 @@
 #include "mediaitemwidget.h"
+#include "mediainfowidget.h"
 #include "ui_mediaitemwidget.h"
-#include <Core/utils.h>
-#include <MediaProcessor/metadata/audiometadata.h>
-#include <MediaProcessor/metadata/videometadata.h>
-#include <QDebug>
-#include <QFileInfo>
-#include <Settings/settingsmanager.h>
 
 MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
                                  MediaMetaData *mediaMetaData)
@@ -42,6 +37,8 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   ui->formatInfoPushButton->setIcon(QIcon(":/primo/info_blue.png"));
   ui->formatInfoPushButton->setFlat(true);
   ui->formatInfoPushButton->setToolTip("Show more information");
+  connect(ui->formatInfoPushButton, &QPushButton::clicked, this,
+          &MediaItemWidget::showDetailedFormatInfo);
 
   // start FFMpegThumbnailExtractor connections
   m_mediaThumbnailProcessor = new FFMpegThumbnailExtractor(this);
@@ -66,6 +63,26 @@ MediaItemWidget::MediaItemWidget(QWidget *parent, QString filePath,
   // end thumbnail size
 
   setValuesFromMetadata();
+}
+
+void MediaItemWidget::showDetailedFormatInfo() {
+  MediaInfoWidget *infoWidget = nullptr;
+
+  if (AudioMetaData *audioMetaData =
+          dynamic_cast<AudioMetaData *>(m_mediaMetaData)) {
+    MediaInfo mediaInfo(m_fileInfo, audioMetaData);
+    infoWidget = new MediaInfoWidget(this, mediaInfo);
+  } else if (VideoMetaData *videoMetaData =
+                 dynamic_cast<VideoMetaData *>(m_mediaMetaData)) {
+    MediaInfo mediaInfo(m_fileInfo, videoMetaData);
+    infoWidget = new MediaInfoWidget(this, mediaInfo);
+  } else {
+    qDebug() << "Unsupported MediaMetaData subclass";
+    return;
+  }
+  infoWidget->setWindowFlag(Qt::Window);
+  infoWidget->setAttribute(Qt::WA_DeleteOnClose);
+  infoWidget->show();
 }
 
 void MediaItemWidget::setMediaItemThumbnail(const QString &fileName,

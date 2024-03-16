@@ -46,6 +46,8 @@ SOURCES += \
     Conversion/conversionprocess.cpp \
     Conversion/widgets/conversionitemwidget.cpp \
     Core/filescanner.cpp \
+    Media/mediainfo.cpp \
+    Media/widgets/mediainfowidget.cpp \
     MediaProcessor/cache/cachestore.cpp \
     Pages/playerpage.cpp \
     Player/mpvobject.cpp \
@@ -78,6 +80,8 @@ HEADERS += \
     Conversion/conversionprocess.h \
     Conversion/widgets/conversionitemwidget.h \
     Core/filescanner.h \
+    Media/mediainfo.h \
+    Media/widgets/mediainfowidget.h \
     MediaProcessor/cache/cachestore.h \
     MediaProcessor/metadata_extractors/metadata_extractor.h \
     Pages/playerpage.h \
@@ -112,6 +116,7 @@ HEADERS += \
 
 FORMS += \
     Conversion/widgets/conversionitemwidget.ui \
+    Media/widgets/mediainfowidget.ui \
     Media/widgets/mediaitemwidget.ui \
     Pages/playerpage.ui \
     Widgets/mainwindow.ui \

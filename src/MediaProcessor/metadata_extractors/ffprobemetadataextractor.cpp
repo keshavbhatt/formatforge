@@ -19,6 +19,7 @@ void FFProbeMetaDataExtractor::processMediaFiles(const QStringList &filePaths) {
       auto dataFromCache =
           CacheStore::instance().load(cacheKey, this->extractorId());
       emit mediaProcessed(filePath, dataFromCache);
+      qDebug().noquote()  << dataFromCache;
       processedFilesCounter++;
       emit mediaProcessingProgress(processedFilesCounter, totalFilesToProcess);
     } else {
